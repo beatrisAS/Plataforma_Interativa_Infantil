@@ -3049,11 +3049,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\beatr\\Downloads\\Plataforma_Interativa_Infantil_TCC\\backend\\Plataforma.API\\Plataforma.API.csproj",
+      "projectUniqueName": "C:\\Users\\beatr\\Downloads\\Plataforma_Interativa_Infantil\\backend\\Plataforma.API\\Plataforma.API.csproj",
       "projectName": "Plataforma.API",
-      "projectPath": "C:\\Users\\beatr\\Downloads\\Plataforma_Interativa_Infantil_TCC\\backend\\Plataforma.API\\Plataforma.API.csproj",
+      "projectPath": "C:\\Users\\beatr\\Downloads\\Plataforma_Interativa_Infantil\\backend\\Plataforma.API\\Plataforma.API.csproj",
       "packagesPath": "C:\\Users\\beatr\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\beatr\\Downloads\\Plataforma_Interativa_Infantil_TCC\\backend\\Plataforma.API\\obj\\",
+      "outputPath": "C:\\Users\\beatr\\Downloads\\Plataforma_Interativa_Infantil\\backend\\Plataforma.API\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
