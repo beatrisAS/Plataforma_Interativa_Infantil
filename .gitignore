@@ -1,0 +1,15 @@
+bin/
+obj/
+*.db
+.vscode/
+.vs/
+.env
+appsettings.Development.json
+*.user
+*.suo
+wwwroot/lib/
+node_modules/
+
+# OS
+.DS_Store
+Thumbs.db
