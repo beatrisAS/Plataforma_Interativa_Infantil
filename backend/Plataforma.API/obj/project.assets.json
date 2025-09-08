@@ -3138,7 +3138,7 @@
       "code": "NU1603",
       "level": "Warning",
       "warningLevel": 1,
-      "message": "Plataforma.API depends on Pomelo.EntityFrameworkCore.MySql (>= 8.0.6) but Pomelo.EntityFrameworkCore.MySql 8.0.6 was not found. Pomelo.EntityFrameworkCore.MySql 9.0.0 was resolved instead.",
+      "message": "Plataforma.API depende de Pomelo.EntityFrameworkCore.MySql (>= 8.0.6) mas Pomelo.EntityFrameworkCore.MySql 8.0.6 não foi encontrado. Pomelo.EntityFrameworkCore.MySql 9.0.0 foi resolvido.",
       "libraryId": "Pomelo.EntityFrameworkCore.MySql",
       "targetGraphs": [
         "net8.0"
@@ -3148,7 +3148,7 @@
       "code": "NU1603",
       "level": "Warning",
       "warningLevel": 1,
-      "message": "Plataforma.API depends on Swashbuckle.AspNetCore (>= 6.6.0) but Swashbuckle.AspNetCore 6.6.0 was not found. Swashbuckle.AspNetCore 6.6.1 was resolved instead.",
+      "message": "Plataforma.API depende de Swashbuckle.AspNetCore (>= 6.6.0) mas Swashbuckle.AspNetCore 6.6.0 não foi encontrado. Swashbuckle.AspNetCore 6.6.1 foi resolvido.",
       "libraryId": "Swashbuckle.AspNetCore",
       "targetGraphs": [
         "net8.0"

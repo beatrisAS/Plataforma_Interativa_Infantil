@@ -1,64 +1,71 @@
-CREATE DATABASE Plataforma;
-USE Plataforma;
-CREATE TABLE Usuarios (
+CREATE DATABASE Platform;
+USE Platform;
+
+CREATE TABLE Users (
     Id INT AUTO_INCREMENT PRIMARY KEY,
-    Nome VARCHAR(255) NOT NULL,
+    Name VARCHAR(255) NOT NULL,
     Email VARCHAR(255) UNIQUE NOT NULL,
-    SenhaHash VARCHAR(255) NOT NULL,
-    Papel ENUM('pai', 'professor', 'admin', 'especialista') NOT NULL, 
-    CriadoEm TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    AtualizadoEm TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    PasswordHash VARCHAR(255) NOT NULL,
+    Role ENUM('parent', 'teacher', 'admin', 'specialist') NOT NULL, 
+    CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UpdatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
-CREATE TABLE Criancas (
+
+CREATE TABLE Child (
     Id INT AUTO_INCREMENT PRIMARY KEY,
-    Nome VARCHAR(255) NOT NULL,
-    DataNascimento DATE NOT NULL,
-    ResponsavelId INT, -- Chave estrangeira para Usuarios (responsável)
-    PerfilAprendizagem TEXT, -- Perfil de aprendizado
-    CriadoEm TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    AtualizadoEm TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (ResponsavelId) REFERENCES Usuarios(Id)
+    Name VARCHAR(255) NOT NULL,
+    BirthDate DATE NOT NULL,
+    GuardianId INT, -- Foreign key to Users (responsible)
+    LearningProfile TEXT,
+    CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UpdatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (GuardianId) REFERENCES Users(Id)
 );
-CREATE TABLE Atividades (
+
+CREATE TABLE Activities (
     Id INT AUTO_INCREMENT PRIMARY KEY,
-    Titulo VARCHAR(255) NOT NULL,
-    Descricao TEXT,
-    Tipo ENUM('jogo', 'exercicio', 'quiz') NOT NULL, -- Tipo da atividade
-    CriadoEm TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    AtualizadoEm TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    Title VARCHAR(255) NOT NULL,
+    Description TEXT,
+    Type ENUM('game', 'exercise', 'quiz') NOT NULL, -- Activity type
+    CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UpdatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
-CREATE TABLE Progresso (
+
+CREATE TABLE Progress (
     Id INT AUTO_INCREMENT PRIMARY KEY,
-    CriancaId INT,  -- Chave estrangeira para Criancas
-    AtividadeId INT, -- Chave estrangeira para Atividades
-    DataConclusao TIMESTAMP,
-    Pontuacao DECIMAL(5, 2), -- Pontuação, se aplicável
-    Observacoes TEXT, -- Observações sobre a atividade
-    CriadoEm TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (CriancaId) REFERENCES Criancas(Id),
-    FOREIGN KEY (AtividadeId) REFERENCES Atividades(Id)
+    ChildId INT,  -- Foreign key to Children
+    ActivityId INT, -- Foreign key to Activities
+    CompletedAt TIMESTAMP,
+    Score DECIMAL(5, 2),
+    Notes TEXT,
+    CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (ChildId) REFERENCES Children(Id),
+    FOREIGN KEY (ActivityId) REFERENCES Activities(Id)
 );
-CREATE TABLE Relatorios (
+
+CREATE TABLE Reports (
     Id INT AUTO_INCREMENT PRIMARY KEY,
-    CriancaId INT, -- Chave estrangeira para Criancas
-    GeradoEm TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    DadosRelatorio TEXT, -- Relatório com o desempenho e sugestões
-    FOREIGN KEY (CriancaId) REFERENCES Criancas(Id)
+    ChildId INT, -- Foreign key to Children
+    GeneratedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    ReportData TEXT,
+    FOREIGN KEY (ChildId) REFERENCES Children(Id)
 );
-CREATE TABLE Comentarios (
+
+CREATE TABLE Comments (
     Id INT AUTO_INCREMENT PRIMARY KEY,
-    CriancaId INT, -- Chave estrangeira para Criancas
-    EspecialistaId INT, -- Chave estrangeira para Usuarios (especialistas)
-    Comentario TEXT,
-    CriadoEm TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (CriancaId) REFERENCES Criancas(Id),
-    FOREIGN KEY (EspecialistaId) REFERENCES Usuarios(Id)
+    ChildId INT, -- Foreign key to Children
+    SpecialistId INT, -- Foreign key to Users (specialists)
+    Comment TEXT,
+    CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (ChildId) REFERENCES Children(Id),
+    FOREIGN KEY (SpecialistId) REFERENCES Users(Id)
 );
-CREATE TABLE Notificacoes (
+
+CREATE TABLE Notifications (
     Id INT AUTO_INCREMENT PRIMARY KEY,
-    UsuarioId INT, -- Chave estrangeira para Usuarios (responsáveis)
-    Mensagem TEXT,
-    Lida BOOLEAN DEFAULT FALSE,
-    CriadoEm TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (UsuarioId) REFERENCES Usuarios(Id)
+    UserId INT, -- Foreign key to Users (responsible)
+    Message TEXT,
+    IsRead BOOLEAN DEFAULT FALSE,
+    CreatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (UserId) REFERENCES Users(Id)
 );
