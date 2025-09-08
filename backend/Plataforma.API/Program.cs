@@ -29,13 +29,15 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 builder.Services.AddAuthorization();
 builder.Services.AddScoped<IJwtService, JwtService>();
-builder.Services.AddControllers();
+builder.Services.AddControllersWithViews();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // CORS para o frontend local
 builder.Services.AddCors(opts => {
-    opts.AddPolicy("frontend", p => p.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:5500", "http://127.0.0.1:5500"));
+    opts.AddPolicy("frontend", p => 
+        p.AllowAnyHeader().AllowAnyMethod()
+         .WithOrigins("http://localhost:5500", "http://127.0.0.1:5500"));
 });
 
 var app = builder.Build();
@@ -50,5 +52,14 @@ app.UseHttpsRedirection();
 app.UseCors("frontend");
 app.UseAuthentication();
 app.UseAuthorization();
+
+// primeiro mapeia as rotas MVC
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Activity}/{action=Index}/{id?}");
+
+// depois mantém os endpoints da API
 app.MapControllers();
+
+// só no final chama o Run
 app.Run();

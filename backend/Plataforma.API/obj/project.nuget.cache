@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "oONnM8d/q8M=",
+  "dgSpecHash": "jxYzB6uGuqM=",
   "success": true,
-  "projectFilePath": "C:\\Users\\beatr\\Downloads\\Plataforma_Interativa_Infantil\\backend\\Plataforma.API\\Plataforma.API.csproj",
+  "projectFilePath": "C:\\Users\\beatr\\Documents\\Plataforma_Interativa_Infantil\\backend\\Plataforma.API\\Plataforma.API.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\beatr\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
     "C:\\Users\\beatr\\.nuget\\packages\\microsoft.aspnetcore.authentication.jwtbearer\\8.0.0\\microsoft.aspnetcore.authentication.jwtbearer.8.0.0.nupkg.sha512",
@@ -65,9 +65,9 @@
       "code": "NU1603",
       "level": "Warning",
       "message": "Plataforma.API depends on Pomelo.EntityFrameworkCore.MySql (>= 8.0.6) but Pomelo.EntityFrameworkCore.MySql 8.0.6 was not found. Pomelo.EntityFrameworkCore.MySql 9.0.0 was resolved instead.",
-      "projectPath": "C:\\Users\\beatr\\Downloads\\Plataforma_Interativa_Infantil\\backend\\Plataforma.API\\Plataforma.API.csproj",
+      "projectPath": "C:\\Users\\beatr\\Documents\\Plataforma_Interativa_Infantil\\backend\\Plataforma.API\\Plataforma.API.csproj",
       "warningLevel": 1,
-      "filePath": "C:\\Users\\beatr\\Downloads\\Plataforma_Interativa_Infantil\\backend\\Plataforma.API\\Plataforma.API.csproj",
+      "filePath": "C:\\Users\\beatr\\Documents\\Plataforma_Interativa_Infantil\\backend\\Plataforma.API\\Plataforma.API.csproj",
       "libraryId": "Pomelo.EntityFrameworkCore.MySql",
       "targetGraphs": [
         "net8.0"
@@ -77,9 +77,9 @@
       "code": "NU1603",
       "level": "Warning",
       "message": "Plataforma.API depends on Swashbuckle.AspNetCore (>= 6.6.0) but Swashbuckle.AspNetCore 6.6.0 was not found. Swashbuckle.AspNetCore 6.6.1 was resolved instead.",
-      "projectPath": "C:\\Users\\beatr\\Downloads\\Plataforma_Interativa_Infantil\\backend\\Plataforma.API\\Plataforma.API.csproj",
+      "projectPath": "C:\\Users\\beatr\\Documents\\Plataforma_Interativa_Infantil\\backend\\Plataforma.API\\Plataforma.API.csproj",
       "warningLevel": 1,
-      "filePath": "C:\\Users\\beatr\\Downloads\\Plataforma_Interativa_Infantil\\backend\\Plataforma.API\\Plataforma.API.csproj",
+      "filePath": "C:\\Users\\beatr\\Documents\\Plataforma_Interativa_Infantil\\backend\\Plataforma.API\\Plataforma.API.csproj",
       "libraryId": "Swashbuckle.AspNetCore",
       "targetGraphs": [
         "net8.0"
