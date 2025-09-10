@@ -1,0 +1,4 @@
+wwwroot\css\site.css
+wwwroot\js\site.js
+C:\Users\beatr\Downloads\plataforma-educacao-modified-admin\backend\wwwroot\css\site.css
+C:\Users\beatr\Downloads\plataforma-educacao-modified-admin\backend\wwwroot\js\site.js

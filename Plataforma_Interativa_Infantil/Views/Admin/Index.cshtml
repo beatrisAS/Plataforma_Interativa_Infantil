@@ -1,0 +1,101 @@
+@{
+    ViewData["Title"] = "Administração";
+}
+
+<div class="container mt-4">
+    <h2 class="mb-4">Painel de Administração</h2>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card shadow mb-4">
+                <div class="card-header bg-primary text-white">
+                    Atividades (7–12 anos)
+                </div>
+                <div class="card-body">
+                    <div id="atividadesList" class="row"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card shadow mb-4">
+                <div class="card-header bg-warning text-dark">
+                    Comentários Pendentes
+                </div>
+                <div class="card-body">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Conteúdo</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="comentariosPendentes">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    carregarAtividades();
+    carregarComentariosPendentes();
+});
+
+function carregarAtividades() {
+    fetch("/api/Atividades")
+        .then(r => r.json())
+        .then(dados => {
+            let container = document.getElementById("atividadesList");
+            container.innerHTML = "";
+            dados.filter(a => a.faixaEtaria.includes("7") || a.faixaEtaria.includes("8") || a.faixaEtaria.includes("9") || a.faixaEtaria.includes("10") || a.faixaEtaria.includes("11") || a.faixaEtaria.includes("12"))
+                 .forEach(a => {
+                let card = `<div class="col-12 mb-3">
+                    <div class="card border-info">
+                        <div class="card-body">
+                            <h5 class="card-title">${a.titulo}</h5>
+                            <p class="card-text">${a.descricao}</p>
+                            <span class="badge bg-secondary">Faixa: ${a.faixaEtaria}</span>
+                        </div>
+                    </div>
+                </div>`;
+                container.innerHTML += card;
+            });
+        });
+}
+
+function carregarComentariosPendentes() {
+    fetch("/api/Comentarios/pending")
+        .then(r => r.json())
+        .then(dados => {
+            let tbody = document.getElementById("comentariosPendentes");
+            tbody.innerHTML = "";
+            dados.forEach(c => {
+                let row = `<tr>
+                    <td>${c.id}</td>
+                    <td>${c.conteudo}</td>
+                    <td>
+                        <button class="btn btn-success btn-sm" onclick="moderar(${c.id}, 'approve')">Aprovar</button>
+                        <button class="btn btn-danger btn-sm" onclick="moderar(${c.id}, 'reject')">Rejeitar</button>
+                    </td>
+                </tr>`;
+                tbody.innerHTML += row;
+            });
+        });
+}
+
+function moderar(id, acao) {
+    fetch(`/api/Comentarios/moderate/${id}?action=${acao}`, {
+        method: "POST"
+    })
+    .then(r => {
+        if (r.ok) {
+            carregarComentariosPendentes();
+        }
+    });
+}
+</script>
