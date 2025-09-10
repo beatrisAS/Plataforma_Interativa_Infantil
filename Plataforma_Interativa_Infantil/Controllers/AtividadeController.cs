@@ -7,9 +7,9 @@ namespace backend.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class AtividadesController : ControllerBase {
+public class AtividadeController : ControllerBase {
     private readonly AppDbContext _db;
-    public AtividadesController(AppDbContext db) { _db = db; }
+    public AtividadeController(AppDbContext db) { _db = db; }
 
     [HttpGet]
     public async Task<IActionResult> GetAll() => Ok(await _db.Atividades.ToListAsync());
