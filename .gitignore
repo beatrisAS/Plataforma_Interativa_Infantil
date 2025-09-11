@@ -6,6 +6,7 @@ obj/
 [Oo]bj/
 [Ll]og/
 *.log
+.config/
 
 ## Ignore pacotes e dependências
 *.nupkg
