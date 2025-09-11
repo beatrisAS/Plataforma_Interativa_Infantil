@@ -1,0 +1,133 @@
+@{
+    Layout = "_Layout";
+}
+<div class="row">
+  <div class="col-md-8">
+    <h2>Plataforma Educacional - Atividades (7-12 anos)</h2>
+    <div id="atividadesContainer">Carregando atividades...</div>
+
+    <hr />
+    <h4>Atividade Interativa (estilo Mentimeter)</h4>
+    <div id="mentimeterArea">
+      <p>Escolha a alternativa correta e envie sem recarregar:</p>
+      <div id="questionArea"></div>
+      <div id="answersArea"></div>
+      <button id="sendAnswerBtn" class="btn btn-primary" style="display:none">Enviar resposta</button>
+      <div id="resultArea"></div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card p-3">
+      <h4>Login / Registrar</h4>
+      <div id="authMessage"></div>
+      <form id="loginForm">
+        <div class="mb-2"><input id="email" placeholder="email" class="form-control" /></div>
+        <div class="mb-2"><input id="senha" type="password" placeholder="senha" class="form-control" /></div>
+        <select id="perfil" class="form-control mb-2">
+          <option value="crianca">Criança</option>
+          <option value="pai">Pai</option>
+          <option value="professor">Professor</option>
+        </select>
+        <button class="btn btn-success" type="submit">Login</button>
+      </form>
+      <hr/>
+      <form id="registerForm">
+        <input id="r_nome" placeholder="Nome" class="form-control mb-1"/>
+        <input id="r_email" placeholder="Email" class="form-control mb-1"/>
+        <input id="r_senha" placeholder="Senha" type="password" class="form-control mb-1"/>
+        <select id="r_perfil" class="form-control mb-1">
+          <option value="crianca">Criança</option>
+          <option value="pai">Pai</option>
+          <option value="professor">Professor</option>
+        </select>
+        <button class="btn btn-primary" id="registerBtn" type="button">Registrar</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+const api = '/api';
+let token = localStorage.getItem('token') || '';
+
+async function loadAtividades(){
+  const res = await fetch(api + '/Atividades');
+  const list = await res.json();
+  const container = document.getElementById('atividadesContainer');
+  container.innerHTML = '';
+  list.forEach(a => {
+    const el = document.createElement('div');
+    el.className = 'card p-2 mb-2';
+    el.innerHTML = `<h5>${a.titulo}</h5><p>${a.descricao}</p><small>Faixa: ${a.faixaEtaria}</small>
+    <div><a href="#" data-id="${a.id}" class="showComments">Ver comentários</a></div>
+    <div class="comments" id="comments-${a.id}"></div>
+    <div class="mt-2"><textarea id="cmt-${a.id}" placeholder="Escreva um comentário"></textarea><br/><button data-id="${a.id}" class="btn btn-sm btn-outline-primary sendCmt">Enviar comentário</button></div>
+    `;
+    container.appendChild(el);
+  });
+  // bind
+  document.querySelectorAll('.sendCmt').forEach(btn=>{
+    btn.onclick = async e=>{
+      const id = e.target.getAttribute('data-id');
+      const text = document.getElementById('cmt-'+id).value;
+      const body = { atividadeId: parseInt(id), usuarioId: 0, texto: text };
+      const h = { 'Content-Type':'application/json' };
+      if (token) h['Authorization']='Bearer '+token;
+      await fetch(api+'/Comentarios', { method:'POST', headers: h, body: JSON.stringify(body)});
+      alert('Comentário enviado para moderação');
+    };
+  });
+  document.querySelectorAll('.showComments').forEach(a=>{
+    a.onclick = async e=>{
+      e.preventDefault();
+      const id = e.target.getAttribute('data-id');
+      const res = await fetch(api + '/Comentarios/foratividade/' + id);
+      const comments = await res.json();
+      const box = document.getElementById('comments-'+id);
+      box.innerHTML = comments.map(c=>`<div><small>${new Date(c.criadoEm).toLocaleString()}</small><p>${c.texto}</p></div>`).join('');
+    };
+  });
+}
+
+document.getElementById('registerBtn').onclick = async ()=>{
+  const payload = { nome: document.getElementById('r_nome').value, email: document.getElementById('r_email').value, senhaHash: document.getElementById('r_senha').value, perfil: document.getElementById('r_perfil').value };
+  const res = await fetch(api + '/Auth/register', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload)});
+  const j = await res.json();
+  document.getElementById('authMessage').innerText = j.message || JSON.stringify(j);
+}
+
+document.getElementById('loginForm').onsubmit = async (e)=>{
+  e.preventDefault();
+  const payload = { email: document.getElementById('email').value, senha: document.getElementById('senha').value };
+  const res = await fetch(api + '/Auth/login', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload)});
+  if (res.ok) {
+    const j = await res.json();
+    token = j.token;
+    localStorage.setItem('token', token);
+    document.getElementById('authMessage').innerText = 'Logado como ' + j.role;
+  } else {
+    document.getElementById('authMessage').innerText = 'Falha no login';
+  }
+}
+
+loadAtividades();
+
+// Simple mentimeter-like stub
+document.getElementById('questionArea').innerText = 'Qual é a capital do Brasil?';
+const answers = ['São Paulo','Brasília','Rio de Janeiro','Salvador'];
+const answersArea = document.getElementById('answersArea');
+answers.forEach((a,i)=>{
+  const inp = document.createElement('input');
+  inp.type='radio'; inp.name='m'; inp.value=i; inp.id='ans'+i;
+  const lbl = document.createElement('label'); lbl.htmlFor='ans'+i; lbl.innerText=a;
+  answersArea.appendChild(inp); answersArea.appendChild(lbl); answersArea.appendChild(document.createElement('br'));
+});
+document.getElementById('sendAnswerBtn').style.display='inline-block';
+document.getElementById('sendAnswerBtn').onclick = ()=>{
+  const sel = document.querySelector('input[name=m]:checked');
+  if (!sel) { alert('Escolha uma resposta'); return; }
+  const correct = 1;
+  const ok = parseInt(sel.value)===correct;
+  document.getElementById('resultArea').innerText = ok ? 'Correto!':'Tente novamente.';
+};
+</script>

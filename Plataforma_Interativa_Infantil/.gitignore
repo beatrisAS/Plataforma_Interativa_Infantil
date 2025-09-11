@@ -1,0 +1,49 @@
+## Ignore arquivos de build
+bin/
+obj/
+[Bb]uild/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+*.log
+
+## Ignore pacotes e dependências
+*.nupkg
+*.snupkg
+*.nuspec
+packages/
+*.dll
+*.exe
+*.pdb
+
+## Ignore configurações de usuário do Visual Studio
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+.vs/
+
+## Ignore arquivos temporários
+*.tmp
+*.temp
+*.bak
+*.swp
+*.dbmdl
+*.dbproj.schemaview
+
+## Ignore publicação
+publish/
+out/
+*.publishsettings
+
+## Ignore configurações de IDEs
+.vscode/
+.idea/
+
+## Ignore arquivos de sistema
+[Dd]esktop.ini
+[Tt]humbs.db
+*.DS_Store
+
+## Ignore variáveis de ambiente
+.env
