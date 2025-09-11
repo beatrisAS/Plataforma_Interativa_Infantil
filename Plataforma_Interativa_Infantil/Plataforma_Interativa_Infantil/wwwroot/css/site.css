@@ -1,5 +1,0 @@
-body.light { background: #f8f9fa; color: #212529; }
-body.dark { background: #121212; color: #e9ecef; }
-.card { border-radius: 12px; }
-[data-role='avatar'] { width:64px; height:64px; border-radius:50%; object-fit:cover; }
-.high-contrast { filter: contrast(150%); }

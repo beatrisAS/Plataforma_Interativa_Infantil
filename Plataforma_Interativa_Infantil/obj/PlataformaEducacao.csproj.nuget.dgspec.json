@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "c:\\Users\\beatr\\Downloads\\Plataforma_Interativa_Infantil\\Plataforma_Interativa_Infantil\\Plataforma_Interativa_Infantil\\PlataformaEducacao.csproj": {}
+    "C:\\Users\\beatr\\Downloads\\Plataforma_Interativa_Infantil\\Plataforma_Interativa_Infantil\\Plataforma_Interativa_Infantil\\PlataformaEducacao.csproj": {}
   },
   "projects": {
-    "c:\\Users\\beatr\\Downloads\\Plataforma_Interativa_Infantil\\Plataforma_Interativa_Infantil\\Plataforma_Interativa_Infantil\\PlataformaEducacao.csproj": {
+    "C:\\Users\\beatr\\Downloads\\Plataforma_Interativa_Infantil\\Plataforma_Interativa_Infantil\\Plataforma_Interativa_Infantil\\PlataformaEducacao.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "c:\\Users\\beatr\\Downloads\\Plataforma_Interativa_Infantil\\Plataforma_Interativa_Infantil\\Plataforma_Interativa_Infantil\\PlataformaEducacao.csproj",
+        "projectUniqueName": "C:\\Users\\beatr\\Downloads\\Plataforma_Interativa_Infantil\\Plataforma_Interativa_Infantil\\Plataforma_Interativa_Infantil\\PlataformaEducacao.csproj",
         "projectName": "PlataformaEducacao",
-        "projectPath": "c:\\Users\\beatr\\Downloads\\Plataforma_Interativa_Infantil\\Plataforma_Interativa_Infantil\\Plataforma_Interativa_Infantil\\PlataformaEducacao.csproj",
+        "projectPath": "C:\\Users\\beatr\\Downloads\\Plataforma_Interativa_Infantil\\Plataforma_Interativa_Infantil\\Plataforma_Interativa_Infantil\\PlataformaEducacao.csproj",
         "packagesPath": "C:\\Users\\beatr\\.nuget\\packages\\",
-        "outputPath": "c:\\Users\\beatr\\Downloads\\Plataforma_Interativa_Infantil\\Plataforma_Interativa_Infantil\\Plataforma_Interativa_Infantil\\obj\\",
+        "outputPath": "C:\\Users\\beatr\\Downloads\\Plataforma_Interativa_Infantil\\Plataforma_Interativa_Infantil\\Plataforma_Interativa_Infantil\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -54,6 +54,14 @@
             "Microsoft.AspNetCore.Authentication.JwtBearer": {
               "target": "Package",
               "version": "[9.0.9, )"
+            },
+            "Microsoft.EntityFrameworkCore.Design": {
+              "target": "Package",
+              "version": "[9.0.9, )"
+            },
+            "PackageManager-Drop-Db": {
+              "target": "Package",
+              "version": "[1.1.1, )"
             },
             "Pomelo.EntityFrameworkCore.MySql": {
               "target": "Package",

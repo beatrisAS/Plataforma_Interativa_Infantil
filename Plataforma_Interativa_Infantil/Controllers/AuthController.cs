@@ -1,8 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using backend.Data;
 using backend.Models;
-using backend.Utils;
-using backend.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace backend.Controllers;
@@ -11,17 +9,17 @@ namespace backend.Controllers;
 [Route("api/[controller]")]
 public class AuthController : ControllerBase {
     private readonly AppDbContext _db;
-    private readonly JwtService _jwt;
-    public AuthController(AppDbContext db, IConfiguration cfg) {
+
+    public AuthController(AppDbContext db) {
         _db = db;
-        _jwt = new JwtService(cfg["Jwt:Key"] ?? "supersecretkey");
     }
 
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] Usuario model) {
-        if (await _db.Usuarios.AnyAsync(u => u.Email == model.Email)) return BadRequest(new { error = "Email já cadastrado" });
-        // hash password
-        model.SenhaHash = PasswordHasher.Hash(model.SenhaHash);
+        if (await _db.Usuarios.AnyAsync(u => u.Email == model.Email))
+            return BadRequest(new { error = "Email já cadastrado" });
+
+        // Armazena a senha diretamente
         _db.Usuarios.Add(model);
         await _db.SaveChangesAsync();
         return Ok(new { message = "Registrado com sucesso" });
@@ -31,10 +29,15 @@ public class AuthController : ControllerBase {
     public async Task<IActionResult> Login([FromBody] LoginRequest req) {
         var user = await _db.Usuarios.FirstOrDefaultAsync(u => u.Email == req.Email);
         if (user == null) return Unauthorized();
-        if (!PasswordHasher.Verify(req.Senha, user.SenhaHash)) return Unauthorized();
-        var token = _jwt.GenerateToken(user.Id, user.Email, user.Perfil);
-        return Ok(new { token, role = user.Perfil });
+
+        // Comparação direta sem hash
+        if (req.Senha != user.Senha) return Unauthorized();
+
+        return Ok(new { message = "Login bem-sucedido", role = user.Perfil });
     }
 
-    public class LoginRequest { public string Email { get; set; } = string.Empty; public string Senha { get; set; } = string.Empty; }
+    public class LoginRequest {
+        public string Email { get; set; } = string.Empty;
+        public string Senha { get; set; } = string.Empty;
+    }
 }

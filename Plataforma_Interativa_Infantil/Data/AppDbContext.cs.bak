@@ -2,10 +2,98 @@ using Microsoft.EntityFrameworkCore;
 using backend.Models;
 
 namespace backend.Data;
-public class AppDbContext : DbContext {
+
+public class AppDbContext : DbContext 
+{
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) {}
+    
     public DbSet<Usuario> Usuarios { get; set; } = null!;
     public DbSet<Crianca> Criancas { get; set; } = null!;
     public DbSet<Atividade> Atividades { get; set; } = null!;
     public DbSet<RespostaAtividade> RespostasAtividades { get; set; } = null!;
+    public DbSet<Comentario> Comentarios { get; set; } = null!; // ADICIONE ESTA LINHA
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        // Mapeamento para a tabela usuarios
+        modelBuilder.Entity<Usuario>(entity =>
+        {
+            entity.ToTable("usuarios");
+            entity.HasKey(u => u.Id);
+            entity.Property(u => u.Id).HasColumnName("id_usuario");
+            entity.Property(u => u.Nome).HasColumnName("nome");
+            entity.Property(u => u.Email).HasColumnName("email");
+            entity.Property(u => u.SenhaHash).HasColumnName("senha");
+            entity.Property(u => u.Perfil).HasColumnName("perfil");
+        });
+
+        // Mapeamento para a tabela criancas
+        modelBuilder.Entity<Crianca>(entity =>
+        {
+            entity.ToTable("criancas");
+            entity.HasKey(c => c.Id);
+            entity.Property(c => c.Id).HasColumnName("id_crianca");
+            entity.Property(c => c.Nome).HasColumnName("nome");
+            entity.Property(c => c.DataNascimento).HasColumnName("data_nascimento");
+            entity.Property(c => c.Genero).HasColumnName("genero");
+            entity.Property(c => c.ResponsavelId).HasColumnName("id_responsavel");
+            
+            entity.HasOne(c => c.Responsavel)
+                  .WithMany()
+                  .HasForeignKey(c => c.ResponsavelId);
+        });
+
+        // Mapeamento para a tabela atividades
+        modelBuilder.Entity<Atividade>(entity =>
+        {
+            entity.ToTable("atividades");
+            entity.HasKey(a => a.Id);
+            entity.Property(a => a.Id).HasColumnName("id_atividade");
+            entity.Property(a => a.Titulo).HasColumnName("titulo");
+            entity.Property(a => a.Descricao).HasColumnName("descricao");
+            entity.Property(a => a.FaixaEtaria).HasColumnName("faixa_etaria");
+            entity.Property(a => a.Categoria).HasColumnName("categoria");
+        });
+
+        // Mapeamento para a tabela respostas_atividades
+        modelBuilder.Entity<RespostaAtividade>(entity =>
+        {
+            entity.ToTable("respostas_atividades");
+            entity.HasKey(r => r.Id);
+            entity.Property(r => r.Id).HasColumnName("id_resposta");
+            entity.Property(r => r.CriancaId).HasColumnName("id_crianca");
+            entity.Property(r => r.AtividadeId).HasColumnName("id_atividade");
+            entity.Property(r => r.Desempenho).HasColumnName("desempenho");
+            entity.Property(r => r.DataRealizacao).HasColumnName("data_realizacao");
+            
+            entity.HasOne(r => r.Crianca)
+                  .WithMany()
+                  .HasForeignKey(r => r.CriancaId);
+                  
+            entity.HasOne(r => r.Atividade)
+                  .WithMany()
+                  .HasForeignKey(r => r.AtividadeId);
+        });
+
+        // Mapeamento para a tabela comentarios
+        modelBuilder.Entity<Comentario>(entity =>
+        {
+            entity.ToTable("comentarios");
+            entity.HasKey(c => c.Id);
+            entity.Property(c => c.Id).HasColumnName("id_comentario");
+            entity.Property(c => c.Texto).HasColumnName("texto");
+            entity.Property(c => c.UsuarioId).HasColumnName("id_usuario");
+            entity.Property(c => c.AtividadeId).HasColumnName("id_atividade");
+            entity.Property(c => c.DataCriacao).HasColumnName("data_criacao");
+            entity.Property(c => c.Status).HasColumnName("status"); // ADICIONE ESTA LINHA
+            
+            entity.HasOne(c => c.Usuario)
+                  .WithMany()
+                  .HasForeignKey(c => c.UsuarioId);
+                  
+            entity.HasOne(c => c.Atividade)
+                  .WithMany()
+                  .HasForeignKey(c => c.AtividadeId);
+        });
+    }
 }

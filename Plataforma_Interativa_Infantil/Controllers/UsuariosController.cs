@@ -23,7 +23,7 @@ public class UsuariosController : ControllerBase {
 
     [HttpPost]
     public async Task<IActionResult> Create(Usuario u) {
-        // In production: hash password and validate input
+        // Salva senha em texto puro
         _db.Usuarios.Add(u);
         await _db.SaveChangesAsync();
         return CreatedAtAction(nameof(Get), new { id = u.Id }, u);
@@ -33,10 +33,12 @@ public class UsuariosController : ControllerBase {
     public async Task<IActionResult> Update(int id, Usuario u) {
         var exists = await _db.Usuarios.FindAsync(id);
         if (exists == null) return NotFound();
+
         exists.Nome = u.Nome;
         exists.Email = u.Email;
         exists.Perfil = u.Perfil;
-        // Don't set SenhaHash here in production without hashing
+        exists.Senha = u.Senha; // Atualiza a senha diretamente
+
         await _db.SaveChangesAsync();
         return NoContent();
     }
@@ -45,6 +47,7 @@ public class UsuariosController : ControllerBase {
     public async Task<IActionResult> Delete(int id) {
         var ex = await _db.Usuarios.FindAsync(id);
         if (ex == null) return NotFound();
+
         _db.Usuarios.Remove(ex);
         await _db.SaveChangesAsync();
         return NoContent();

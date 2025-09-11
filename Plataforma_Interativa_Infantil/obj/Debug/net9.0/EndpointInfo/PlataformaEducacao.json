@@ -5,10 +5,10 @@
     "version": "1.0"
   },
   "paths": {
-    "/api/Atividades": {
+    "/api/Atividade": {
       "get": {
         "tags": [
-          "Atividades"
+          "Atividade"
         ],
         "responses": {
           "200": {
@@ -18,7 +18,7 @@
       },
       "post": {
         "tags": [
-          "Atividades"
+          "Atividade"
         ],
         "requestBody": {
           "content": {
@@ -46,10 +46,10 @@
         }
       }
     },
-    "/api/Atividades/{id}": {
+    "/api/Atividade/{id}": {
       "get": {
         "tags": [
-          "Atividades"
+          "Atividade"
         ],
         "parameters": [
           {
@@ -70,7 +70,7 @@
       },
       "put": {
         "tags": [
-          "Atividades"
+          "Atividade"
         ],
         "parameters": [
           {
@@ -110,7 +110,7 @@
       },
       "delete": {
         "tags": [
-          "Atividades"
+          "Atividade"
         ],
         "parameters": [
           {
@@ -574,36 +574,34 @@
             "type": "integer",
             "format": "int32"
           },
-          "atividadeId": {
-            "type": "integer",
-            "format": "int32"
+          "texto": {
+            "type": "string",
+            "nullable": true
           },
           "usuarioId": {
             "type": "integer",
             "format": "int32"
           },
-          "texto": {
+          "atividadeId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "status": {
             "type": "string",
             "nullable": true
           },
-          "status": {
-            "$ref": "#/components/schemas/ComentarioStatus"
-          },
-          "criadoEm": {
+          "dataCriacao": {
             "type": "string",
             "format": "date-time"
+          },
+          "usuario": {
+            "$ref": "#/components/schemas/Usuario"
+          },
+          "atividade": {
+            "$ref": "#/components/schemas/Atividade"
           }
         },
         "additionalProperties": false
-      },
-      "ComentarioStatus": {
-        "enum": [
-          0,
-          1,
-          2
-        ],
-        "type": "integer",
-        "format": "int32"
       },
       "Crianca": {
         "type": "object",
@@ -626,8 +624,10 @@
           },
           "idResponsavel": {
             "type": "integer",
-            "format": "int32",
-            "nullable": true
+            "format": "int32"
+          },
+          "responsavel": {
+            "$ref": "#/components/schemas/Usuario"
           }
         },
         "additionalProperties": false

@@ -1,8 +1,8 @@
 [
   {
-    "ContainingType": "backend.Controllers.AtividadesController",
+    "ContainingType": "backend.Controllers.AtividadeController",
     "Method": "GetAll",
-    "RelativePath": "api/Atividades",
+    "RelativePath": "api/Atividade",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -10,9 +10,9 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "backend.Controllers.AtividadesController",
+    "ContainingType": "backend.Controllers.AtividadeController",
     "Method": "Create",
-    "RelativePath": "api/Atividades",
+    "RelativePath": "api/Atividade",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
@@ -26,9 +26,9 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "backend.Controllers.AtividadesController",
+    "ContainingType": "backend.Controllers.AtividadeController",
     "Method": "Get",
-    "RelativePath": "api/Atividades/{id}",
+    "RelativePath": "api/Atividade/{id}",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -42,9 +42,9 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "backend.Controllers.AtividadesController",
+    "ContainingType": "backend.Controllers.AtividadeController",
     "Method": "Update",
-    "RelativePath": "api/Atividades/{id}",
+    "RelativePath": "api/Atividade/{id}",
     "HttpMethod": "PUT",
     "IsController": true,
     "Order": 0,
@@ -63,9 +63,9 @@
     "ReturnTypes": []
   },
   {
-    "ContainingType": "backend.Controllers.AtividadesController",
+    "ContainingType": "backend.Controllers.AtividadeController",
     "Method": "Delete",
-    "RelativePath": "api/Atividades/{id}",
+    "RelativePath": "api/Atividade/{id}",
     "HttpMethod": "DELETE",
     "IsController": true,
     "Order": 0,
