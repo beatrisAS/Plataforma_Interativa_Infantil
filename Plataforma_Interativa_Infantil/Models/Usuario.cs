@@ -17,7 +17,9 @@ public class Usuario {
     [Column("perfil")]
     public string Perfil { get; set; } = "user";
 
-    // Agora armazenamos a senha diretamente
     [Column("senha")]
     public string Senha { get; set; } = string.Empty;
+
+    [NotMapped]   // evita erro de coluna inexistente
+    public string? SenhaHash { get; internal set; }
 }

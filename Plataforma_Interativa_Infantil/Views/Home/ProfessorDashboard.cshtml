@@ -1,4 +1,8 @@
-@{ ViewData["Title"] = "Dashboard - Professor"; Layout = "~/Views/Shared/_Layout.cshtml"; }
+@{
+    ViewData["Title"] = "Dashboard - Professor";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
 <div class="row">
   <div class="col-md-6">
     <div class="card p-3">
@@ -6,7 +10,11 @@
       <form method="post" action="/api/atividades">
         <input name="Titulo" class="form-control mb-2" placeholder="Título"/>
         <textarea name="Descricao" class="form-control mb-2" placeholder="Descrição"></textarea>
-        <select name="FaixaEtaria" class="form-select mb-2"><option>7-8</option><option>9-10</option><option>11-12</option></select>
+        <select name="FaixaEtaria" class="form-select mb-2">
+          <option>7-8</option>
+          <option>9-10</option>
+          <option>11-12</option>
+        </select>
         <button class="btn btn-success">Publicar</button>
       </form>
     </div>

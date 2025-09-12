@@ -9,6 +9,8 @@ public class AppDbContext : DbContext
 
     public DbSet<Usuario> Usuarios { get; set; } = null!;
     public DbSet<Crianca> Criancas { get; set; } = null!;
+    public DbSet<Questao> Questoes { get; set; } = null!;
+public DbSet<Alternativa> Alternativas { get; set; } = null!;
     public DbSet<Atividade> Atividades { get; set; } = null!;
     public DbSet<RespostaAtividade> RespostasAtividades { get; set; } = null!;
     public DbSet<Comentario> Comentarios { get; set; } = null!;

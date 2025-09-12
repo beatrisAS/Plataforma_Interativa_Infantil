@@ -1,0 +1,57 @@
+@model backend.Models.Atividade
+
+@{
+    ViewData["Title"] = "Atividade";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="card p-4 shadow-lg">
+  <h2 class="text-primary">@Model.Titulo</h2>
+  <p>@Model.Descricao</p>
+
+  <ul>
+    <li><strong>Faixa etária:</strong> @Model.FaixaEtaria</li>
+    <li><strong>Categoria:</strong> @Model.Categoria</li>
+  </ul>
+
+  <hr />
+
+  <div id="atividade-container">
+    @foreach (var q in Model.Questoes) {
+        <div class="mb-4">
+            <h5>@q.Pergunta</h5>
+            <div>
+                @foreach (var alt in q.Alternativas) {
+                    <button class="btn btn-outline-primary m-1 alternativa-btn" 
+                            data-correta="@alt.Correta">
+                        @alt.Texto
+                    </button>
+                }
+            </div>
+        </div>
+    }
+  </div>
+
+  <div id="feedback" class="alert d-none mt-3"></div>
+
+  <a href="/Home/CriancaDashboard" class="btn btn-secondary mt-3">Voltar</a>
+</div>
+
+@section Scripts {
+<script>
+  document.querySelectorAll('.alternativa-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const correta = this.getAttribute('data-correta') === 'True';
+      const feedback = document.getElementById('feedback');
+      feedback.classList.remove('d-none');
+      if (correta) {
+        feedback.className = "alert alert-success";
+        feedback.innerText = "🎉 Parabéns! Você acertou!";
+      } else {
+        feedback.className = "alert alert-danger";
+        feedback.innerText = "❌ Ops! Tente novamente!";
+      }
+    });
+  });
+</script>
+}
