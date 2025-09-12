@@ -661,11 +661,11 @@
             "type": "string",
             "nullable": true
           },
-          "senhaHash": {
+          "perfil": {
             "type": "string",
             "nullable": true
           },
-          "perfil": {
+          "senha": {
             "type": "string",
             "nullable": true
           }
