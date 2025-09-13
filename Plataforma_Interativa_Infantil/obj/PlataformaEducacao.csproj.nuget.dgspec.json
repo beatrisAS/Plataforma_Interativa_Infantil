@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "c:\\Users\\beatr\\Videos\\Plataforma_Interativa_Infantil\\Plataforma_Interativa_Infantil\\PlataformaEducacao.csproj": {}
+    "C:\\Users\\beatr\\Videos\\Plataforma_Interativa_Infantil\\Plataforma_Interativa_Infantil\\PlataformaEducacao.csproj": {}
   },
   "projects": {
-    "c:\\Users\\beatr\\Videos\\Plataforma_Interativa_Infantil\\Plataforma_Interativa_Infantil\\PlataformaEducacao.csproj": {
+    "C:\\Users\\beatr\\Videos\\Plataforma_Interativa_Infantil\\Plataforma_Interativa_Infantil\\PlataformaEducacao.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "c:\\Users\\beatr\\Videos\\Plataforma_Interativa_Infantil\\Plataforma_Interativa_Infantil\\PlataformaEducacao.csproj",
+        "projectUniqueName": "C:\\Users\\beatr\\Videos\\Plataforma_Interativa_Infantil\\Plataforma_Interativa_Infantil\\PlataformaEducacao.csproj",
         "projectName": "PlataformaEducacao",
-        "projectPath": "c:\\Users\\beatr\\Videos\\Plataforma_Interativa_Infantil\\Plataforma_Interativa_Infantil\\PlataformaEducacao.csproj",
+        "projectPath": "C:\\Users\\beatr\\Videos\\Plataforma_Interativa_Infantil\\Plataforma_Interativa_Infantil\\PlataformaEducacao.csproj",
         "packagesPath": "C:\\Users\\beatr\\.nuget\\packages\\",
-        "outputPath": "c:\\Users\\beatr\\Videos\\Plataforma_Interativa_Infantil\\Plataforma_Interativa_Infantil\\obj\\",
+        "outputPath": "C:\\Users\\beatr\\Videos\\Plataforma_Interativa_Infantil\\Plataforma_Interativa_Infantil\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
