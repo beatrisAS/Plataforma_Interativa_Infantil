@@ -7,9 +7,9 @@ namespace backend.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly AppDbContext _db; // <-- aqui declara o campo
+        private readonly AppDbContext _db;
 
-        // Construtor que recebe o AppDbContext via injeção de dependência
+   
         public HomeController(AppDbContext db)
         {
             _db = db;

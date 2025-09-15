@@ -12,7 +12,6 @@ public class AccountController : Controller {
         _db = db;
     }
 
-    // LOGIN
     [HttpPost]
     public async Task<IActionResult> Login(string Email, string Senha, string Perfil) {
         var user = await _db.Usuarios.FirstOrDefaultAsync(u => u.Email == Email && u.Senha == Senha);
@@ -29,7 +28,6 @@ public class AccountController : Controller {
         };
     }
 
-    // REGISTER
     [HttpPost]
     public async Task<IActionResult> Register(string Nome, string Email, string Senha, string Perfil) {
         if (await _db.Usuarios.AnyAsync(u => u.Email == Email)) {

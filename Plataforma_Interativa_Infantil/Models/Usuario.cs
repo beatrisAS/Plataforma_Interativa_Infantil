@@ -20,6 +20,6 @@ public class Usuario {
     [Column("senha")]
     public string Senha { get; set; } = string.Empty;
 
-    [NotMapped]   // evita erro de coluna inexistente
+    [NotMapped]  
     public string? SenhaHash { get; internal set; }
 }

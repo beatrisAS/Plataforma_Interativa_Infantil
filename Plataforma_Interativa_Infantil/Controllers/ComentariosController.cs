@@ -17,8 +17,8 @@ public class ComentariosController : ControllerBase
     [Authorize]
     public async Task<IActionResult> Post([FromBody] Comentario c) 
     {
-        c.Status = "Pending"; // Use string diretamente
-        c.DataCriacao = DateTime.UtcNow; // Use DataCriacao em vez de CriadoEm
+        c.Status = "Pending"; 
+        c.DataCriacao = DateTime.UtcNow; 
         _db.Comentarios.Add(c);
         await _db.SaveChangesAsync();
         return Ok(new { message = "Comentário enviado para moderação" });
@@ -29,7 +29,7 @@ public class ComentariosController : ControllerBase
     public async Task<IActionResult> Pending() 
     {
         var list = await _db.Comentarios
-            .Where(x => x.Status == "Pending") // Use string diretamente
+            .Where(x => x.Status == "Pending")
             .ToListAsync();
         return Ok(list);
     }
@@ -42,9 +42,9 @@ public class ComentariosController : ControllerBase
         if (c == null) return NotFound();
         
         if (action == "approve") 
-            c.Status = "Approved"; // Use string diretamente
+            c.Status = "Approved"; 
         else if (action == "reject") 
-            c.Status = "Rejected"; // Use string diretamente
+            c.Status = "Rejected"; 
         else 
             return BadRequest();
             
@@ -56,7 +56,7 @@ public class ComentariosController : ControllerBase
     public async Task<IActionResult> ForAtividade(int atividadeId) 
     {
         var list = await _db.Comentarios
-            .Where(x => x.AtividadeId == atividadeId && x.Status == "Approved") // Use string diretamente
+            .Where(x => x.AtividadeId == atividadeId && x.Status == "Approved") 
             .ToListAsync();
         return Ok(list);
     }

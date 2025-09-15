@@ -37,7 +37,7 @@ public class UsuariosController : ControllerBase {
         exists.Nome = u.Nome;
         exists.Email = u.Email;
         exists.Perfil = u.Perfil;
-        exists.Senha = u.Senha; // Atualiza a senha diretamente
+        exists.Senha = u.Senha; 
 
         await _db.SaveChangesAsync();
         return NoContent();

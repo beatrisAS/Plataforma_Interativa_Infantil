@@ -20,5 +20,8 @@ public class Atividade
     [Column("categoria")]
     public string Categoria { get; set; } = string.Empty;
     
-      public List<Questao> Questoes { get; set; } = new();
+      public int Ordem { get; set; }
+
+    // Relacionamentos
+    public ICollection<Questao> Questoes { get; set; } = new List<Questao>();
 }

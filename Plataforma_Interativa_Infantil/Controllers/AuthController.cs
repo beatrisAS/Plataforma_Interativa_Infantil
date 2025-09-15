@@ -19,7 +19,6 @@ public class AuthController : ControllerBase {
         if (await _db.Usuarios.AnyAsync(u => u.Email == model.Email))
             return BadRequest(new { error = "Email já cadastrado" });
 
-        // Armazena a senha diretamente
         _db.Usuarios.Add(model);
         await _db.SaveChangesAsync();
         return Ok(new { message = "Registrado com sucesso" });
@@ -30,7 +29,7 @@ public class AuthController : ControllerBase {
         var user = await _db.Usuarios.FirstOrDefaultAsync(u => u.Email == req.Email);
         if (user == null) return Unauthorized();
 
-        // Comparação direta sem hash
+    
         if (req.Senha != user.Senha) return Unauthorized();
 
         return Ok(new { message = "Login bem-sucedido", role = user.Perfil });

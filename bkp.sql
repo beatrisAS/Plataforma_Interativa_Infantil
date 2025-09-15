@@ -147,5 +147,5 @@ INSERT INTO alternativas (texto,correta,questao_id) VALUES
 ('Monteiro Lobato',0,3);
 
 INSERT INTO comentarios (texto,id_usuario,id_atividade,status) VALUES
-('Ótima atividade!',1,1,'Approved'),
-('Minha filha adorou!',1,2,'Approved');
+('Ótima atividade!',1,1,'Aprovado'),
+('Minha filha adorou!',1,2,'Aprovado');
