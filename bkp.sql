@@ -1,7 +1,9 @@
-
 CREATE DATABASE plataforma_educacao;
 USE plataforma_educacao;
 
+-- ========================
+-- Tabela de Usuários
+-- ========================
 CREATE TABLE usuarios (
   id_usuario INT AUTO_INCREMENT PRIMARY KEY,
   nome VARCHAR(100) NOT NULL,
@@ -12,25 +14,37 @@ CREATE TABLE usuarios (
   data_cadastro DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
-
+-- ========================
+-- Tabela de Crianças
+-- ========================
 CREATE TABLE criancas (
   id_crianca INT AUTO_INCREMENT PRIMARY KEY,
   nome VARCHAR(100) NOT NULL,
   data_nascimento DATE NOT NULL,
   genero ENUM('M','F','Outro'),
   id_responsavel INT,
+  estrelas INT DEFAULT 0,
   FOREIGN KEY (id_responsavel) REFERENCES usuarios(id_usuario)
 );
 
+-- ========================
+-- Atividades (com ícones e dificuldade)
+-- ========================
 CREATE TABLE atividades (
   id_atividade INT AUTO_INCREMENT PRIMARY KEY,
   titulo VARCHAR(150) NOT NULL,
   descricao TEXT,
   faixa_etaria VARCHAR(20),
   categoria VARCHAR(50),
+  dificuldade ENUM('fácil','médio','difícil') DEFAULT 'fácil',
+  icone VARCHAR(50) DEFAULT '📚',
+  recurso_extra VARCHAR(255),
   data_criacao DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
+-- ========================
+-- Questões
+-- ========================
 CREATE TABLE questoes (
   id_questao INT AUTO_INCREMENT PRIMARY KEY,
   id_atividade INT NOT NULL,
@@ -58,6 +72,9 @@ CREATE TABLE alternativas (
   FOREIGN KEY (questao_id) REFERENCES questoes(id_questao) ON DELETE CASCADE
 );
 
+-- ========================
+-- Respostas e Progresso
+-- ========================
 CREATE TABLE respostas_atividades (
   id_resposta INT AUTO_INCREMENT PRIMARY KEY,
   id_crianca INT NOT NULL,
@@ -79,6 +96,9 @@ CREATE TABLE respostas_questoes (
   FOREIGN KEY (id_opcao) REFERENCES opcoes_questao(id_opcao) ON DELETE CASCADE
 );
 
+-- ========================
+-- Comentários, Relatórios e Acessibilidade
+-- ========================
 CREATE TABLE comentarios (
   id_comentario INT AUTO_INCREMENT PRIMARY KEY,
   texto TEXT NOT NULL,
@@ -108,6 +128,9 @@ CREATE TABLE acessibilidade (
   FOREIGN KEY (id_crianca) REFERENCES criancas(id_crianca)
 );
 
+-- ========================
+-- Dados de Exemplo
+-- ========================
 INSERT INTO usuarios (nome, email, senha, perfil, telefone) VALUES
 ('João Silva','joao@email.com','senha123','pai','(11) 99999-9999'),
 ('Maria Santos','maria@email.com','prof123','professor','(11) 88888-8888'),
@@ -117,35 +140,28 @@ INSERT INTO criancas (nome,data_nascimento,genero,id_responsavel) VALUES
 ('Ana Silva','2015-03-10','F',1),
 ('Carlos Santos','2016-07-15','M',1);
 
-INSERT INTO atividades (titulo,descricao,faixa_etaria,categoria) VALUES
-('Quebra-cabeça matemático','Atividade de matemática para crianças de 7-8 anos','7-8','matemática'),
-('Leitura interativa','Exercício de leitura para crianças de 9-10 anos','9-10','leitura');
+INSERT INTO atividades (titulo,descricao,faixa_etaria,categoria,dificuldade,icone) VALUES
+('Quebra-cabeça matemático','Atividade de matemática para crianças de 7-8 anos','7-8','matemática','fácil','➕'),
+('Leitura interativa','Exercício de leitura para crianças de 9-10 anos','9-10','leitura','médio','📖'),
+('Ciências divertidas','Experimentos simples para 11-12 anos','11-12','ciências','médio','🔬'),
+('História em quadrinhos','Atividade criativa para 7-9 anos','7-9','arte','fácil','🎨');
 
-INSERT INTO questoes (id_atividade,pergunta) VALUES
-(1,'Quanto é 7 + 5?'),
-(1,'Resolva: 9 - 4'),
-(2,'Quem é o autor do livro "O Pequeno Príncipe"?');
+INSERT INTO questoes (id_atividade,pergunta,ordem) VALUES
+(1,'Quanto é 7 + 5?',1),
+(1,'Resolva: 9 - 4',2),
+(2,'Quem é o autor do livro "O Pequeno Príncipe"?',1),
+(3,'Qual é o estado físico da água a 100°C?',1),
+(4,'Crie um balão de fala para o personagem principal.',1);
 
 INSERT INTO opcoes_questao (id_questao,texto,is_correta) VALUES
-(1,'12',1),
-(1,'10',0),
-(1,'14',0),
-(2,'4',0),
-(2,'5',1),
-(2,'6',0),
-(3,'Antoine de Saint-Exupéry',1),
-(3,'Monteiro Lobato',0),
-(3,'Machado de Assis',0);
+(1,'12',1),(1,'10',0),(1,'14',0),
+(2,'4',0),(2,'5',1),(2,'6',0),
+(3,'Antoine de Saint-Exupéry',1),(3,'Monteiro Lobato',0),(3,'Machado de Assis',0),
+(4,'Líquido',0),(4,'Sólido',0),(4,'Gasoso',1);
 
 INSERT INTO alternativas (texto,correta,questao_id) VALUES
-('12',1,1),
-('10',0,1),
-('14',0,1),
-('5',1,2),
-('4',0,2),
-('Antoine de Saint-Exupéry',1,3),
-('Monteiro Lobato',0,3);
-
-INSERT INTO comentarios (texto,id_usuario,id_atividade,status) VALUES
-('Ótima atividade!',1,1,'Aprovado'),
-('Minha filha adorou!',1,2,'Aprovado');
+('12',1,1),('10',0,1),('14',0,1),
+('5',1,2),('4',0,2),
+('Antoine de Saint-Exupéry',1,3),('Monteiro Lobato',0,3),
+('Machado de Assis',0,3),
+('Gasoso',1,4),('Líquido',0,4),('Sólido',0,4);

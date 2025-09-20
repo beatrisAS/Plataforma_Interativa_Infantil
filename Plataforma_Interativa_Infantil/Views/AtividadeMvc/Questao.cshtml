@@ -1,0 +1,13 @@
+<h2>@ViewBag.AtividadeTitulo</h2>
+
+<h4>@Model.Pergunta</h4>
+
+<div>
+    @foreach (var alt in Model.Alternativas)
+    {
+        <button class="btn btn-outline-primary">@alt.Texto</button>
+    }
+</div>
+
+<a href="@Url.Action("Questao", "AtividadeMvc", new { atividadeId = ViewBag.AtividadeId, ordem = ViewBag.Ordem + 1 })" 
+   class="btn btn-success mt-3">Próxima</a>

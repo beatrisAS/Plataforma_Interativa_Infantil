@@ -1,8 +1,13 @@
-@model backend.Models.Atividade
+@model backend.Models.Atividade 
 
 @{
     ViewData["Title"] = "Atividade";
     Layout = "~/Views/Shared/_Layout.cshtml";
+
+   var questaoIndex = ViewBag.QuestaoIndex != null ? (int)ViewBag.QuestaoIndex : 0;
+var questoes = Model.Questoes.OrderBy(q => q.Id).ToList();
+var questao = questoes.Skip(questaoIndex).FirstOrDefault();
+
 }
 
 <div class="card p-4 shadow-lg">
@@ -16,40 +21,50 @@
 
   <hr />
 
-  <div id="atividade-container">
-    @foreach (var q in Model.Questoes) {
-        <div class="mb-4 questao" data-questao-id="@q.Id">
-            <h5>@q.Pergunta</h5>
-            <div>
-                @foreach (var alt in q.Alternativas) {
-                    <button class="btn btn-outline-primary m-1 alternativa-btn" 
-                            data-correta="@alt.Correta.ToString()" 
-                            data-questao-id="@q.Id">
-                        @alt.Texto
-                    </button>
-                }
-            </div>
-        </div>
-    }
-  </div>
+  @if (questao != null)
+  {
+      <div id="questao-container" class="mb-4">
+          <h5>@questao.Pergunta</h5>
+          <div>
+              @foreach (var alt in questao.Alternativas)
+              {
+                  <button class="btn btn-outline-primary m-1 alternativa-btn" 
+                          data-correta="@alt.Correta.ToString()" 
+                          data-atividade-id="@Model.Id"
+                          data-questao-index="@questaoIndex">
+                      @alt.Texto
+                  </button>
+              }
+          </div>
+      </div>
+  }
+  else
+  {
+      <!-- Popup final -->
+      <div class="text-center">
+          <h3>🎉 Parabéns! Você concluiu esta atividade!</h3>
+          <button class="btn btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#celebrationModal">
+              Ver comemoração →
+          </button>
+      </div>
+  }
 
   <div id="feedback" class="alert d-none mt-3"></div>
 
   <a href="/Home/CriancaDashboard" class="btn btn-secondary mt-3">Voltar</a>
 </div>
 
-<!-- Modal de comemoração (Bootstrap 5) -->
-<div class="modal fade" id="celebrationModal" tabindex="-1" aria-labelledby="celebrationModalLabel" aria-hidden="true">
+<!-- Modal de comemoração -->
+<div class="modal fade" id="celebrationModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content text-center p-3">
       <div class="modal-body">
-        <h3 id="celebrationTitle">🎉 Parabéns!</h3>
-        <p id="celebrationText">Você acertou — ganhou pontos!</p>
+        <h3>🎉 Parabéns!</h3>
+        <p>Você concluiu esta atividade e ganhou pontos!</p>
         <div id="confetti-container" style="pointer-events:none;"></div>
-        <button id="proximo-btn" class="btn btn-primary mt-3"><a asp-action="Proxima" asp-route-id="@Model.Id" class="btn btn-primary">
-    Próxima Atividade →
-</a>
-</button>
+        <a asp-action="Proxima" asp-route-id="@Model.Id" class="btn btn-success mt-3">
+          Próxima Atividade →
+        </a>
       </div>
     </div>
   </div>
@@ -59,166 +74,50 @@
 <script>
   (function(){
     const atividadeId = @Model.Id;
-    const criancaId = 0; 
     const desempenhoAcerto = 100;
 
-  
     function showFeedback(success, text) {
       const feedback = document.getElementById('feedback');
       feedback.classList.remove('d-none', 'alert-success', 'alert-danger');
       feedback.classList.add('alert', success ? 'alert-success' : 'alert-danger');
       feedback.innerText = text;
-      setTimeout(() => {
-        feedback.classList.add('d-none');
-      }, 2500);
+      setTimeout(() => feedback.classList.add('d-none'), 2000);
     }
-
 
     document.querySelectorAll('.alternativa-btn').forEach(btn => {
       btn.addEventListener('click', async function() {
-      
-        const raw = this.getAttribute('data-correta') || '';
-        const correta = raw.toLowerCase() === 'true' || raw === '1';
-        if (correta) {
-        
-          showCelebrationPopup();
+        const correta = this.dataset.correta.toLowerCase() === "true";
+        const questaoIndex = parseInt(this.dataset.questaoIndex);
 
-          
+        if (correta) {
+          showFeedback(true, "🎉 Você acertou!");
+
+          // registra resposta
           try {
-            await registrarResposta({
-              CriancaId: criancaId,
-              AtividadeId: atividadeId,
-              Desempenho: desempenhoAcerto
+            await fetch('/api/respostas', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                CriancaId: 0, // ajuste depois
+                AtividadeId: atividadeId,
+                Desempenho: desempenhoAcerto
+              })
             });
           } catch (err) {
             console.error('Erro registrando resposta:', err);
-            
           }
 
-          showFeedback(true, "🎉 Você acertou!");
+          // vai para próxima questão
+          setTimeout(() => {
+          window.location.href = `/AtividadeMvc/Detalhe/${atividadeId}?questaoIndex=${questaoIndex + 1}`;
+
+          }, 1000);
+
         } else {
           showFeedback(false, "❌ Ops! Tente novamente!");
         }
       });
     });
-
-
-    async function registrarResposta(payload) {
-      const res = await fetch('/api/respostas', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(payload)
-      });
-      if (!res.ok) {
-        const text = await res.text();
-        throw new Error('Status ' + res.status + ': ' + text);
-      }
-      return res.json();
-    }
-
-   
-    function showCelebrationPopup() {
-   
-      const modalEl = document.getElementById('celebrationModal');
-      const modal = new bootstrap.Modal(modalEl);
-      modal.show();
-
-   
-      shootConfetti();
-
-      
-      document.getElementById('proximo-btn').onclick = async function() {
-        modal.hide();
-       
-        const next = await fetchNextActivityId(atividadeId);
-        if (next) {
-          window.location.href = '/AtividadeMvc/Detalhe/' + next;
-        } else {
-          // se não houver próxima atividade, volta ao dashboard
-          window.location.href = '/Home/CriancaDashboard';
-        }
-      };
-
-      
-      setTimeout(async () => {
-     
-        if (document.querySelector('#celebrationModal.show')) {
-          const next = await fetchNextActivityId(atividadeId);
-          if (next) window.location.href = '/AtividadeMvc/Detalhe/' + next;
-          else window.location.href = '/Home/CriancaDashboard';
-        }
-      }, 3000); 
-    }
-
-    async function fetchNextActivityId(currentId) {
-      try {
-        const res = await fetch('/api/atividades');
-        if (!res.ok) return null;
-        const atividades = await res.json();
-        if (!Array.isArray(atividades) || atividades.length === 0) return null;
-
-     
-        atividades.sort((a,b)=> (a.id || a.Id) - (b.id || b.Id));
-
-        const ids = atividades.map(a => (a.id ?? a.id_atividade ?? a.Id));
-        const idx = ids.indexOf(currentId);
-        if (idx === -1) {
-   
-          return (ids.length>0 ? ids[0] : null);
-        }
-     
-        if (idx + 1 < ids.length) return ids[idx + 1];
-      
-        return null;
-      } catch (err) {
-        console.error('Erro buscando atividades:', err);
-        return null;
-      }
-    }
-
-   
-    function shootConfetti() {
-      const container = document.getElementById('confetti-container');
-      if (!container) return;
-
-    
-      const colors = ['#fde68a','#fca5a5','#bfdbfe','#bbf7d0','#fbcfe8','#c7d2fe'];
-      for (let i=0;i<40;i++){
-        const el = document.createElement('div');
-        el.style.position = 'absolute';
-        el.style.width = Math.random()*8 + 6 + 'px';
-        el.style.height = Math.random()*12 + 6 + 'px';
-        el.style.background = colors[Math.floor(Math.random()*colors.length)];
-        el.style.left = (50 + (Math.random()-0.5)*80) + '%';
-        el.style.top = '-10px';
-        el.style.opacity = (0.8 + Math.random()*0.2).toString();
-        el.style.transform = 'rotate(' + (Math.random()*360) + 'deg)';
-        el.style.borderRadius = '2px';
-        el.style.pointerEvents = 'none';
-        el.classList.add('confetti-piece');
-        container.appendChild(el);
-
-
-        const duration = 1200 + Math.random()*1200;
-        el.animate([
-          { transform: el.style.transform, top: '-10px', opacity: el.style.opacity },
-          { transform: 'translateY(400px) rotate(' + (Math.random()*720 - 360) + 'deg)', top: '400px', opacity: 0.6 }
-        ], {
-          duration: duration,
-          easing: 'cubic-bezier(.18,.87,.32,1)',
-          iterations: 1,
-          fill: 'forwards'
-        });
-
-    
-        setTimeout(()=> {
-          try { container.removeChild(el); } catch(e){}
-        }, duration + 50);
-      }
-    }
-
   })();
 </script>
 }

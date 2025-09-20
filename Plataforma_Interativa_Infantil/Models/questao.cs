@@ -3,7 +3,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace backend.Models;
 
 [Table("questoes")]
-public class Questao {
+public class Questao
+{
     [Column("id_questao")]
     public int Id { get; set; }
 
@@ -15,8 +16,10 @@ public class Questao {
     public string Pergunta { get; set; } = string.Empty;
 
     [Column("tipo")]
-    public string Tipo { get; set; } = "multipla"; 
-    
+    public string Tipo { get; set; } = "multipla";
+
     public List<Alternativa> Alternativas { get; set; } = new();
+    
+       public int Ordem { get; set; } 
 }
 

@@ -22,4 +22,6 @@ public class Crianca
 
     [ForeignKey("IdResponsavel")]
     public Usuario? Responsavel { get; set; }
+
+    public int Estrelas { get; set; }
 }
