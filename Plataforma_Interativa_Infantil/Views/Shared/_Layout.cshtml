@@ -17,19 +17,78 @@
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
       <a class="navbar-brand" href="/">PlataformaEdu</a>
-      <div class="d-flex">
-        <button id="accessibilityBtn" class="btn btn-outline-secondary me-2">Acessibilidade</button>
-        <button id="themeToggle" class="btn btn-outline-primary">Escuro/Claro</button>
+       <div class="navbar-collapse collapse d-sm-inline-flex justify-content-end">
+                    <ul class="navbar-nav align-items-center">
+                        <li class="nav-item">
+                            <button class="btn btn-outline-secondary me-2 accessibility-btn" type="button" data-bs-toggle="modal" data-bs-target="#acessibilidadeModal">
+                                <i class="bi bi-universal-access"></i> Acessibilidade
+                            </button>
+                        </li>
+                        @if (User.Identity != null && User.Identity.IsAuthenticated && ViewData["HideLogoutButton"] == null)
+                        {
+                           <div class="modal fade" id="confirmLogoutModal" tabindex="-1" aria-labelledby="confirmLogoutModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="confirmLogoutModalLabel">Tem certeza que quer sair?</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>Você será desconectado da PlataformaEdu. Confirma a saída?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Ficar na Plataforma</button>
+        <a href="@Url.Action("Logout", "Account")" class="btn btn-danger">Sim, Quero Sair</a>
       </div>
     </div>
-  </nav>
+  </div>
+</div>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+    <nav class="navbar fixed-bottom navbar-light bg-light">
+        <div class="container-fluid">
+            <span class="navbar-text">
+                &copy; 2025 PlataformaEdu
+            </span>
+        </div>
+    </nav>
 
   <div class="container mt-4">
     @RenderBody()
   </div>
 
-  <script src="/js/bootstrap.bundle.min.js"></script>
-  <script src="/js/site.js"></script>
+    <!-- Modal de Acessibilidade -->
+    <div class="modal fade" id="acessibilidadeModal" tabindex="-1" aria-labelledby="acessibilidadeModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="acessibilidadeModalLabel">Opções de Acessibilidade</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <h6><i class="bi bi-fonts"></i> Tamanho da Fonte</h6>
+            <button id="increaseFont" class="btn btn-secondary w-100 mb-2">Aumentar Fonte (A+)</button>
+            <button id="decreaseFont" class="btn btn-secondary w-100">Diminuir Fonte (A-)</button>
+            <hr>
+            <h6><i class="bi bi-palette-fill"></i> Contraste</h6>
+            <button id="toggleContrast" class="btn btn-secondary w-100">Alternar Alto Contraste</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+ <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
 
   @RenderSection("Scripts", required: false)
 </body>

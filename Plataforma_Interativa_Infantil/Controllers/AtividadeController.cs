@@ -7,18 +7,15 @@ namespace backend.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class AtividadeController : ControllerBase
+public class AtividadeController(AppDbContext db) : ControllerBase
 {
-    private readonly AppDbContext _db;
-    public AtividadeController(AppDbContext db) { _db = db; }
-
     [HttpGet]
-    public async Task<IActionResult> GetAll() => Ok(await _db.Atividades.ToListAsync());
+    public async Task<IActionResult> GetAll() => Ok(await db.Atividades.ToListAsync());
 
     [HttpGet("{id}")]
     public async Task<IActionResult> Get(int id)
     {
-        var u = await _db.Atividades.FindAsync(id);
+        var u = await db.Atividades.FindAsync(id);
         if (u == null) return NotFound();
         return Ok(u);
     }
@@ -28,34 +25,34 @@ public class AtividadeController : ControllerBase
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(int id, Atividade a)
     {
-        var exists = await _db.Atividades.FindAsync(id);
+        var exists = await db.Atividades.FindAsync(id);
         if (exists == null) return NotFound();
         exists.Titulo = a.Titulo;
         exists.Descricao = a.Descricao;
         exists.FaixaEtaria = a.FaixaEtaria;
         exists.Categoria = a.Categoria;
-        await _db.SaveChangesAsync();
+        await db.SaveChangesAsync();
         return NoContent();
     }
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(int id)
     {
-        var ex = await _db.Atividades.FindAsync(id);
+        var ex = await db.Atividades.FindAsync(id);
         if (ex == null) return NotFound();
-        _db.Atividades.Remove(ex);
-        await _db.SaveChangesAsync();
+        db.Atividades.Remove(ex);
+        await db.SaveChangesAsync();
         return NoContent();
     }
 
     [HttpGet("proxima/{atividadeId}")]
     public async Task<IActionResult> GetProximaAtividade(int atividadeId)
     {
-        var atividadeAtual = await _db.Atividades.FirstOrDefaultAsync(a => a.Id == atividadeId);
+        var atividadeAtual = await db.Atividades.FirstOrDefaultAsync(a => a.Id == atividadeId);
         if (atividadeAtual == null)
             return NotFound("Atividade não encontrada.");
 
-        var proxima = await _db.Atividades
+        var proxima = await db.Atividades
             .Where(a => a.Id > atividadeAtual.Id)
     .OrderBy(a => a.Id)
 
@@ -68,9 +65,9 @@ public class AtividadeController : ControllerBase
     }
 
     [HttpGet("porCategoria")]
-    public async Task<IActionResult> GetPorCategoria(string categoria, string faixa = null)
+    public async Task<IActionResult> GetPorCategoria(string categoria, string? faixa = null)
     {
-        var query = _db.Atividades.AsQueryable();
+        var query = db.Atividades.AsQueryable();
 
         if (!string.IsNullOrEmpty(categoria))
             query = query.Where(a => a.Categoria == categoria);
@@ -93,15 +90,15 @@ public class AtividadeController : ControllerBase
         if (string.IsNullOrWhiteSpace(a.Titulo) || string.IsNullOrWhiteSpace(a.FaixaEtaria))
             return BadRequest("Título e Faixa Etária são obrigatórios.");
 
-        _db.Atividades.Add(a);
-        await _db.SaveChangesAsync();
+        db.Atividades.Add(a);
+        await db.SaveChangesAsync();
         return CreatedAtAction(nameof(Get), new { id = a.Id }, a);
     }
 
     [HttpGet("filtrar")]
     public async Task<IActionResult> Filtrar([FromQuery] string faixa, [FromQuery] string categoria)
     {
-        var query = _db.Atividades.AsQueryable();
+        var query = db.Atividades.AsQueryable();
         if (!string.IsNullOrEmpty(faixa))
             query = query.Where(a => a.FaixaEtaria == faixa);
         if (!string.IsNullOrEmpty(categoria))
@@ -123,9 +120,9 @@ public class AtividadeController : ControllerBase
     }
 
 [HttpGet("dashboard")]
-public async Task<IActionResult> DashboardAtividades([FromQuery] string faixa = null)
+public async Task<IActionResult> DashboardAtividades([FromQuery] string? faixa = null)
 {
-    var atividades = _db.Atividades.AsQueryable();
+    var atividades = db.Atividades.AsQueryable();
     if (!string.IsNullOrEmpty(faixa))
         atividades = atividades.Where(a => a.FaixaEtaria == faixa);
 

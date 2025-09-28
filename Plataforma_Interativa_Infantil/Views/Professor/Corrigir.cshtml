@@ -1,0 +1,40 @@
+@model backend.ViewModels.CorrigirViewModel
+@{
+    ViewData["Title"] = "Corrigir Atividade";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-4">
+    <h1>Corrigir Atividade</h1>
+    <hr />
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h4>Detalhes da Submissão</h4>
+                </div>
+                <div class="card-body">
+                    <p><strong>Aluno:</strong> @Model.NomeCrianca</p>
+                    <p><strong>Atividade:</strong> @Model.TituloAtividade</p>
+                    <p><strong>Desempenho (calculado):</strong> @Model.Desempenho%</p>
+                    <hr>
+                    <form asp-action="Corrigir" method="post">
+                        <input type="hidden" asp-for="RespostaId" />
+                        <div class="mb-3">
+                            <label asp-for="Nota" class="form-label">Nota (de 0 a 10)</label>
+                            <input asp-for="Nota" class="form-control" type="number" min="0" max="10" />
+                            <span asp-validation-for="Nota" class="text-danger"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="Observacao" class="form-label">Observações para o aluno (opcional)</label>
+                            <textarea asp-for="Observacao" class="form-control" rows="3"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Lançar Nota e Estrelas</button>
+                        <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

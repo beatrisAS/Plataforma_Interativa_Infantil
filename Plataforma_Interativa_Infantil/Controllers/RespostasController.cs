@@ -7,12 +7,8 @@ namespace backend.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class RespostasController : ControllerBase
+    public class RespostasController(AppDbContext db) : ControllerBase
     {
-        private readonly AppDbContext _db;
-        public RespostasController(AppDbContext db) { _db = db; }
-
-     
         public class RespostaAtividadeDto
         {
             public int CriancaId { get; set; }
@@ -25,11 +21,11 @@ namespace backend.Controllers
         {
             if (dto == null) return BadRequest();
 
-            var crianca = await _db.Criancas.FindAsync(dto.CriancaId);
+            var crianca = await db.Criancas.FindAsync(dto.CriancaId);
             if (crianca == null)
                 return BadRequest($"Criança {dto.CriancaId} não existe.");
 
-            var atividade = await _db.Atividades.FindAsync(dto.AtividadeId);
+            var atividade = await db.Atividades.FindAsync(dto.AtividadeId);
             if (atividade == null)
                 return BadRequest($"Atividade {dto.AtividadeId} não existe.");
 
@@ -41,8 +37,8 @@ namespace backend.Controllers
                 DataRealizacao = DateTime.UtcNow
             };
 
-            _db.RespostasAtividades.Add(resposta);
-            await _db.SaveChangesAsync();
+            db.RespostasAtividades.Add(resposta);
+            await db.SaveChangesAsync();
 
             return CreatedAtAction(null, new { id = resposta.Id }, resposta);
         }

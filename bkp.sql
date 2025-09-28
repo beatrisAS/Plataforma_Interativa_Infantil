@@ -1,15 +1,17 @@
+-- Drop the database if it exists to ensure a clean start
+DROP DATABASE IF EXISTS plataforma_educacao;
 CREATE DATABASE plataforma_educacao;
 USE plataforma_educacao;
 
 -- ========================
--- Tabela de Usuários
+-- Tabela de Usuários (Contas com Login)
 -- ========================
 CREATE TABLE usuarios (
   id_usuario INT AUTO_INCREMENT PRIMARY KEY,
   nome VARCHAR(100) NOT NULL,
   email VARCHAR(100) UNIQUE NOT NULL,
   senha VARCHAR(255) NOT NULL,
-  perfil ENUM('crianca','pai','professor','especialista','admin') NOT NULL,
+  perfil ENUM('pai','professor','admin', 'crianca') NOT NULL,
   telefone VARCHAR(20),
   data_cadastro DATETIME DEFAULT CURRENT_TIMESTAMP
 );
@@ -28,49 +30,18 @@ CREATE TABLE criancas (
 );
 
 -- ========================
--- Atividades (com ícones e dificuldade)
+-- Atividades (Registros estáticos para vincular as respostas)
 -- ========================
 CREATE TABLE atividades (
   id_atividade INT AUTO_INCREMENT PRIMARY KEY,
   titulo VARCHAR(150) NOT NULL,
   descricao TEXT,
   faixa_etaria VARCHAR(20),
-  categoria VARCHAR(50),
+  categoria VARCHAR(50) UNIQUE NOT NULL,
   dificuldade ENUM('fácil','médio','difícil') DEFAULT 'fácil',
-  icone VARCHAR(50) DEFAULT '📚',
-  recurso_extra VARCHAR(255),
-  data_criacao DATETIME DEFAULT CURRENT_TIMESTAMP
+  icone VARCHAR(50) DEFAULT '📚'
 );
 
--- ========================
--- Questões
--- ========================
-CREATE TABLE questoes (
-  id_questao INT AUTO_INCREMENT PRIMARY KEY,
-  id_atividade INT NOT NULL,
-  pergunta TEXT NOT NULL,
-  tipo VARCHAR(50) NOT NULL DEFAULT 'multipla',
-  ordem INT DEFAULT 0,
-  FOREIGN KEY (id_atividade) REFERENCES atividades(id_atividade) ON DELETE CASCADE
-);
-
-CREATE TABLE opcoes_questao (
-  id_opcao INT AUTO_INCREMENT PRIMARY KEY,
-  id_questao INT NOT NULL,
-  texto VARCHAR(500),
-  recurso_mid VARCHAR(255),
-  ordem INT DEFAULT 0,
-  is_correta TINYINT(1) DEFAULT 0,
-  FOREIGN KEY (id_questao) REFERENCES questoes(id_questao) ON DELETE CASCADE
-);
-
-CREATE TABLE alternativas (
-  id_alternativa INT AUTO_INCREMENT PRIMARY KEY,
-  texto VARCHAR(255) NOT NULL,
-  correta BIT NOT NULL,
-  questao_id INT NOT NULL,
-  FOREIGN KEY (questao_id) REFERENCES questoes(id_questao) ON DELETE CASCADE
-);
 
 -- ========================
 -- Respostas e Progresso
@@ -78,90 +49,33 @@ CREATE TABLE alternativas (
 CREATE TABLE respostas_atividades (
   id_resposta INT AUTO_INCREMENT PRIMARY KEY,
   id_crianca INT NOT NULL,
-  id_atividade INT NOT NULL,
+  id_atividade INT NOT NULL, -- ID da atividade ESTÁTICA correspondente à categoria
   desempenho INT,
   data_realizacao DATETIME DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (id_crianca) REFERENCES criancas(id_crianca),
   FOREIGN KEY (id_atividade) REFERENCES atividades(id_atividade)
 );
 
-CREATE TABLE respostas_questoes (
-  id_resposta_questao INT AUTO_INCREMENT PRIMARY KEY,
-  id_resposta INT NOT NULL,
-  id_questao INT NOT NULL,
-  id_opcao INT,
-  correta TINYINT(1) DEFAULT 0,
-  FOREIGN KEY (id_resposta) REFERENCES respostas_atividades(id_resposta) ON DELETE CASCADE,
-  FOREIGN KEY (id_questao) REFERENCES questoes(id_questao) ON DELETE CASCADE,
-  FOREIGN KEY (id_opcao) REFERENCES opcoes_questao(id_opcao) ON DELETE CASCADE
-);
-
--- ========================
--- Comentários, Relatórios e Acessibilidade
--- ========================
-CREATE TABLE comentarios (
-  id_comentario INT AUTO_INCREMENT PRIMARY KEY,
-  texto TEXT NOT NULL,
-  id_usuario INT NOT NULL,
-  id_atividade INT NOT NULL,
-  status ENUM('Pending','Approved','Rejected') DEFAULT 'Pending',
-  data_criacao DATETIME DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario),
-  FOREIGN KEY (id_atividade) REFERENCES atividades(id_atividade)
-);
-
-CREATE TABLE relatorios (
-  id_relatorio INT AUTO_INCREMENT PRIMARY KEY,
-  id_crianca INT NOT NULL,
-  periodo VARCHAR(20),
-  resumo TEXT,
-  progresso_global INT,
-  data_geracao DATETIME DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (id_crianca) REFERENCES criancas(id_crianca)
-);
-
-CREATE TABLE acessibilidade (
-  id_acessibilidade INT AUTO_INCREMENT PRIMARY KEY,
-  id_crianca INT NOT NULL,
-  recurso VARCHAR(100) NOT NULL,
-  descricao TEXT,
-  FOREIGN KEY (id_crianca) REFERENCES criancas(id_crianca)
-);
-
 -- ========================
 -- Dados de Exemplo
 -- ========================
+-- Inserir usuários (pais, professores e crianças)
 INSERT INTO usuarios (nome, email, senha, perfil, telefone) VALUES
-('João Silva','joao@email.com','senha123','pai','(11) 99999-9999'),
-('Maria Santos','maria@email.com','prof123','professor','(11) 88888-8888'),
-('Pedro Costa','pedro@email.com','kids123','crianca',NULL);
+('João Silva','joao@email.com','senha123','pai', '(11) 99999-9999'),
+('Maria Santos','maria@email.com','prof123','professor', '(11) 88888-8888'),
+('Pedro Costa','pedro@email.com','kids123','crianca', NULL);
 
-INSERT INTO criancas (nome,data_nascimento,genero,id_responsavel) VALUES
-('Ana Silva','2015-03-10','F',1),
-('Carlos Santos','2016-07-15','M',1);
+-- Inserir crianças e vinculá-las a um responsável
+INSERT INTO criancas (nome, data_nascimento, genero, id_responsavel, estrelas) VALUES
+('Ana Silva','2015-03-10','F', 1, 0);
 
-INSERT INTO atividades (titulo,descricao,faixa_etaria,categoria,dificuldade,icone) VALUES
-('Quebra-cabeça matemático','Atividade de matemática para crianças de 7-8 anos','7-8','matemática','fácil','➕'),
-('Leitura interativa','Exercício de leitura para crianças de 9-10 anos','9-10','leitura','médio','📖'),
-('Ciências divertidas','Experimentos simples para 11-12 anos','11-12','ciências','médio','🔬'),
-('História em quadrinhos','Atividade criativa para 7-9 anos','7-9','arte','fácil','🎨');
-
-INSERT INTO questoes (id_atividade,pergunta,ordem) VALUES
-(1,'Quanto é 7 + 5?',1),
-(1,'Resolva: 9 - 4',2),
-(2,'Quem é o autor do livro "O Pequeno Príncipe"?',1),
-(3,'Qual é o estado físico da água a 100°C?',1),
-(4,'Crie um balão de fala para o personagem principal.',1);
-
-INSERT INTO opcoes_questao (id_questao,texto,is_correta) VALUES
-(1,'12',1),(1,'10',0),(1,'14',0),
-(2,'4',0),(2,'5',1),(2,'6',0),
-(3,'Antoine de Saint-Exupéry',1),(3,'Monteiro Lobato',0),(3,'Machado de Assis',0),
-(4,'Líquido',0),(4,'Sólido',0),(4,'Gasoso',1);
-
-INSERT INTO alternativas (texto,correta,questao_id) VALUES
-('12',1,1),('10',0,1),('14',0,1),
-('5',1,2),('4',0,2),
-('Antoine de Saint-Exupéry',1,3),('Monteiro Lobato',0,3),
-('Machado de Assis',0,3),
-('Gasoso',1,4),('Líquido',0,4),('Sólido',0,4);
+-- Inserir os "moldes" de atividade, um para cada categoria que o sistema gera dinamicamente.
+-- Isso é essencial para que o salvamento de respostas funcione corretamente.
+INSERT INTO atividades (titulo, categoria) VALUES
+('Mundo da Matemática', 'Matemática'),
+('Viagem Literária', 'Literatura'),
+('Explorando a Ciência', 'Ciências'),
+('Oficina de Artes', 'Artes'),
+('Passaporte de Idiomas', 'Idiomas'),
+('Viajando pelo Mapa', 'Geografia'),
+('Máquina do Tempo', 'História');

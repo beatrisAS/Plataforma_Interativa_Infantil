@@ -1,0 +1,70 @@
+@model List<backend.ViewModels.CriancaProgressoViewModel>
+@{
+    ViewData["Title"] = "Dashboard do Responsável";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="modal fade" id="confirmLogoutModal" tabindex="-1" aria-labelledby="confirmLogoutModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="confirmLogoutModalLabel">Tem certeza que quer sair?</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>Você será desconectado da PlataformaEdu. Confirma a saída?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Ficar na Plataforma</button>
+        <a href="@Url.Action("Logout", "Account")" class="btn btn-danger">Sim, Quero Sair</a>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Progresso dos Filhos</h1>
+      
+    </div>
+
+    @if (Model != null && Model.Any())
+    {
+        foreach (var crianca in Model)
+        {
+            <div class="card mb-4 shadow-sm">
+                <div class="card-header bg-light">
+                    <h3 class="mb-0">@crianca.Nome</h3>
+                    <p class="mb-0 text-muted">⭐ @crianca.Estrelas Estrelas Acumuladas</p>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">Atividades Concluídas</h5>
+                    @if (crianca.Respostas.Any())
+                    {
+                        <ul class="list-group list-group-flush">
+                            @foreach (var resposta in crianca.Respostas.OrderByDescending(r => r.DataRealizacao))
+                            {
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <strong>@resposta.Atividade.Titulo</strong> 
+                                        <span class="badge bg-info">@resposta.Atividade.Categoria</span>
+                                        <small class="d-block text-muted">Realizada em: @resposta.DataRealizacao.ToString("dd/MM/yyyy")</small>
+                                    </div>
+                                    <span class="badge bg-primary rounded-pill p-2">@resposta.Desempenho% de acerto</span>
+                                </li>
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        <p class="text-muted">Nenhuma atividade concluída ainda.</p>
+                    }
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <div class="alert alert-info">
+            Nenhuma criança foi encontrada para este responsável.
+        </div>
+    }
+</div>

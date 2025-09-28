@@ -1,1 +1,0 @@
-Placeholder migrations. Run 'dotnet ef migrations add Initial' locally to generate actual migrations.

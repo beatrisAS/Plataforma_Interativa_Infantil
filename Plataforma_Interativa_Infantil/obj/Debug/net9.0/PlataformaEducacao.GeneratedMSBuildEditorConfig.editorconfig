@@ -44,20 +44,40 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQXRpdmlkYWRlTXZjXFF1ZXN0YW8uY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/beatr/Videos/Plataforma_Interativa_Infantil/Plataforma_Interativa_Infantil/Views/Home/CriancaDashboard.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxDcmlhbmNhRGFzaGJvYXJkLmNzaHRtbA==
+[c:/Users/beatr/Videos/Plataforma_Interativa_Infantil/Plataforma_Interativa_Infantil/Views/Auth/Login.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQXV0aFxMb2dpbi5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/beatr/Videos/Plataforma_Interativa_Infantil/Plataforma_Interativa_Infantil/Views/Crianca/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ3JpYW5jYVxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
 [c:/Users/beatr/Videos/Plataforma_Interativa_Infantil/Plataforma_Interativa_Infantil/Views/Home/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/beatr/Videos/Plataforma_Interativa_Infantil/Plataforma_Interativa_Infantil/Views/Home/PaiDashboard.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxQYWlEYXNoYm9hcmQuY3NodG1s
+[c:/Users/beatr/Videos/Plataforma_Interativa_Infantil/Plataforma_Interativa_Infantil/Views/Pai/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGFpXEluZGV4LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[c:/Users/beatr/Videos/Plataforma_Interativa_Infantil/Plataforma_Interativa_Infantil/Views/Home/ProfessorDashboard.cshtml]
-build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxQcm9mZXNzb3JEYXNoYm9hcmQuY3NodG1s
+[c:/Users/beatr/Videos/Plataforma_Interativa_Infantil/Plataforma_Interativa_Infantil/Views/Pai/PaiDashboard.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGFpXFBhaURhc2hib2FyZC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/beatr/Videos/Plataforma_Interativa_Infantil/Plataforma_Interativa_Infantil/Views/Professor/Corrigir.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZmVzc29yXENvcnJpZ2lyLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/beatr/Videos/Plataforma_Interativa_Infantil/Plataforma_Interativa_Infantil/Views/Professor/CriarAtividade.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZmVzc29yXENyaWFyQXRpdmlkYWRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/beatr/Videos/Plataforma_Interativa_Infantil/Plataforma_Interativa_Infantil/Views/Professor/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZmVzc29yXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[c:/Users/beatr/Videos/Plataforma_Interativa_Infantil/Plataforma_Interativa_Infantil/Views/Professor/ProfessorDashboard.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZmVzc29yXFByb2Zlc3NvckRhc2hib2FyZC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
 [c:/Users/beatr/Videos/Plataforma_Interativa_Infantil/Plataforma_Interativa_Infantil/Views/Shared/_Layout.cshtml]

@@ -1,59 +1,74 @@
 using Microsoft.AspNetCore.Mvc;
 using backend.Data;
 using backend.Models;
+using backend.Services;
+using backend.ViewModels;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json;
+using System.Threading.Tasks;
+using System.Collections.Generic;
+using System.Linq;
+using Microsoft.AspNetCore.Authorization;
 
-namespace backend.Controllers;
-
-[ApiController]
-[Route("api/[controller]")]
-public class CriancasController : ControllerBase 
+namespace backend.Controllers
 {
-    private readonly AppDbContext _db;
-    public CriancasController(AppDbContext db) { _db = db; }
-
-    [HttpGet]
-    public async Task<IActionResult> GetAll() => Ok(await _db.Criancas.ToListAsync());
-
-    [HttpGet("{id}")]
-    public async Task<IActionResult> Get(int id) 
+    [Authorize(Roles = "crianca")] // Protege o dashboard para que apenas crianças logadas acessem
+    public class CriancaController : Controller
     {
-        var u = await _db.Criancas.FindAsync(id);
-        if (u == null) return NotFound();
-        return Ok(u);
-    }
+        private readonly AppDbContext _db;
+        private readonly ActivityService _activityService;
+        private readonly AchievementService _achievementService;
 
-    [HttpPost]
-    public async Task<IActionResult> Create(Crianca c) 
-    {
-        _db.Criancas.Add(c);
-        await _db.SaveChangesAsync();
-        return CreatedAtAction(nameof(Get), new { id = c.Id }, c);
-    }
+        public CriancaController(AppDbContext db, ActivityService activityService, AchievementService achievementService)
+        {
+            _db = db;
+            _activityService = activityService;
+            _achievementService = achievementService;
+        }
 
-    [HttpPut("{id}")]
-    public async Task<IActionResult> Update(int id, Crianca c) 
-    {
-        var exists = await _db.Criancas.FindAsync(id);
-        if (exists == null) return NotFound();
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        public async Task<IActionResult> Index()
+        {
+            // TODO: Substituir ID fixo pela lógica de usuário logado a partir do Claim
+            var criancaId = 1; 
+            var crianca = await _db.Criancas.FindAsync(criancaId);
+
+            if (crianca == null)
+            {
+                crianca = new Crianca { Id = criancaId, Nome = "Visitante", Estrelas = 0, DataNascimento = System.DateTime.Now.AddYears(-8) };
+            }
+
+            var atividadesDinamicas = GetActivitiesFromSession();
+            var atividadesFixas = await _db.Atividades.ToListAsync();
+            
+            var todasAtividades = new List<Atividade>();
+            todasAtividades.AddRange(atividadesDinamicas);
+            todasAtividades.AddRange(atividadesFixas);
+
+            var respostasSalvas = await _db.RespostasAtividades.Where(r => r.CriancaId == crianca.Id).ToListAsync();
+            var conquistas = _achievementService.CheckAchievements(crianca, respostasSalvas, atividadesDinamicas);
+
+            var viewModel = new CriancaDashboardViewModel
+            {
+                Crianca = crianca,
+                Atividades = todasAtividades.GroupBy(a => a.Categoria).Select(g => g.First()).ToList(),
+                Conquistas = conquistas
+            };
+
+            // Por convenção, isso irá procurar a view em /Views/Crianca/Index.cshtml
+            return View(viewModel);
+        }
         
-        exists.Nome = c.Nome;
-        exists.DataNascimento = c.DataNascimento;
-        exists.Genero = c.Genero;
-        exists.IdResponsavel = c.IdResponsavel;
-        
-        await _db.SaveChangesAsync();
-        return NoContent();
-    }
-
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> Delete(int id) 
-    {
-        var ex = await _db.Criancas.FindAsync(id);
-        if (ex == null) return NotFound();
-        
-        _db.Criancas.Remove(ex);
-        await _db.SaveChangesAsync();
-        return NoContent();
+        private List<Atividade> GetActivitiesFromSession()
+        {
+            var activitiesJson = HttpContext.Session.GetString("UserActivities");
+            if (string.IsNullOrEmpty(activitiesJson))
+            {
+                var newActivities = _activityService.GetRandomActivities(7);
+                HttpContext.Session.SetString("UserActivities", JsonSerializer.Serialize(newActivities));
+                return newActivities;
+            }
+            return JsonSerializer.Deserialize<List<Atividade>>(activitiesJson) ?? new List<Atividade>();
+        }
     }
 }

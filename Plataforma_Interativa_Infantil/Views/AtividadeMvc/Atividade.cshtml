@@ -1,123 +1,69 @@
-@model backend.Models.Atividade 
+@model backend.Models.Atividade
+@using System.Text.Json;
 
 @{
-    ViewData["Title"] = "Atividade";
+    ViewData["Title"] = Model.Titulo;
+     ViewData["HideLogoutButton"] = true;
     Layout = "~/Views/Shared/_Layout.cshtml";
-
-   var questaoIndex = ViewBag.QuestaoIndex != null ? (int)ViewBag.QuestaoIndex : 0;
-var questoes = Model.Questoes.OrderBy(q => q.Id).ToList();
-var questao = questoes.Skip(questaoIndex).FirstOrDefault();
-
 }
 
-<div class="card p-4 shadow-lg">
-  <h2 class="text-primary">@Model.Titulo</h2>
-  <p>@Model.Descricao</p>
+<link rel="stylesheet" href="~/css/site.css" />
 
-  <ul>
-    <li><strong>Faixa etária:</strong> @Model.FaixaEtaria</li>
-    <li><strong>Categoria:</strong> @Model.Categoria</li>
-  </ul>
+<div class="atividade-container">
+    <div class="atividade-header">
+        <div class="progress-container">
+            <div id="progress-text" class="progress-text">Questão 1 de @Model.Questoes.Count()</div>
+            <div class="progress">
+                <div id="progress-bar" class="progress-bar" role="progressbar" style="width: 0%;"></div>
+            </div>
+        </div>
+     
+    </div>
 
-  <hr />
+    <div id="atividade-body" class="text-center">
+        <h2 id="pergunta-titulo" class="pergunta-titulo"></h2>
+        <div id="alternativas-container" class="alternativas-container"></div>
+    </div>
+    
+    <div id="feedback-footer" class="feedback-footer d-none">
+        <div id="feedback-content">
+            <h4 id="feedback-texto"></h4>
+        </div>
+        </div>
 
-  @if (questao != null)
-  {
-      <div id="questao-container" class="mb-4">
-          <h5>@questao.Pergunta</h5>
-          <div>
-              @foreach (var alt in questao.Alternativas)
-              {
-                  <button class="btn btn-outline-primary m-1 alternativa-btn" 
-                          data-correta="@alt.Correta.ToString()" 
-                          data-atividade-id="@Model.Id"
-                          data-questao-index="@questaoIndex">
-                      @alt.Texto
-                  </button>
-              }
-          </div>
-      </div>
-  }
-  else
-  {
-      <!-- Popup final -->
-      <div class="text-center">
-          <h3>🎉 Parabéns! Você concluiu esta atividade!</h3>
-          <button class="btn btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#celebrationModal">
-              Ver comemoração →
-          </button>
-      </div>
-  }
-
-  <div id="feedback" class="alert d-none mt-3"></div>
-
-  <a href="/Home/CriancaDashboard" class="btn btn-secondary mt-3">Voltar</a>
+    <div id="final-screen" class="final-screen d-none text-center">
+        <h1>🎉</h1>
+        <h2 class="text-primary">Parabéns, você concluiu a atividade!</h2>
+        <p>Você acertou <strong id="acertos-finais">0</strong> de @Model.Questoes.Count() perguntas!</p>
+        <div class="mt-4">
+            <a href="@Url.Action("Index", "Crianca")" class="btn btn-secondary">Voltar ao Início</a>
+        </div>
+    </div>
 </div>
 
-<!-- Modal de comemoração -->
-<div class="modal fade" id="celebrationModal" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="confirmExitModal" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content text-center p-3">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Tem certeza que quer sair?</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
       <div class="modal-body">
-        <h3>🎉 Parabéns!</h3>
-        <p>Você concluiu esta atividade e ganhou pontos!</p>
-        <div id="confetti-container" style="pointer-events:none;"></div>
-        <a asp-action="Proxima" asp-route-id="@Model.Id" class="btn btn-success mt-3">
-          Próxima Atividade →
-        </a>
+        <p>Se você sair agora, seu progresso nesta atividade não será salvo.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Continuar Jogando</button>
+        <a href="@Url.Action("Index", "Crianca")" class="btn btn-danger">Sim, quero sair</a>
       </div>
     </div>
   </div>
 </div>
 
 @section Scripts {
-<script>
-  (function(){
-    const atividadeId = @Model.Id;
-    const desempenhoAcerto = 100;
-
-    function showFeedback(success, text) {
-      const feedback = document.getElementById('feedback');
-      feedback.classList.remove('d-none', 'alert-success', 'alert-danger');
-      feedback.classList.add('alert', success ? 'alert-success' : 'alert-danger');
-      feedback.innerText = text;
-      setTimeout(() => feedback.classList.add('d-none'), 2000);
-    }
-
-    document.querySelectorAll('.alternativa-btn').forEach(btn => {
-      btn.addEventListener('click', async function() {
-        const correta = this.dataset.correta.toLowerCase() === "true";
-        const questaoIndex = parseInt(this.dataset.questaoIndex);
-
-        if (correta) {
-          showFeedback(true, "🎉 Você acertou!");
-
-          // registra resposta
-          try {
-            await fetch('/api/respostas', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                CriancaId: 0, // ajuste depois
-                AtividadeId: atividadeId,
-                Desempenho: desempenhoAcerto
-              })
-            });
-          } catch (err) {
-            console.error('Erro registrando resposta:', err);
-          }
-
-          // vai para próxima questão
-          setTimeout(() => {
-          window.location.href = `/AtividadeMvc/Detalhe/${atividadeId}?questaoIndex=${questaoIndex + 1}`;
-
-          }, 1000);
-
-        } else {
-          showFeedback(false, "❌ Ops! Tente novamente!");
-        }
-      });
-    });
-  })();
-</script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script>
+        const atividadeData = @Html.Raw(JsonSerializer.Serialize(Model, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase, ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles }));
+    </script>
+    <script src="~/js/site.js"></script>
 }
+    
