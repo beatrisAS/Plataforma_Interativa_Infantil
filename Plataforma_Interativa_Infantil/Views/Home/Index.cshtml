@@ -4,71 +4,64 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-lg-10">
-            <div class="card shadow-sm">
-                <div class="card-body p-0">
-                    <div class="row g-0">
-                        <!-- Coluna do Login -->
-                        <div class="col-md-6 p-4 border-end">
-                            <h4 class="text-center mb-4">Login</h4>
-                            @if (TempData["Error"] != null) {
-                                <div class="alert alert-danger">@TempData["Error"]</div>
-                            }
-                            <form method="post" action="/Account/Login">
-                                <div class="mb-3">
-                                    <label class="form-label">Email</label>
-                                    <input name="Email" type="email" class="form-control" placeholder="seu@email.com" required />
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Senha</label>
-                                    <input name="Senha" type="password" class="form-control" placeholder="••••••" required />
-                                </div>
-                                <div class="d-grid">
-                                    <button type="submit" class="btn btn-primary">Entrar</button>
-                                </div>
-                            </form>
-                        </div>
+<div class="row justify-content-center">
+  <div class="col-md-6">
+    <div class="card p-4 shadow-sm">
+      <h4 class="text-center">Login</h4>
+      <hr />
+      @if (TempData["Error"] != null) {
+        <div class="alert alert-danger">@TempData["Error"]</div>
+      }
+      @if (TempData["SuccessRegister"] != null) {
+        <div class="alert alert-success">@TempData["SuccessRegister"]</div>
+      }
 
-                        <!-- Coluna do Registro -->
-                        <div class="col-md-6 p-4 bg-light">
-                            <h4 class="text-center mb-4">Registrar</h4>
-                            @if (TempData["ErrorRegister"] != null) {
-                                <div class="alert alert-danger">@TempData["ErrorRegister"]</div>
-                            }
-                            @if (TempData["SuccessRegister"] != null) {
-                                <div class="alert alert-success">@TempData["SuccessRegister"]</div>
-                            }
-                            <form method="post" action="/Account/Register">
-                                <div class="mb-3">
-                                    <label class="form-label">Nome Completo</label>
-                                    <input name="Nome" type="text" class="form-control" placeholder="Seu Nome" required />
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Email</label>
-                                    <input name="Email" type="email" class="form-control" placeholder="seu@email.com" required />
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Senha</label>
-                                    <input name="Senha" type="password" class="form-control" placeholder="Crie uma senha forte" required />
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Eu sou</label>
-                                    <select name="Perfil" class="form-select">
-                                        <option value="pai">Pai/Responsável</option>
-                                        <option value="professor">Professor</option>
-                                        <option value="crianca">Criança</option>
-                                    </select>
-                                </div>
-                                <div class="d-grid">
-                                    <button type="submit" class="btn btn-success">Registrar</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+      <form method="post" action="/Account/Login">
+          <input name="Email" type="email" class="form-control mb-2" placeholder="E-mail" required />
+          <input name="Senha" type="password" class="form-control mb-2" placeholder="Senha" required />
+          <div class="d-grid">
+              <button class="btn btn-primary">Entrar</button>
+          </div>
+      </form>
+
+      <div class="text-center mt-3">
+         <span> Não tem conta?</span>
+         <a href="#" data-bs-toggle="modal" data-bs-target="#modalRegistro">
+          Registre-se aqui
+         </a>
+      </div>
     </div>
+</div>
+
+<div class="modal fade" id="modalRegistro" tabindex="-1" aria-labelledby="modalRegistroLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+       <h5 class="modal-title" id="modalRegistroLabel">Registrar Nova Conta</h5>
+       <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+          @if (TempData["ErrorRegister"] !=null) {
+            <div class="alert alert-danger">@TempData["ErrorRgister"]</div>
+          }
+
+          <form method="post" action="/Account/Register" id="formRegistro">
+            <input name="Nome" type="text" class="form-control mb-2" placeholder="Nome completo" required/>
+            <input name="Email" type="email" class="form-control mb-2" placeholder="E-mail" required/>
+            <input name="Senha" type="password" class="form-control mb-2" placeholder="Senha" required/>
+            <select name="Perfil" class="form-select mb-2" required>
+               <option value="" disabled selected>Selecione seu perfil</option>
+               <option value="crianca">Criança</option>
+               <option value="pai">Pai</option>
+               <option value="professor">Professor</option>
+            </select>
+          </form>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+        <button type="submit" class="btn btn-success" form="formRegistro">Registrar</button>
+      </div>
+    </div>
+  </div>
 </div>

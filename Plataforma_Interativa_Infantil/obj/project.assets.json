@@ -3554,23 +3554,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\beatr\\.nuget\\packages\\": {},
+    "C:\\Users\\Fran\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "c:\\Users\\beatr\\Videos\\Plataforma_Interativa_Infantil\\Plataforma_Interativa_Infantil\\PlataformaEducacao.csproj",
+      "projectUniqueName": "C:\\Users\\Fran\\Desktop\\Projeto\\Plataforma_Interativa_Infantil\\Plataforma_Interativa_Infantil\\PlataformaEducacao.csproj",
       "projectName": "PlataformaEducacao",
-      "projectPath": "c:\\Users\\beatr\\Videos\\Plataforma_Interativa_Infantil\\Plataforma_Interativa_Infantil\\PlataformaEducacao.csproj",
-      "packagesPath": "C:\\Users\\beatr\\.nuget\\packages\\",
-      "outputPath": "c:\\Users\\beatr\\Videos\\Plataforma_Interativa_Infantil\\Plataforma_Interativa_Infantil\\obj\\",
+      "projectPath": "C:\\Users\\Fran\\Desktop\\Projeto\\Plataforma_Interativa_Infantil\\Plataforma_Interativa_Infantil\\PlataformaEducacao.csproj",
+      "packagesPath": "C:\\Users\\Fran\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\Fran\\Desktop\\Projeto\\Plataforma_Interativa_Infantil\\Plataforma_Interativa_Infantil\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\beatr\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\Fran\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
