@@ -3,68 +3,129 @@
     ViewData["Title"] = "Dashboard do Responsável";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<div class="modal fade" id="confirmLogoutModal" tabindex="-1" aria-labelledby="confirmLogoutModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="confirmLogoutModalLabel">Tem certeza que quer sair?</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <p>Você será desconectado da PlataformaEdu. Confirma a saída?</p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Ficar na Plataforma</button>
-        <a href="@Url.Action("Logout", "Account")" class="btn btn-danger">Sim, Quero Sair</a>
-      </div>
-    </div>
-  </div>
-</div>
+
+@functions {
+    int CalcularIdade(DateTime dataNascimento)
+    {
+        var hoje = DateTime.Today;
+        var idade = hoje.Year - dataNascimento.Year;
+        if (dataNascimento.Date > hoje.AddYears(-idade)) idade--;
+        return idade;
+    }
+}
+
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1>Progresso dos Filhos</h1>
-      
     </div>
 
     @if (Model != null && Model.Any())
     {
         foreach (var crianca in Model)
         {
-            <div class="card mb-4 shadow-sm">
-                <div class="card-header bg-light">
-                    <h3 class="mb-0">@crianca.Nome</h3>
-                    <p class="mb-0 text-muted">⭐ @crianca.Estrelas Estrelas Acumuladas</p>
+            <div class="row mb-5 align-items-start">
+                <div class="col-lg-4">
+                    <div class="card card-perfil-lateral shadow-sm">
+                        <div class="card-body d-flex align-items-center">
+                            <div class="avatar-perfil">
+                                @(!string.IsNullOrEmpty(crianca.Nome) ? crianca.Nome.Substring(0, 1) : "?")
+                            </div>
+                            <div class="ms-3">
+                                <h5 class="mb-0">@crianca.Nome</h5>
+                                <small class="text-muted">Idade: @CalcularIdade(crianca.DataNascimento) anos</small>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="card-body">
-                    <h5 class="card-title">Atividades Concluídas</h5>
-                    @if (crianca.Respostas.Any())
+
+                <div class="col-lg-8">
+                    @if (crianca.AtividadesUnicas.Any())
                     {
-                        <ul class="list-group list-group-flush">
-                            @foreach (var resposta in crianca.Respostas.OrderByDescending(r => r.DataRealizacao))
+                        <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-3">
+                            @foreach (var atividade in crianca.AtividadesUnicas)
                             {
-                                <li class="list-group-item d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <strong>@resposta.Atividade.Titulo</strong> 
-                                        <span class="badge bg-info">@resposta.Atividade.Categoria</span>
-                                        <small class="d-block text-muted">Realizada em: @resposta.DataRealizacao.ToString("dd/MM/yyyy")</small>
+                                var respostaMaisRecente = crianca.Respostas
+                                    .Where(r => r.AtividadeId == atividade.Id)
+                                    .OrderByDescending(r => r.DataRealizacao)
+                                    .FirstOrDefault();
+
+                                var historicoContent = string.Join("", crianca.Respostas
+                                    .Where(r => r.AtividadeId == atividade.Id)
+                                    .OrderByDescending(r => r.DataRealizacao)
+                                    .Select(h => $"<div class='d-flex justify-content-between small border-bottom py-1'><span>{h.DataRealizacao:dd/MM/yy}</span> <strong>{h.Desempenho}%</strong></div>")
+                                );
+                                if (string.IsNullOrEmpty(historicoContent)) {
+                                    historicoContent = "Não há histórico de tentativas.";
+                                }
+
+                                var categoriaClass = atividade.Categoria.ToLower();
+                                <div class="col">
+                                    <div class="card card-atividade-grid text-center h-100 shadow-sm @categoriaClass"
+                                         data-bs-toggle="popover" 
+                                         data-bs-trigger="hover focus" 
+                                         data-bs-title="Histórico de Tentativas" 
+                                         data-bs-html="true"
+                                         data-bs-content="@historicoContent">
+                                        
+                                        <div class="card-body d-flex flex-column">
+                                            <div class="icone-materia mb-3">
+                                                 @switch (categoriaClass)
+                                                {
+                                                    case "matemática": <i class="bi bi-calculator-fill"></i>; break;
+                                                    case "português": <i class="bi bi-book-half"></i>; break;
+                                                    case "ciências": <i class="bi bi-lightbulb-fill"></i>; break;
+                                                    case "artes": <i class="bi bi-palette-fill"></i>; break;
+                                                    case "história": <i class="bi bi-bank"></i>; break;
+                                                    case "geografia": <i class="bi bi-map-fill"></i>; break;
+                                                    case "idiomas": <i class="bi bi-translate"></i>; break;
+                                                    default: <i class="bi bi-star-fill"></i>; break;
+                                                }
+                                            </div>
+                                            
+                                            <div class="flex-grow-1">
+                                                <h6 class="card-title d-inline mb-0 me-2">@atividade.Titulo</h6>
+                                                <span class="badge categoria-tag">@atividade.Categoria</span>
+                                            </div>
+
+                                            @if(respostaMaisRecente != null)
+                                            {
+                                                <div class="progress-info mt-3">
+                                                    <div class="d-flex justify-content-between small text-muted">
+                                                        <span>Último resultado</span>
+                                                        <span class="fw-bold">@respostaMaisRecente.Desempenho%</span>
+                                                    </div>
+                                                    <div class="progress" style="height: 8px;">
+                                                        <div class="progress-bar" role="progressbar" style="width: @respostaMaisRecente.Desempenho%;" ></div>
+                                                    </div>
+                                                </div>
+                                            }
+                                        </div>
                                     </div>
-                                    <span class="badge bg-primary rounded-pill p-2">@resposta.Desempenho% de acerto</span>
-                                </li>
+                                </div>
                             }
-                        </ul>
+                        </div>
                     }
                     else
                     {
-                        <p class="text-muted">Nenhuma atividade concluída ainda.</p>
+                        <p class="text-muted mt-2">Nenhuma atividade concluída para @crianca.Nome ainda.</p>
                     }
                 </div>
             </div>
+            <hr class="my-5">
         }
     }
-    else
+    else 
     {
-        <div class="alert alert-info">
-            Nenhuma criança foi encontrada para este responsável.
-        </div>
+        <div class="alert alert-info">Nenhuma criança foi encontrada para este responsável.</div>
     }
 </div>
+
+@section Scripts {
+<script>
+    // Inicializa os Popovers do Bootstrap para o histórico de tentativas
+    var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
+    var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+        return new bootstrap.Popover(popoverTriggerEl)
+    })
+</script>
+}

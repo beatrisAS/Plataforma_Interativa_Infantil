@@ -7,6 +7,7 @@ using System.Linq;
 using backend.ViewModels;
 using backend.Models;
 using System.Collections.Generic;
+using System.Security.Claims; // Necessário para pegar o usuário logado
 
 namespace backend.Controllers
 {
@@ -22,27 +23,52 @@ namespace backend.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var todosAlunos = await _context.Criancas
-                .Select(c => new CriancaProgressoViewModel
-                {
-                    Id = c.Id,
-                    Nome = c.Nome,
-                    Estrelas = c.Estrelas,
-                    Respostas = _context.RespostasAtividades
-                        .Where(r => r.CriancaId == c.Id)
-                        .Include(r => r.Atividade)
-                        .ToList()
-                })
+            // Busca todos os dados necessários de forma otimizada
+            var todosAlunos = await _context.Criancas.ToListAsync();
+            var todasRespostas = await _context.RespostasAtividades
+                .Include(r => r.Atividade)
+                .ToListAsync();
+            var todasAtividades = await _context.Atividades
+                .OrderBy(a => a.Titulo)
                 .ToListAsync();
 
-            return View(todosAlunos);
+            // Monta o progresso de cada aluno em memória
+            var progressoDosAlunos = todosAlunos.Select(aluno =>
+            {
+                var respostasDoAluno = todasRespostas.Where(r => r.CriancaId == aluno.Id).ToList();
+                var atividadesUnicasDoAluno = respostasDoAluno
+                    .Select(r => r.Atividade)
+                    .GroupBy(a => a.Id)
+                    .Select(g => g.First())
+                    .ToList();
+
+                return new CriancaProgressoViewModel
+                {
+                    Id = aluno.Id,
+                    Nome = aluno.Nome,
+                    Estrelas = aluno.Estrelas,
+                    DataNascimento = aluno.DataNascimento,
+                    Respostas = respostasDoAluno,
+                    AtividadesUnicas = atividadesUnicasDoAluno
+                };
+            }).ToList();
+
+            // Preenche o ViewModel principal com todos os dados para a página
+            var dashboardViewModel = new ProfessorDashboardViewModel
+            {
+                Alunos = progressoDosAlunos,
+                AtividadesPublicadas = todasAtividades,
+                TotalAlunos = todosAlunos.Count,
+                TotalAtividades = todasAtividades.Count
+            };
+
+            return View(dashboardViewModel);
         }
 
         // GET: Exibe o formulário para criar uma nova atividade
         [HttpGet]
         public IActionResult CriarAtividade()
         {
-            // Inicia o formulário com uma questão e quatro alternativas
             var model = new CriarAtividadeViewModel
             {
                 Questoes = new List<QuestaoViewModel> { new QuestaoViewModel() }
@@ -50,13 +76,13 @@ namespace backend.Controllers
             return View(model);
         }
 
-        // POST: Salva a nova atividade criada pelo professor no banco de dados
+        // POST: Salva a nova atividade criada
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> CriarAtividade(CriarAtividadeViewModel model)
         {
             if (!ModelState.IsValid)
             {
-                // Se o modelo não for válido, retorna para o formulário com os erros
                 return View(model);
             }
 
@@ -85,4 +111,3 @@ namespace backend.Controllers
         }
     }
 }
-

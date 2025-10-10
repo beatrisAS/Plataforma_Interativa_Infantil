@@ -3,28 +3,9 @@
 @{
     ViewData["Title"] = "Meu Mundo - SaberAventura";
     Layout = "~/Views/Shared/_Layout.cshtml";
-  
 }
-<div class="modal fade" id="confirmLogoutModal" tabindex="-1" aria-labelledby="confirmLogoutModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="confirmLogoutModalLabel">Tem certeza que quer sair?</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <p>Você será desconectado da PlataformaEdu. Confirma a saída?</p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Ficar na Plataforma</button>
-        <a href="@Url.Action("Logout", "Account")" class="btn btn-danger">Sim, Quero Sair</a>
-      </div>
-    </div>
-  </div>
-</div>
 
 @functions {
-
     int CalcularIdade(DateTime dataNascimento)
     {
         var hoje = DateTime.Today;
@@ -34,96 +15,94 @@
     }
 }
 
-<div class="container mt-4">
+<div class="container mt-4 dashboard-crianca">
     <div class="row">
-        <!-- Card de Perfil da Criança -->
-        <div class="col-md-4">
-            <div class="card p-3 text-center shadow-sm">
-                
-      
-                <h1>Bem-vindo ao Seu Mundo de Aventuras, @Model.Crianca.Nome!</h1>
-                <img src="https://placehold.co/128x128/6a11cb/ffffff?text=@(!string.IsNullOrEmpty(Model.Crianca.Nome) ? Model.Crianca.Nome.Substring(0, 1) : "?")" alt="avatar" 
-                     class="mx-auto" style="width:80px;height:80px;border-radius:50%;"/>
-        
-                <h4 class="mt-2">@Model.Crianca.Nome</h4>
-                <p class="text-muted">Idade: @CalcularIdade(Model.Crianca.DataNascimento) anos</p>
-                
-                <hr>
+        <div class="col-lg-4">
+            <div class="card card-perfil-lateral shadow-sm mb-4">
+                <div class="card-body d-flex align-items-center">
+                    <div class="avatar-perfil">
+                        @(!string.IsNullOrEmpty(Model.Crianca.Nome) ? Model.Crianca.Nome.Substring(0, 1) : "?")
+                    </div>
+                    <div class="ms-3">
+                        <h5 class="mb-0">@Model.Crianca.Nome</h5>
+                        <small class="text-muted">Idade: @CalcularIdade(Model.Crianca.DataNascimento) anos</small>
+                    </div>
+                </div>
+            </div>
 
-                <h6>⭐ Conquistas</h6>
-                <ul class="list-unstyled">
+            <div class="bloco-secao">
+                <h4 class="titulo-secao">⭐ Minhas Conquistas</h4>
+                <div class="row row-cols-2 row-cols-sm-2 row-cols-lg-3 g-3">
                     @if (Model.Conquistas != null && Model.Conquistas.Any())
                     {
                         @foreach (var conquista in Model.Conquistas)
                         {
-                            <li>🏆 @conquista</li>
+                            <div class="col d-flex">
+                                <div class="card card-conquista-clean text-center h-100 w-100">
+                                    <div class="card-body d-flex flex-column justify-content-center align-items-center">
+                                        <div class="icone-conquista">🏆</div>
+                                        <span class="nome-conquista">@conquista</span>
+                                    </div>
+                                </div>
+                            </div>
                         }
                     }
                     else
                     {
-                        <li class="text-muted">Continue jogando para ganhar!</li>
-                    }
-                </ul>
-            </div>
-        </div>
-
-    
-        <div class="col-md-8">
-            <div class="card p-3 shadow-sm">
-                <h4>Atividades Disponíveis</h4>
-                <p>Escolha uma atividade para começar a diversão!</p>
-
-                <div class="mb-3">
-                    <label for="filtroCategoria">Filtrar por categoria:</label>
-                    <select class="form-select w-auto d-inline-block" id="filtroCategoria">
-                        <option value="todas">Todas</option>
-                        @foreach (var categoria in Model.CategoriasUnicas)
-                        {
-                            <option value="@categoria.ToLower()">@categoria</option>
-                        }
-                    </select>
-                </div>
-
-                <div id="atividades-container">
-                    @foreach (var atividade in Model.Atividades)
-                    {
-                        <div class="card mb-2 atividade-item" data-categoria="@atividade.Categoria.ToLower()">
-                            <div class="card-body d-flex justify-content-between align-items-center">
-                                <div>
-                                    <h5 class="card-title mb-1">@atividade.Titulo</h5>
-                                    <span class="badge bg-secondary">@atividade.Categoria</span>
-                                </div>
-                                <a href="@Url.Action("Detalhe", "AtividadeMvc", new { id = atividade.Id })" class="btn btn-primary">
-                                    Iniciar →
-                                </a>
-                            </div>
+                        <div class="col-12">
+                            <p class="text-muted">Nenhuma conquista ainda. Continue jogando!</p>
                         </div>
                     }
                 </div>
             </div>
         </div>
-    </div>
-@section Scripts {
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const filtro = document.getElementById('filtroCategoria');
-    if(filtro) {
-        filtro.addEventListener('change', function() {
-            const categoriaSelecionada = this.value;
-            const atividades = document.querySelectorAll('.atividade-item');
 
-            atividades.forEach(item => {
-                if (categoriaSelecionada === 'todas' || item.dataset.categoria === categoriaSelecionada) {
-                    item.style.display = 'block';
-                } else {
-                    item.style.display = 'none';
+        <div class="col-lg-8">
+            <div class="bloco-secao">
+                <h4 class="titulo-secao">🚀 Atividades Disponíveis</h4>
+                
+                @if (Model.Atividades == null || !Model.Atividades.Any())
+                {
+                    <p class="text-muted">Nenhuma atividade disponível no momento.</p>
                 }
-            });
-        });
-    }
-});
-</script>
-}
+                else
+                {
+                    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+                        @foreach (var atividade in Model.Atividades)
+                        {
+                            var categoriaClass = atividade.Categoria.ToLower();
+                            <div class="col">
+                                <div class="card card-atividade-grid text-center h-100 shadow-sm @categoriaClass">
+                                    <div class="card-body d-flex flex-column">
+                                        <div class="icone-materia mb-3">
+                                            @switch (categoriaClass)
+                                            {
+                                                case "matemática": <i class="bi bi-calculator-fill"></i>; break;
+                                                case "português": <i class="bi bi-book-half"></i>; break;
+                                                case "ciências": <i class="bi bi-lightbulb-fill"></i>; break;
+                                                case "artes": <i class="bi bi-palette-fill"></i>; break;
+                                                case "história": <i class="bi bi-bank"></i>; break;
+                                                case "geografia": <i class="bi bi-map-fill"></i>; break;
+                                                case "idiomas": <i class="bi bi-translate"></i>; break;
+                                                default: <i class="bi bi-star-fill"></i>; break;
+                                            }
+                                        </div>
+                                        
+                                        <div class="flex-grow-1">
+                                            <h6 class="card-title d-inline mb-0 me-2">@atividade.Titulo</h6>
+                                            <span class="badge categoria-tag">@atividade.Categoria</span>
+                                        </div>
+                                        
+                                        <a href="@Url.Action("Detalhe", "AtividadeMvc", new { id = atividade.Id })" class="btn btn-iniciar mt-3">
+                                            Iniciar
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
 </div>
-</script>
-}

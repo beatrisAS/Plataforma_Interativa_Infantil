@@ -4,118 +4,132 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="container mt-4">
-    <h1>Criar Nova Atividade</h1>
-    <p class="text-muted">Preencha os detalhes abaixo para criar uma nova atividade para os alunos.</p>
-
+<div class="criar-atividade-wrapper">
     <form asp-action="CriarAtividade" method="post">
-        <div class="card p-3 shadow-sm">
-            <h4 class="mb-3">Detalhes da Atividade</h4>
-            <div asp-validation-summary="All" class="text-danger mb-3"></div>
-            
-            <div class="row">
-                <div class="col-md-6 mb-3">
-                    <label asp-for="Titulo" class="form-label">Título</label>
-                    <input asp-for="Titulo" class="form-control" />
-                </div>
-                <div class="col-md-6 mb-3">
-                    <label asp-for="Categoria" class="form-label">Categoria</label>
-                    <input asp-for="Categoria" class="form-control" />
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-6 mb-3">
-                    <label asp-for="Descricao" class="form-label">Descrição (Opcional)</label>
-                    <input asp-for="Descricao" class="form-control" />
-                </div>
-                <div class="col-md-6 mb-3">
-                    <label asp-for="FaixaEtaria" class="form-label">Faixa Etária (Opcional)</label>
-                    <input asp-for="FaixaEtaria" class="form-control" />
-                </div>
-            </div>
+        @Html.AntiForgeryToken()
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <a href="@Url.Action("Index", "Professor")" class="btn btn-voltar"><i class="bi bi-arrow-left"></i> Voltar</a>
+            <h1 class="h3 mb-0">Criar Atividade</h1>
+            <button type="submit" class="btn btn-salvar"><i class="bi bi-check-lg"></i> Salvar Atividade</button>
+        </div>
 
-            <hr />
-
-            <h4 class="mb-3">Questões</h4>
-            <div id="questoes-container">
-                @for (int i = 0; i < Model.Questoes.Count; i++)
-                {
-                    <div class="card p-3 mb-3 questao-item">
-                        <h5>Questão @(i + 1)</h5>
-                        <div class="mb-3">
-                            <label class="form-label">Texto da Pergunta</label>
-                            <input asp-for="Questoes[i].Pergunta" class="form-control" />
-                        </div>
-                        <h6>Alternativas (marque a correta)</h6>
-                        @for (int j = 0; j < Model.Questoes[i].Alternativas.Count; j++)
-                        {
-                            <div class="input-group mb-2">
-                                <div class="input-group-text">
-                                    <input class="form-check-input mt-0" type="radio" value="@j" name="Questoes[@i].AlternativaCorreta" required />
-                                </div>
-                                <input asp-for="Questoes[i].Alternativas[j].Texto" class="form-control" placeholder="Texto da alternativa @(j + 1)" />
-                                <input type="hidden" asp-for="Questoes[i].Alternativas[j].Correta" value="@Model.Questoes[i].Alternativas[j].Correta.ToString().ToLower()" />
-                            </div>
-                        }
+        <div class="card form-card shadow-sm mb-4">
+            <div class="card-body">
+                <h5 class="form-section-title">Informações da Atividade</h5>
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Titulo" class="form-label">Título</label>
+                        <input asp-for="Titulo" class="form-control" />
+                        <span asp-validation-for="Titulo" class="text-danger"></span>
                     </div>
-                }
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Categoria" class="form-label">Categoria</label>
+                        <select asp-for="Categoria" class="form-select">
+                            <option value="">Selecione uma matéria</option>
+                            <option>Matemática</option>
+                            <option>Português</option>
+                            <option>Ciências</option>
+                            <option>História</option>
+                            <option>Geografia</option>
+                            <option>Artes</option>
+                            <option>Idiomas</option>
+                        </select>
+                        <span asp-validation-for="Categoria" class="text-danger"></span>
+                    </div>
+                </div>
+                 <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Descricao" class="form-label">Descrição</label>
+                        <input asp-for="Descricao" class="form-control" />
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="FaixaEtaria" class="form-label">Faixa Etária</label>
+                        <input asp-for="FaixaEtaria" class="form-control" />
+                    </div>
+                </div>
             </div>
-            
-            <div class="d-flex justify-content-between mt-3">
-                <button type="button" id="add-questao" class="btn btn-secondary">Adicionar Outra Questão</button>
-                <button type="submit" class="btn btn-primary">Salvar Atividade</button>
+        </div>
+
+        <div id="questoes-container"></div>
+
+        <div class="card form-card-dashed text-center">
+            <div class="card-body">
+                <button type="button" id="add-questao" class="btn btn-add-questao"><i class="bi bi-plus-circle"></i> Adicionar Nova Questão</button>
+                <div id="questoes-counter" class="text-muted small mt-2">0/5 questões criadas</div>
             </div>
         </div>
     </form>
 </div>
 
-
 @section Scripts {
     <script>
-    document.getElementById('add-questao').addEventListener('click', function() {
+    document.addEventListener('DOMContentLoaded', function() {
         const container = document.getElementById('questoes-container');
-        const index = container.getElementsByClassName('questao-item').length;
-        
-        const template = `
-        <div class="card p-3 mb-3 questao-item">
-            <h5>Questão ${index + 1}</h5>
-            <div class="mb-3">
-                <label class="form-label">Texto da Pergunta</label>
-                <input name="Questoes[${index}].Pergunta" class="form-control" required/>
-            </div>
-            <h6>Alternativas (marque a correta)</h6>
-            ${[0,1,2,3].map(j => `
-            <div class="input-group mb-2">
-                <div class="input-group-text">
-                    <input class="form-check-input mt-0" type="radio" value="${j}" name="Questoes[${index}].AlternativaCorreta" required />
-                </div>
-                <input name="Questoes[${index}].Alternativas[${j}].Texto" class="form-control" placeholder="Texto da alternativa ${j+1}" required/>
-                <input type="hidden" name="Questoes[${index}].Alternativas[${j}].Correta" value="false" />
-            </div>
-            `).join('')}
-        </div>`;
-        
-        container.insertAdjacentHTML('beforeend', template);
-    });
+        const addQuestaoBtn = document.getElementById('add-questao');
+        const counter = document.getElementById('questoes-counter');
 
-    // Lógica para garantir que o valor do radio button seja atribuído corretamente ao campo hidden
-    document.body.addEventListener('change', function(e) {
-        if (e.target.type === 'radio' && e.target.name.includes('AlternativaCorreta')) {
-            const nameParts = e.target.name.split(/[\[\]]/).filter(Boolean); // ex: ["Questoes", "0", "AlternativaCorreta"]
-            const questaoIndex = nameParts[1];
-            
-            // 1. Limpa todos os hiddens do mesmo grupo de questões para 'false'
-            const hiddenInputs = document.querySelectorAll(`input[type=hidden][name^="Questoes[${questaoIndex}].Alternativas"]`);
-            hiddenInputs.forEach(input => input.value = 'false');
-            
-            // 2. Marca o hidden correspondente ao radio selecionado como 'true'
-            const alternativaIndex = e.target.value;
-            const hiddenCorreto = document.querySelector(`input[type=hidden][name="Questoes[${questaoIndex}].Alternativas[${alternativaIndex}].Correta"]`);
-            if (hiddenCorreto) {
-                hiddenCorreto.value = 'true';
+        function updateCounter() {
+            const count = container.getElementsByClassName('questao-item').length;
+            counter.textContent = `${count}/5 questões criadas`;
+        }
+
+        function addQuestao() {
+            const index = container.getElementsByClassName('questao-item').length;
+            if (index >= 5) {
+                alert("Você pode adicionar no máximo 5 questões.");
+                return;
             }
+
+            const template = `
+            <div class="card form-card shadow-sm mb-4 questao-item">
+                <div class="card-body">
+                    <h5 class="form-section-title">Questão ${index + 1}</h5>
+                    <div class="mb-3">
+                        <label class="form-label">Pergunta</label>
+                        <input name="Questoes[${index}].Pergunta" class="form-control" placeholder="Digite a pergunta aqui..." required />
+                    </div>
+                    <div class="row">
+                        ${[0,1,2,3].map(j => {
+                            const optionChar = String.fromCharCode(65 + j);
+                            return `
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Opção ${optionChar}</label>
+                                <input name="Questoes[${index}].Alternativas[${j}].Texto" class="form-control" placeholder="Digite a opção ${optionChar}" required />
+                            </div>`
+                        }).join('')}
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Resposta Correta</label>
+                            <select name="Questoes[${index}].AlternativaCorretaIndex" class="form-select" required>
+                                <option value="" disabled selected>Selecione a correta...</option>
+                                <option value="0">Opção A</option>
+                                <option value="1">Opção B</option>
+                                <option value="2">Opção C</option>
+                                <option value="3">Opção D</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Explicação (Opcional)</label>
+                            <input name="Questoes[${index}].Explicacao" class="form-control" placeholder="Explique por que esta é a resposta correta..." />
+                        </div>
+                    </div>
+                </div>
+            </div>`;
+            
+            container.insertAdjacentHTML('beforeend', template);
+            updateCounter();
+        }
+
+        addQuestaoBtn.addEventListener('click', addQuestao);
+        
+        // Adiciona a primeira questão automaticamente ao carregar a página
+        if (container.getElementsByClassName('questao-item').length === 0){
+            addQuestao(); 
+        } else {
+            updateCounter();
         }
     });
     </script>
 }
-

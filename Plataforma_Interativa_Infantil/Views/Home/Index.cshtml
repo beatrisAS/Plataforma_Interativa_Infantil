@@ -1,19 +1,30 @@
-@{
+ @{
     ViewData["Title"] = "Bem-vindo!";
-     ViewData["HideLogoutButton"] = true;
+    ViewData["HideLogoutButton"] = true;
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <div class="container mt-5">
     <div class="row justify-content-center">
-        <div class="col-lg-10">
-            <div class="card shadow-sm">
-                <div class="card-body p-0">
-                    <div class="row g-0">
-                        <!-- Coluna do Login -->
-                        <div class="col-md-6 p-4 border-end">
+        <div class="col-lg-8">
+            <div class="card shadow-lg card-login-register">
+                <div class="card-header p-0">
+                    <ul class="nav nav-tabs nav-fill" id="loginRegisterTab" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="login-tab" data-bs-toggle="tab" data-bs-target="#login-pane" type="button" role="tab" aria-controls="login-pane" aria-selected="true">Login</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="register-tab" data-bs-toggle="tab" data-bs-target="#register-pane" type="button" role="tab" aria-controls="register-pane" aria-selected="false">Registrar</button>
+                        </li>
+                    </ul>
+                </div>
+                <div class="card-body p-4">
+                    <div class="tab-content" id="loginRegisterTabContent">
+
+                        <div class="tab-pane fade show active" id="login-pane" role="tabpanel" aria-labelledby="login-tab" tabindex="0">
                             <h4 class="text-center mb-4">Login</h4>
-                            @if (TempData["Error"] != null) {
+                            @if (TempData["Error"] != null)
+                            {
                                 <div class="alert alert-danger">@TempData["Error"]</div>
                             }
                             <form method="post" action="/Account/Login">
@@ -31,10 +42,9 @@
                             </form>
                         </div>
 
-                        <!-- Coluna do Registro -->
-                        <div class="col-md-6 p-4 bg-light">
+                        <div class="tab-pane fade" id="register-pane" role="tabpanel" aria-labelledby="register-tab" tabindex="0">
                             <h4 class="text-center mb-4">Registrar</h4>
-                            @if (TempData["ErrorRegister"] != null) {
+                             @if (TempData["ErrorRegister"] != null) {
                                 <div class="alert alert-danger">@TempData["ErrorRegister"]</div>
                             }
                             @if (TempData["SuccessRegister"] != null) {
@@ -62,7 +72,7 @@
                                     </select>
                                 </div>
                                 <div class="d-grid">
-                                    <button type="submit" class="btn btn-success">Registrar</button>
+                                    <button type="submit" class="btn btn-success">Criar Conta</button>
                                 </div>
                             </form>
                         </div>

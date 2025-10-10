@@ -8,7 +8,6 @@ namespace backend.ViewModels
         public required Crianca Crianca { get; set; }
         public List<Atividade> Atividades { get; set; } = new();
         public List<string> Conquistas { get; set; } = new();
-        
-    public List<string> CategoriasUnicas { get; set; } = new();
+        public List<string> CategoriasUnicas { get; set; } = new();
     }
 }

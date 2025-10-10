@@ -1,69 +1,97 @@
 @model backend.Models.Atividade
-@using System.Text.Json;
+@using System.Text.Json
 
 @{
     ViewData["Title"] = Model.Titulo;
-     ViewData["HideLogoutButton"] = true;
+    ViewData["HideLogoutButton"] = true;
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<link rel="stylesheet" href="~/css/site.css" />
-
-<div class="atividade-container">
-    <div class="atividade-header">
-        <div class="progress-container">
-            <div id="progress-text" class="progress-text">Questão 1 de @Model.Questoes.Count()</div>
-            <div class="progress">
-                <div id="progress-bar" class="progress-bar" role="progressbar" style="width: 0%;"></div>
+<div class="atividade-wrapper">
+    <div class="atividade-container">
+        
+        <div id="atividade-header" class="atividade-header">
+            <div class="progress-container">
+                <div id="progress-text" class="progress-text">Questão 1 de @Model.Questoes.Count()</div>
+                <div class="progress">
+                    <div id="progress-bar" class="progress-bar" role="progressbar" style="width: 0%;"></div>
+                </div>
             </div>
+            <button class="btn-sair" data-bs-toggle="modal" data-bs-target="#confirmExitModal">
+                <i class="bi bi-x-lg"></i> Sair
+            </button>
         </div>
-     
-    </div>
 
-    <div id="atividade-body" class="text-center">
-        <h2 id="pergunta-titulo" class="pergunta-titulo"></h2>
-        <div id="alternativas-container" class="alternativas-container"></div>
-    </div>
-    
-    <div id="feedback-footer" class="feedback-footer d-none">
-        <div id="feedback-content">
+        <div id="atividade-body" class="text-center">
+            <h2 id="pergunta-titulo" class="pergunta-titulo mb-4"></h2>
+            <div id="alternativas-container" class="alternativas-container">
+                </div>
+        </div>
+        
+        <div id="feedback-footer" class="feedback-footer">
             <h4 id="feedback-texto"></h4>
         </div>
-        </div>
 
-    <div id="final-screen" class="final-screen d-none text-center">
-        <h1>🎉</h1>
-        <h2 class="text-primary">Parabéns, você concluiu a atividade!</h2>
-        <p>Você acertou <strong id="acertos-finais">0</strong> de @Model.Questoes.Count() perguntas!</p>
-        <div class="mt-4">
-            <a href="@Url.Action("Index", "Crianca")" class="btn btn-secondary">Voltar ao Início</a>
+        <div id="final-screen" class="final-screen d-none">
+            <div class="card-resultado">
+                <div class="resultado-header">
+                    <i class="bi bi-star-fill star-deco star-left"></i>
+                    <i class="bi bi-trophy-fill trofeu-icone"></i>
+                    <i class="bi bi-star-fill star-deco star-right"></i>
+                </div>
+                <h1>🎉 Parabéns! 🎉</h1>
+                <p class="lead">Você concluiu a atividade!</p>
+
+                <div class="stats-container">
+                    <div class="stat-card">
+                        <i class="bi bi-bullseye"></i>
+                        <span id="acertos-finais" class="stat-valor">0/@Model.Questoes.Count()</span>
+                        <span class="stat-label">Acertos</span>
+                    </div>
+                    <div class="stat-card">
+                        <i class="bi bi-star-half"></i>
+                        <span id="nota-final" class="stat-valor">0%</span>
+                        <span class="stat-label">Nota</span>
+                    </div>
+                    <div class="stat-card">
+                        <i class="bi bi-clock-history"></i>
+                        <span id="tempo-final" class="stat-valor">0m 0s</span>
+                        <span class="stat-label">Tempo</span>
+                    </div>
+                </div>
+
+                <p class="mt-3"><b>Bom trabalho! Continue praticando!</b> 💪</p>
+                <a href="@Url.Action("Index", "Crianca")" class="btn btn-voltar-dash mt-2">
+                    <i class="bi bi-house-door-fill"></i> Voltar ao Dashboard
+                </a>
+            </div>
         </div>
     </div>
 </div>
 
 <div class="modal fade" id="confirmExitModal" tabindex="-1">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Tem certeza que quer sair?</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
-      <div class="modal-body">
-        <p>Se você sair agora, seu progresso nesta atividade não será salvo.</p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Continuar Jogando</button>
-        <a href="@Url.Action("Index", "Crianca")" class="btn btn-danger">Sim, quero sair</a>
-      </div>
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Tem certeza que quer sair?</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Se você sair agora, seu progresso nesta atividade não será salvo.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Continuar Jogando</button>
+                <a href="@Url.Action("Index", "Crianca")" class="btn btn-danger">Sim, quero sair</a>
+            </div>
+        </div>
     </div>
-  </div>
 </div>
 
 @section Scripts {
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <script>
+        // Passa os dados da atividade para o JavaScript
         const atividadeData = @Html.Raw(JsonSerializer.Serialize(Model, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase, ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles }));
     </script>
     <script src="~/js/site.js"></script>
 }
-    

@@ -1,10 +1,9 @@
--- Drop the database if it exists to ensure a clean start
 DROP DATABASE IF EXISTS plataforma_educacao;
 CREATE DATABASE plataforma_educacao;
 USE plataforma_educacao;
 
 -- ========================
--- Tabela de Usuários (Contas com Login)
+-- Tabela de Usuários 
 -- ========================
 CREATE TABLE usuarios (
   id_usuario INT AUTO_INCREMENT PRIMARY KEY,
@@ -30,7 +29,7 @@ CREATE TABLE criancas (
 );
 
 -- ========================
--- Atividades (Registros estáticos para vincular as respostas)
+-- Atividades 
 -- ========================
 CREATE TABLE atividades (
   id_atividade INT AUTO_INCREMENT PRIMARY KEY,
@@ -49,7 +48,7 @@ CREATE TABLE atividades (
 CREATE TABLE respostas_atividades (
   id_resposta INT AUTO_INCREMENT PRIMARY KEY,
   id_crianca INT NOT NULL,
-  id_atividade INT NOT NULL, -- ID da atividade ESTÁTICA correspondente à categoria
+  id_atividade INT NOT NULL, 
   desempenho INT,
   data_realizacao DATETIME DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (id_crianca) REFERENCES criancas(id_crianca),
@@ -59,18 +58,16 @@ CREATE TABLE respostas_atividades (
 -- ========================
 -- Dados de Exemplo
 -- ========================
--- Inserir usuários (pais, professores e crianças)
 INSERT INTO usuarios (nome, email, senha, perfil, telefone) VALUES
 ('João Silva','joao@email.com','senha123','pai', '(11) 99999-9999'),
 ('Maria Santos','maria@email.com','prof123','professor', '(11) 88888-8888'),
-('Pedro Costa','pedro@email.com','kids123','crianca', NULL);
+('Pedro Silva','pedro@email.com','kids123','crianca', NULL);
 
--- Inserir crianças e vinculá-las a um responsável
+
 INSERT INTO criancas (nome, data_nascimento, genero, id_responsavel, estrelas) VALUES
-('Ana Silva','2015-03-10','F', 1, 0);
+('Pedro Silva','2015-03-10','M', 1, 0);
 
--- Inserir os "moldes" de atividade, um para cada categoria que o sistema gera dinamicamente.
--- Isso é essencial para que o salvamento de respostas funcione corretamente.
+
 INSERT INTO atividades (titulo, categoria) VALUES
 ('Mundo da Matemática', 'Matemática'),
 ('Viagem Literária', 'Literatura'),

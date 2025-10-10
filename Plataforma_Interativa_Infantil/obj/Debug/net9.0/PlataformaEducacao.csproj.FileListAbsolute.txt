@@ -140,5 +140,5 @@ c:\Users\beatr\Videos\Plataforma_Interativa_Infantil\Plataforma_Interativa_Infan
 c:\Users\beatr\Videos\Plataforma_Interativa_Infantil\Plataforma_Interativa_Infantil\obj\Debug\net9.0\PlataformaEducacao.pdb
 c:\Users\beatr\Videos\Plataforma_Interativa_Infantil\Plataforma_Interativa_Infantil\obj\Debug\net9.0\PlataformaEducacao.genruntimeconfig.cache
 c:\Users\beatr\Videos\Plataforma_Interativa_Infantil\Plataforma_Interativa_Infantil\obj\Debug\net9.0\ref\PlataformaEducacao.dll
-c:\Users\beatr\Videos\Plataforma_Interativa_Infantil\Plataforma_Interativa_Infantil\obj\Debug\net9.0\compressed\qg6yymk1a7-cjnn9xmo71.gz
-c:\Users\beatr\Videos\Plataforma_Interativa_Infantil\Plataforma_Interativa_Infantil\obj\Debug\net9.0\compressed\el2ma44pt3-huubtrfxnr.gz
+c:\Users\beatr\Videos\Plataforma_Interativa_Infantil\Plataforma_Interativa_Infantil\obj\Debug\net9.0\compressed\qg6yymk1a7-e1ua4uh54h.gz
+c:\Users\beatr\Videos\Plataforma_Interativa_Infantil\Plataforma_Interativa_Infantil\obj\Debug\net9.0\compressed\el2ma44pt3-68culwmty9.gz

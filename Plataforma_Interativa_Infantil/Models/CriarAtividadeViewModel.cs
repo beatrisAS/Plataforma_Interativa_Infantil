@@ -15,7 +15,6 @@ namespace backend.ViewModels
 
         public string? FaixaEtaria { get; set; }
 
-        // Validação para garantir que pelo menos uma questão seja adicionada
         [MinLength(1, ErrorMessage = "A atividade deve ter pelo menos uma questão.")]
         public List<QuestaoViewModel> Questoes { get; set; } = new();
     }
@@ -25,13 +24,16 @@ namespace backend.ViewModels
         [Required(ErrorMessage = "O texto da pergunta é obrigatório.")]
         public string Pergunta { get; set; } = string.Empty;
         
-        // Validação para garantir 4 alternativas por questão
-        [MinLength(4)]
-        [MaxLength(4)]
+        public string? Explicacao { get; set; }
+
+        [MinLength(4), MaxLength(4)]
         public List<AlternativaViewModel> Alternativas { get; set; } = new() 
         { 
-            new AlternativaViewModel(), new AlternativaViewModel(), new AlternativaViewModel(), new AlternativaViewModel() 
+            new(), new(), new(), new() 
         };
+
+        [Required(ErrorMessage = "Selecione a resposta correta.")]
+        public int? AlternativaCorretaIndex { get; set; }
     }
 
     public class AlternativaViewModel

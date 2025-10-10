@@ -1,76 +1,197 @@
-@model List<backend.ViewModels.CriancaProgressoViewModel>
+@model backend.ViewModels.ProfessorDashboardViewModel
 @{
     ViewData["Title"] = "Dashboard do Professor";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<div class="modal fade" id="confirmLogoutModal" tabindex="-1" aria-labelledby="confirmLogoutModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="confirmLogoutModalLabel">Tem certeza que quer sair?</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <p>Você será desconectado da PlataformaEdu. Confirma a saída?</p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Ficar na Plataforma</button>
-        <a href="@Url.Action("Logout", "Account")" class="btn btn-danger">Sim, Quero Sair</a>
-      </div>
-    </div>
-  </div>
-</div>
-<div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1>Progresso dos Alunos</h1>
-        <div>
-            <a asp-action="CriarAtividade" class="btn btn-primary">Criar Nova Atividade</a>
-           [
 
-        </div>
-    </div>
+<div class="container mt-4">
 
     @if (TempData["SuccessMessage"] != null)
     {
-        <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
     }
 
-    @if (Model != null && Model.Any())
-    {
-        foreach (var aluno in Model)
-        {
-            <div class="card mb-4 shadow-sm">
-                <div class="card-header bg-light d-flex justify-content-between align-items-center">
-                    <h3 class="mb-0 h5">@aluno.Nome</h3>
-                    <span class="badge bg-warning text-dark">⭐ @aluno.Estrelas Estrelas</span>
-                </div>
-                <div class="card-body">
-                    <h6 class="card-title">Atividades Concluídas</h6>
-                    @if (aluno.Respostas.Any())
-                    {
-                        <ul class="list-group list-group-flush">
-                            @foreach (var resposta in aluno.Respostas.OrderByDescending(r => r.DataRealizacao))
-                            {
-                                <li class="list-group-item d-flex justify-content-between align-items-center px-0">
-                                    <div>
-                                        <strong>@resposta.Atividade.Titulo</strong> 
-                                        <span class="badge bg-info fw-normal">@resposta.Atividade.Categoria</span>
-                                    </div>
-                                    <span class="badge bg-success rounded-pill p-2">@resposta.Desempenho% de acerto</span>
-                                </li>
-                            }
-                        </ul>
-                    }
-                    else
-                    {
-                        <p class="text-muted mb-0">Nenhuma atividade concluída ainda.</p>
-                    }
+    <div class="row">
+        <div class="col-lg-4">
+            <div class="card card-perfil-lateral shadow-sm mb-4">
+                <div class="card-body d-flex align-items-center">
+                    <div class="avatar-perfil">@(!string.IsNullOrEmpty(User.Identity.Name) ? User.Identity.Name.Substring(0, 1) : "P")</div>
+                    <div class="ms-3">
+                        <h5 class="mb-0">@User.Identity.Name</h5>
+                        <small class="text-muted">Professor(a)</small>
+                    </div>
                 </div>
             </div>
-        }
-    }
-    else
-    {
-        <div class="alert alert-info">Nenhum aluno encontrado.</div>
-    }
+
+            <div class="row mb-4">
+                <div class="col-6 mb-3"><div class="card info-card text-center h-100"><div class="card-body p-2"><h6 class="card-title small">Alunos</h6><p class="h4">@Model.TotalAlunos</p></div></div></div>
+                <div class="col-6 mb-3"><div class="card info-card text-center h-100"><div class="card-body p-2"><h6 class="card-title small">Atividades</h6><p class="h4">@Model.TotalAtividades</p></div></div></div>
+                <div class="col-6"><div class="card info-card text-center h-100"><div class="card-body p-2"><h6 class="card-title small">Média Geral</h6><p class="h4">@Model.MediaGeral%</p></div></div></div>
+                <div class="col-6"><div class="card info-card text-center h-100"><div class="card-body p-2"><h6 class="card-title small">Respostas</h6><p class="h4">@Model.RespostasRecebidas</p></div></div></div>
+            </div>
+            
+            <h5 class="mb-3">Progresso dos Alunos</h5>
+            <div class="accordion" id="accordionAlunos">
+                @if (Model.Alunos != null && Model.Alunos.Any())
+                {
+                    foreach (var aluno in Model.Alunos)
+                    {
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="heading-@aluno.Id">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-@aluno.Id">
+                                    <span class="fw-bold me-auto">@aluno.Nome</span>
+                                    <span class="badge bg-warning text-dark">⭐ @aluno.Estrelas</span>
+                                </button>
+                            </h2>
+                            <div id="collapse-@aluno.Id" class="accordion-collapse collapse" data-bs-parent="#accordionAlunos">
+                                <div class="accordion-body">
+                                    @if (aluno.AtividadesUnicas.Any())
+                                    {
+                                        <div class="row row-cols-1 g-3">
+                                            @foreach (var atividade in aluno.AtividadesUnicas)
+                                            {
+                                                var respostaMaisRecente = aluno.Respostas.Where(r => r.AtividadeId == atividade.Id).OrderByDescending(r => r.DataRealizacao).FirstOrDefault();
+                                                var historicoContent = string.Join("", aluno.Respostas.Where(r => r.AtividadeId == atividade.Id).OrderByDescending(r => r.DataRealizacao).Select(h => $"<div class='d-flex justify-content-between small border-bottom py-1'><span>{h.DataRealizacao:dd/MM/yy}</span> <strong>{h.Desempenho}%</strong></div>"));
+                                                if (string.IsNullOrEmpty(historicoContent)) { historicoContent = "Não há histórico de tentativas."; }
+                                                
+                                                <div class="col">
+                                                    <div class="card card-atividade-progresso h-100 shadow-sm" data-bs-toggle="popover" data-bs-trigger="hover focus" title="Histórico de Tentativas" data-bs-html="true" data-bs-content="@historicoContent">
+                                                        <div class="card-body text-start d-flex flex-column">
+                                                            <div class="d-flex align-items-center mb-2">
+                                                                <div class="icone-atividade-progresso @(atividade.Categoria.ToLower()) me-2">
+                                                                    @switch (atividade.Categoria.ToLower())
+                                                                    {
+                                                                        case "matemática": <i class="bi bi-calculator-fill"></i>; break;
+                                                                        case "português": <i class="bi bi-book-half"></i>; break;
+                                                                        case "ciências": <i class="bi bi-lightbulb-fill"></i>; break;
+                                                                        case "artes": <i class="bi bi-palette-fill"></i>; break;
+                                                                        case "história": <i class="bi bi-bank"></i>; break;
+                                                                        case "geografia": <i class="bi bi-map-fill"></i>; break;
+                                                                        case "idiomas": <i class="bi bi-translate"></i>; break;
+                                                                        default: <i class="bi bi-star-fill"></i>; break;
+                                                                    }
+                                                                </div>
+                                                                <div>
+                                                                    <h6 class="card-title mb-0">@atividade.Titulo</h6>
+                                                                    <span class="badge categoria-tag-progresso">@atividade.Categoria</span>
+                                                                </div>
+                                                            </div>
+                                                            @if(respostaMaisRecente != null)
+                                                            {
+                                                                <div class="progress-info-aluno mt-auto">
+                                                                    <div class="d-flex justify-content-between small text-muted"><span>Último resultado</span><span class="fw-bold">@respostaMaisRecente.Desempenho%</span></div>
+                                                                    <div class="progress" style="height: 8px;"><div class="progress-bar" role="progressbar" style="width: @respostaMaisRecente.Desempenho%;"></div></div>
+                                                                </div>
+                                                            }
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            }
+                                        </div>
+                                    }
+                                    else { <p class="text-muted mb-0">Nenhuma atividade concluída.</p> }
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+                else { <div class="alert alert-info">Nenhum aluno encontrado.</div> }
+            </div>
+        </div>
+
+        <div class="col-lg-8 mt-4 mt-lg-0">
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h5 class="card-title mb-3">Desempenho por Matéria</h5>
+                    <canvas id="graficoDesempenho"></canvas>
+                </div>
+            </div>
+            
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="mb-0">Atividades Publicadas</h5>
+                <a href="/Professor/CriarAtividade" class="btn btn-primary btn-sm">
+    <i class="bi bi-plus-circle-fill"></i> Criar Nova
+</a>
+            </div>
+
+            <div class="card shadow-sm">
+                <div class="card-body" style="max-height: 350px; overflow-y: auto;">
+                     @if (Model.AtividadesPublicadas.Any())
+                    {
+                        <div class="row row-cols-1 row-cols-md-2 g-3">
+                           @foreach (var atividade in Model.AtividadesPublicadas)
+                           {
+                               <div class="col">
+                                   <div class="card card-atividade-progresso h-100 shadow-sm">
+                                       <div class="card-body text-start d-flex align-items-center">
+                                           <div class="icone-atividade-progresso @(atividade.Categoria.ToLower()) me-3">
+                                               @switch (atividade.Categoria.ToLower())
+                                                {
+                                                    case "matemática": <i class="bi bi-calculator-fill"></i>; break;
+                                                    case "português": <i class="bi bi-book-half"></i>; break;
+                                                    case "ciências": <i class="bi bi-lightbulb-fill"></i>; break;
+                                                    case "artes": <i class="bi bi-palette-fill"></i>; break;
+                                                    case "história": <i class="bi bi-bank"></i>; break;
+                                                    case "geografia": <i class="bi bi-map-fill"></i>; break;
+                                                    case "idiomas": <i class="bi bi-translate"></i>; break;
+                                                    default: <i class="bi bi-star-fill"></i>; break;
+                                                }
+                                           </div>
+                                           <div>
+                                               <h6 class="card-title mb-0">@atividade.Titulo</h6>
+                                               <span class="badge categoria-tag-progresso">@atividade.Categoria</span>
+                                           </div>
+                                       </div>
+                                   </div>
+                               </div>
+                           }
+                        </div>
+                    }
+                    else { <p class="text-muted mb-0">Nenhuma atividade criada.</p> }
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+@section Scripts {
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // SCRIPT DO POPOVER (RESTAURADO)
+    var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
+    var popoverList = popoverTriggerList.map(function (p) { return new bootstrap.Popover(p); });
+
+    // SCRIPT DO GRÁFICO (RESTAURADO)
+    document.addEventListener('DOMContentLoaded', function() {
+        var chartElement = document.getElementById('graficoDesempenho');
+        if (chartElement) {
+            fetch('/Professor/GetDesempenhoPorMateriaData')
+            .then(response => response.json())
+            .then(data => {
+                const labels = data.map(item => item.materia);
+                const averages = data.map(item => item.desempenhoMedio);
+                const ctx = chartElement.getContext('2d');
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Desempenho Médio (%)',
+                            data: averages,
+                            backgroundColor: 'rgba(147, 112, 219, 0.8)',
+                            borderRadius: 5
+                        }]
+                    },
+                    options: {
+                        scales: { y: { beginAtZero: true, max: 100 } },
+                        plugins: { legend: { display: false } }
+                    }
+                });
+            });
+        }
+    });
+</script>
+}

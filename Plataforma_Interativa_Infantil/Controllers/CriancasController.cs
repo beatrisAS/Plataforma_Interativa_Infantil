@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace backend.Controllers
 {
-    [Authorize(Roles = "crianca")] // Protege o dashboard para que apenas crianças logadas acessem
+    [Authorize(Roles = "crianca")]
     public class CriancaController : Controller
     {
         private readonly AppDbContext _db;
@@ -35,7 +35,7 @@ namespace backend.Controllers
 
             if (crianca == null)
             {
-                crianca = new Crianca { Id = criancaId, Nome = "Visitante", Estrelas = 0, DataNascimento = System.DateTime.Now.AddYears(-8) };
+                return RedirectToAction("Login", "Account");
             }
 
             var atividadesDinamicas = GetActivitiesFromSession();
@@ -45,17 +45,31 @@ namespace backend.Controllers
             todasAtividades.AddRange(atividadesDinamicas);
             todasAtividades.AddRange(atividadesFixas);
 
+            // Remove as atividades duplicadas
+            var atividadesUnicas = todasAtividades.GroupBy(a => a.Id).Select(g => g.First()).ToList();
+
+            // --- ALTERAÇÃO AQUI: Limita a lista para no máximo 7 atividades ---
+            var atividadesFinais = atividadesUnicas.Take(7).ToList();
+
+            // Cria a lista de categorias a partir da lista final de atividades
+            var categoriasReais = atividadesFinais
+                                      .Select(a => a.Categoria)
+                                      .Distinct()
+                                      .OrderBy(c => c)
+                                      .ToList();
+
             var respostasSalvas = await _db.RespostasAtividades.Where(r => r.CriancaId == crianca.Id).ToListAsync();
             var conquistas = _achievementService.CheckAchievements(crianca, respostasSalvas, atividadesDinamicas);
 
             var viewModel = new CriancaDashboardViewModel
             {
                 Crianca = crianca,
-                Atividades = todasAtividades.GroupBy(a => a.Categoria).Select(g => g.First()).ToList(),
+                // Usa a nova lista final com no máximo 7 atividades
+                Atividades = atividadesFinais,
+                CategoriasUnicas = categoriasReais,
                 Conquistas = conquistas
             };
 
-            // Por convenção, isso irá procurar a view em /Views/Crianca/Index.cshtml
             return View(viewModel);
         }
         

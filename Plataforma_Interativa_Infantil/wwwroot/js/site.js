@@ -1,23 +1,42 @@
 document.addEventListener('DOMContentLoaded', function () {
+    // Seleção de Elementos
     const atividadeBody = document.getElementById('atividade-body');
     const finalScreen = document.getElementById('final-screen');
-    const acertosFinais = document.getElementById('acertos-finais');
     const progressBar = document.getElementById('progress-bar');
     const progressText = document.getElementById('progress-text');
     const perguntaTitulo = document.getElementById('pergunta-titulo');
     const alternativasContainer = document.getElementById('alternativas-container');
     const feedbackFooter = document.getElementById('feedback-footer');
     const feedbackTexto = document.getElementById('feedback-texto');
-    // 'btnContinuar' foi removido.
+    
+    // Novos elementos da tela final
+    const acertosFinais = document.getElementById('acertos-finais');
+    const notaFinal = document.getElementById('nota-final');
+    const tempoFinal = document.getElementById('tempo-final');
+
+    // Verifica se os elementos essenciais existem antes de continuar
+    if (!atividadeBody || !atividadeData) {
+        // Se não estiver na página da atividade, não faz nada.
+        return;
+    }
 
     const questoes = atividadeData.questoes;
     const totalQuestoes = questoes.length;
     let currentQuestionIndex = 0;
     let acertos = 0;
 
+    // Variáveis do Cronômetro
+    let startTime;
+
     function renderQuestion(index) {
-        feedbackFooter.classList.add('d-none');
-        alternativasContainer.innerHTML = '';
+        // Inicia o cronômetro na primeira questão
+        if (index === 0) {
+            startTime = new Date();
+        }
+
+        feedbackFooter.classList.remove('visible');
+        perguntaTitulo.classList.remove('fade-out');
+        alternativasContainer.classList.remove('fade-out');
 
         const questao = questoes[index];
         const progresso = ((index + 1) / totalQuestoes) * 100;
@@ -26,32 +45,21 @@ document.addEventListener('DOMContentLoaded', function () {
         progressText.innerText = `Questão ${index + 1} de ${totalQuestoes}`;
         progressBar.style.width = `${progresso}%`;
 
+        alternativasContainer.innerHTML = '';
         questao.alternativas.forEach(alt => {
             const alternativaEl = document.createElement('div');
             alternativaEl.className = 'alternativa-card';
             alternativaEl.innerText = alt.texto;
             alternativaEl.dataset.correta = alt.correta;
-            alternativasContainer.appendChild(alternativaEl);
             alternativaEl.addEventListener('click', handleAnswerClick);
+            alternativasContainer.appendChild(alternativaEl);
         });
     }
-
-    function animacaoAcerto() {
-        document.body.classList.add('bg-correct');
-        setTimeout(() => document.body.classList.remove('bg-correct'), 800);
-    }
-
-    function animacaoErro() {
-        document.body.classList.add('bg-incorrect');
-        setTimeout(() => document.body.classList.remove('bg-incorrect'), 800);
-    }
-
 
     function handleAnswerClick(event) {
         const selecionada = event.target;
         const isCorrect = selecionada.dataset.correta.toLowerCase() === 'true';
 
-        // Desabilita todas as alternativas
         document.querySelectorAll('.alternativa-card').forEach(btn => {
             btn.classList.add('disabled');
             btn.removeEventListener('click', handleAnswerClick);
@@ -60,47 +68,59 @@ document.addEventListener('DOMContentLoaded', function () {
         if (isCorrect) {
             selecionada.classList.add('correct');
             feedbackTexto.innerText = "🎉 Resposta Correta!";
-            feedbackFooter.className = 'feedback-footer correct';
+            feedbackFooter.className = 'feedback-footer correct visible';
             acertos++;
-            animacaoAcerto();
         } else {
             selecionada.classList.add('incorrect');
-            feedbackTexto.innerText = "❌ Ops! Tente na próxima!";
-            feedbackFooter.className = 'feedback-footer incorrect';
-            animacaoErro();
-            // Marca a correta
+            feedbackTexto.innerText = "❌ Ops! Resposta errada.";
+            feedbackFooter.className = 'feedback-footer incorrect visible';
+            
             const corretaEl = document.querySelector('.alternativa-card[data-correta="true"]');
             if (corretaEl) corretaEl.classList.add('correct');
         }
-        
-        // 1. MOSTRA O FEEDBACK
-        feedbackFooter.classList.remove('d-none');
-        
-        // 2. FLUXO AUTOMÁTICO: AVANÇA APÓS 2 SEGUNDOS
-        setTimeout(() => {
-            proximaQuestao();
-        }, 2000); 
+
+        setTimeout(() => proximaQuestao(), 2000);
     }
 
     function proximaQuestao() {
-        // Oculta o rodapé de feedback antes de avançar
-        feedbackFooter.classList.add('d-none');
+        feedbackFooter.classList.remove('visible');
+        perguntaTitulo.classList.add('fade-out');
+        alternativasContainer.classList.add('fade-out');
 
         currentQuestionIndex++;
-        if (currentQuestionIndex < totalQuestoes) {
-            renderQuestion(currentQuestionIndex);
-        } else {
-            showFinalScreen();
-        }
+
+        setTimeout(() => {
+            if (currentQuestionIndex < totalQuestoes) {
+                renderQuestion(currentQuestionIndex);
+            } else {
+                showFinalScreen();
+            }
+        }, 400); // Espera a animação de fade-out
+    }
+
+    function formatarTempo(totalSegundos) {
+        const minutos = Math.floor(totalSegundos / 60);
+        const segundos = Math.floor(totalSegundos % 60);
+        return `${minutos}m ${segundos}s`;
     }
 
     async function showFinalScreen() {
-        atividadeBody.classList.add('d-none');
-        feedbackFooter.classList.add('d-none');
-        finalScreen.classList.remove('d-none');
-        acertosFinais.innerText = acertos;
+        const endTime = new Date();
+        const tempoDecorrido = (endTime - startTime) / 1000; // em segundos
+        const notaPercentual = Math.round((acertos / totalQuestoes) * 100);
 
-        confetti({ particleCount: 150, spread: 90, origin: { y: 0.6 } });
+        // Atualiza os valores na nova tela final
+        acertosFinais.innerText = `${acertos}/${totalQuestoes}`;
+        notaFinal.innerText = `${notaPercentual}%`;
+        tempoFinal.innerText = formatarTempo(tempoDecorrido);
+        
+        // Esconde o corpo da atividade e mostra a tela final
+        document.getElementById('atividade-header').style.display = 'none';
+        atividadeBody.style.display = 'none'; // Esconde a área de perguntas
+        finalScreen.classList.remove('d-none'); // Mostra a tela de resultados
+        
+        // Ativa os confetes
+        confetti({ particleCount: 200, spread: 100, origin: { y: 0.6 } });
 
         try {
             await fetch('/api/atividades/salvarresultado', {
@@ -116,28 +136,78 @@ document.addEventListener('DOMContentLoaded', function () {
             console.error('Erro ao salvar o resultado:', err);
         }
     }
-
-    renderQuestion(currentQuestionIndex);
-
-    // --- Acessibilidade ---
-    const increaseFontBtn = document.getElementById('increaseFont');
-    const decreaseFontBtn = document.getElementById('decreaseFont');
-    const toggleContrastBtn = document.getElementById('toggleContrast');
-
-    if (increaseFontBtn) {
-        increaseFontBtn.addEventListener('click', () => changeFontSize(2));
-    }
-    if (decreaseFontBtn) {
-        decreaseFontBtn.addEventListener('click', () => changeFontSize(-2));
-    }
-    if (toggleContrastBtn) {
-        toggleContrastBtn.addEventListener('click', () => {
-            document.body.classList.toggle('high-contrast');
-        });
+    
+    // Inicia o jogo
+    if (totalQuestoes > 0) {
+        renderQuestion(currentQuestionIndex);
     }
 
-    function changeFontSize(amount) {
-        let currentSize = parseFloat(window.getComputedStyle(document.body).getPropertyValue('font-size'));
-        document.body.style.fontSize = (currentSize + amount) + 'px';
+    document.addEventListener('DOMContentLoaded', () => {
+  let currentFontSize = 100;
+  let leituraAtiva = false;
+  let synth = window.speechSynthesis;
+
+  const increaseFont = document.getElementById('increaseFont');
+  const decreaseFont = document.getElementById('decreaseFont');
+  const resetFont = document.getElementById('resetFont');
+  const toggleContrast = document.getElementById('toggleContrast');
+  const toggleDaltonismo = document.getElementById('toggleDaltonismo');
+  const toggleLeitura = document.getElementById('toggleLeitura');
+  const toggleAnimacoes = document.getElementById('toggleAnimacoes');
+
+  // Aumentar Fonte
+  increaseFont.addEventListener('click', () => {
+    currentFontSize += 10;
+    document.body.style.fontSize = `${currentFontSize}%`;
+  });
+
+  // Diminuir Fonte
+  decreaseFont.addEventListener('click', () => {
+    currentFontSize = Math.max(80, currentFontSize - 10);
+    document.body.style.fontSize = `${currentFontSize}%`;
+  });
+
+  // Resetar Fonte
+  resetFont.addEventListener('click', () => {
+    currentFontSize = 100;
+    document.body.style.fontSize = '100%';
+  });
+
+  // Alto Contraste
+  toggleContrast.addEventListener('click', () => {
+    document.body.classList.toggle('high-contrast');
+  });
+
+  // Modo Daltônico (simulação de protanopia)
+  toggleDaltonismo.addEventListener('click', () => {
+    document.body.classList.toggle('daltonismo');
+  });
+
+  // Leitura de Texto com Voz
+  toggleLeitura.addEventListener('click', () => {
+    leituraAtiva = !leituraAtiva;
+    toggleLeitura.innerText = leituraAtiva ? 'Desativar Leitura de Texto' : 'Ativar Leitura de Texto';
+    if (leituraAtiva) {
+      document.addEventListener('click', lerTexto);
+    } else {
+      document.removeEventListener('click', lerTexto);
+      synth.cancel();
     }
+  });
+
+  function lerTexto(e) {
+    const texto = e.target.innerText || e.target.alt || '';
+    if (texto.trim() !== '') {
+      synth.cancel();
+      const fala = new SpeechSynthesisUtterance(texto);
+      fala.lang = 'pt-BR';
+      synth.speak(fala);
+    }
+  }
+
+  // Pausar Animações
+  toggleAnimacoes.addEventListener('click', () => {
+    document.body.classList.toggle('no-animacoes');
+  });
+});
 });

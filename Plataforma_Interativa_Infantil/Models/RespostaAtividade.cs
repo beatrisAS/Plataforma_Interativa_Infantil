@@ -1,5 +1,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
-
+using System;
+using System.Collections.Generic;
+using backend.ViewModels; // Adicione este using
 namespace backend.Models;
 
 [Table("respostas_atividades")]
@@ -22,4 +24,8 @@ public class RespostaAtividade
 
     public Crianca Crianca { get; set; } = null!;
     public Atividade Atividade { get; set; } = null!;
+    // --- ADICIONE ESTA LINHA ---
+        // Esta lista não será salva no banco de dados, apenas usada para exibição.
+        [NotMapped]
+        public List<HistoricoTentativaViewModel> Historico { get; set; } = new();
 }

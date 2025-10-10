@@ -7,6 +7,7 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using backend.ViewModels;
 using System.Collections.Generic;
+using backend.Models; // Certifique-se de que o Model Atividade está acessível
 
 namespace backend.Controllers
 {
@@ -22,32 +23,44 @@ namespace backend.Controllers
 
         public async Task<IActionResult> Index()
         {
-            // --- CORREÇÃO DE NULIDADE ---
             var userIdValue = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (string.IsNullOrEmpty(userIdValue) || !int.TryParse(userIdValue, out var paiId))
             {
-                // Se não encontrar o ID do usuário, redireciona para o logout
                 return RedirectToAction("Logout", "Account");
             }
-            // --- FIM DA CORREÇÃO ---
 
-            var criancas = await _context.Criancas
+            var criancasDoPai = await _context.Criancas
                 .Where(c => c.IdResponsavel == paiId)
-                .Select(c => new CriancaProgressoViewModel
-                {
-                    Id = c.Id,
-                    Nome = c.Nome,
-                    Estrelas = c.Estrelas,
-                    Respostas = _context.RespostasAtividades
-                        .Where(r => r.CriancaId == c.Id)
-                        .Include(r => r.Atividade)
-                        .OrderByDescending(r => r.DataRealizacao)
-                        .ToList()
-                })
                 .ToListAsync();
+
+            var progressoDasCriancas = new List<CriancaProgressoViewModel>();
+
+            foreach (var crianca in criancasDoPai)
+            {
+                var respostas = await _context.RespostasAtividades
+                    .Where(r => r.CriancaId == crianca.Id)
+                    .Include(r => r.Atividade) 
+                    .ToListAsync();
+                
+                var atividadesUnicas = respostas
+                    .Select(r => r.Atividade)
+                    .GroupBy(a => a.Id)
+                    .Select(g => g.First())
+                    .OrderBy(a => a.Categoria)
+                    .ToList();
+                
+                progressoDasCriancas.Add(new CriancaProgressoViewModel
+                {
+                    Id = crianca.Id,
+                    Nome = crianca.Nome,
+                    Estrelas = crianca.Estrelas,
+                    DataNascimento = crianca.DataNascimento, // Preenche a data de nascimento
+                    Respostas = respostas,
+                    AtividadesUnicas = atividadesUnicas
+                });
+            }
             
-            return View(criancas);
+            return View(progressoDasCriancas);
         }
     }
 }
-
