@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "YvJi/+93GPQ=",
+  "dgSpecHash": "wn1owv7vtus=",
   "success": true,
-  "projectFilePath": "c:\\Users\\beatr\\Videos\\Plataforma_Interativa_Infantil\\Plataforma_Interativa_Infantil\\PlataformaEducacao.csproj",
+  "projectFilePath": "C:\\Users\\beatr\\Videos\\Plataforma_Interativa_Infantil\\Plataforma_Interativa_Infantil\\PlataformaEducacao.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\beatr\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
     "C:\\Users\\beatr\\.nuget\\packages\\microsoft.aspnetcore.authentication.jwtbearer\\9.0.9\\microsoft.aspnetcore.authentication.jwtbearer.9.0.9.nupkg.sha512",

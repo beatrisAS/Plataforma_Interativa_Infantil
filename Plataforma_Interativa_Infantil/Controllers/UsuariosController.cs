@@ -20,7 +20,7 @@ public class UsuariosController(AppDbContext db) : ControllerBase {
 
     [HttpPost]
     public async Task<IActionResult> Create(Usuario u) {
-        // Salva senha em texto puro
+        
         db.Usuarios.Add(u);
         await db.SaveChangesAsync();
         return CreatedAtAction(nameof(Get), new { id = u.Id }, u);

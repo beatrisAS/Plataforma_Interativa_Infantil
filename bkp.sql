@@ -3,7 +3,7 @@ CREATE DATABASE plataforma_educacao;
 USE plataforma_educacao;
 
 -- ========================
--- Tabela de Usuários 
+-- Tabela de Usuários
 -- ========================
 CREATE TABLE usuarios (
   id_usuario INT AUTO_INCREMENT PRIMARY KEY,
@@ -29,18 +29,19 @@ CREATE TABLE criancas (
 );
 
 -- ========================
--- Atividades 
+-- Tabela de Atividades
 -- ========================
 CREATE TABLE atividades (
   id_atividade INT AUTO_INCREMENT PRIMARY KEY,
   titulo VARCHAR(150) NOT NULL,
   descricao TEXT,
   faixa_etaria VARCHAR(20),
-  categoria VARCHAR(50) UNIQUE NOT NULL,
+  categoria VARCHAR(50) NOT NULL,
   dificuldade ENUM('fácil','médio','difícil') DEFAULT 'fácil',
-  icone VARCHAR(50) DEFAULT '📚'
+  icone VARCHAR(50) DEFAULT '📚',
+  id_professor INT,
+  FOREIGN KEY (id_professor) REFERENCES usuarios(id_usuario)
 );
-
 
 -- ========================
 -- Respostas e Progresso
@@ -48,7 +49,7 @@ CREATE TABLE atividades (
 CREATE TABLE respostas_atividades (
   id_resposta INT AUTO_INCREMENT PRIMARY KEY,
   id_crianca INT NOT NULL,
-  id_atividade INT NOT NULL, 
+  id_atividade INT NOT NULL,
   desempenho INT,
   data_realizacao DATETIME DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (id_crianca) REFERENCES criancas(id_crianca),
@@ -63,16 +64,15 @@ INSERT INTO usuarios (nome, email, senha, perfil, telefone) VALUES
 ('Maria Santos','maria@email.com','prof123','professor', '(11) 88888-8888'),
 ('Pedro Silva','pedro@email.com','kids123','crianca', NULL);
 
-
 INSERT INTO criancas (nome, data_nascimento, genero, id_responsavel, estrelas) VALUES
 ('Pedro Silva','2015-03-10','M', 1, 0);
 
 
-INSERT INTO atividades (titulo, categoria) VALUES
-('Mundo da Matemática', 'Matemática'),
-('Viagem Literária', 'Literatura'),
-('Explorando a Ciência', 'Ciências'),
-('Oficina de Artes', 'Artes'),
-('Passaporte de Idiomas', 'Idiomas'),
-('Viajando pelo Mapa', 'Geografia'),
-('Máquina do Tempo', 'História');
+INSERT INTO atividades (titulo, categoria, id_professor) VALUES
+('Mundo da Matemática', 'Matemática', 2),
+('Viagem Literária', 'Literatura', 2),
+('Explorando a Ciência', 'Ciências', 2),
+('Oficina de Artes', 'Artes', NULL), 
+('Passaporte de Idiomas', 'Idiomas', NULL), 
+('Viajando pelo Mapa', 'Geografia', 2),
+('Máquina do Tempo', 'História', 2);

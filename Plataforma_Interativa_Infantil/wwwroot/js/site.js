@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () {
-    // Seleção de Elementos
+   
     const atividadeBody = document.getElementById('atividade-body');
     const finalScreen = document.getElementById('final-screen');
     const progressBar = document.getElementById('progress-bar');
@@ -9,14 +9,14 @@ document.addEventListener('DOMContentLoaded', function () {
     const feedbackFooter = document.getElementById('feedback-footer');
     const feedbackTexto = document.getElementById('feedback-texto');
     
-    // Novos elementos da tela final
+ 
     const acertosFinais = document.getElementById('acertos-finais');
     const notaFinal = document.getElementById('nota-final');
     const tempoFinal = document.getElementById('tempo-final');
 
-    // Verifica se os elementos essenciais existem antes de continuar
+   
     if (!atividadeBody || !atividadeData) {
-        // Se não estiver na página da atividade, não faz nada.
+    
         return;
     }
 
@@ -25,11 +25,11 @@ document.addEventListener('DOMContentLoaded', function () {
     let currentQuestionIndex = 0;
     let acertos = 0;
 
-    // Variáveis do Cronômetro
+   
     let startTime;
 
     function renderQuestion(index) {
-        // Inicia o cronômetro na primeira questão
+     
         if (index === 0) {
             startTime = new Date();
         }
@@ -95,7 +95,7 @@ document.addEventListener('DOMContentLoaded', function () {
             } else {
                 showFinalScreen();
             }
-        }, 400); // Espera a animação de fade-out
+        }, 400);
     }
 
     function formatarTempo(totalSegundos) {
@@ -106,20 +106,20 @@ document.addEventListener('DOMContentLoaded', function () {
 
     async function showFinalScreen() {
         const endTime = new Date();
-        const tempoDecorrido = (endTime - startTime) / 1000; // em segundos
+        const tempoDecorrido = (endTime - startTime) / 1000; 
         const notaPercentual = Math.round((acertos / totalQuestoes) * 100);
 
-        // Atualiza os valores na nova tela final
+      
         acertosFinais.innerText = `${acertos}/${totalQuestoes}`;
         notaFinal.innerText = `${notaPercentual}%`;
         tempoFinal.innerText = formatarTempo(tempoDecorrido);
         
-        // Esconde o corpo da atividade e mostra a tela final
-        document.getElementById('atividade-header').style.display = 'none';
-        atividadeBody.style.display = 'none'; // Esconde a área de perguntas
-        finalScreen.classList.remove('d-none'); // Mostra a tela de resultados
         
-        // Ativa os confetes
+        document.getElementById('atividade-header').style.display = 'none';
+        atividadeBody.style.display = 'none'; 
+        finalScreen.classList.remove('d-none'); 
+        
+       
         confetti({ particleCount: 200, spread: 100, origin: { y: 0.6 } });
 
         try {
@@ -137,77 +137,64 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
     
-    // Inicia o jogo
+   
     if (totalQuestoes > 0) {
         renderQuestion(currentQuestionIndex);
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
-  let currentFontSize = 100;
-  let leituraAtiva = false;
-  let synth = window.speechSynthesis;
+const accessBtn = document.getElementById("accessBtn");
+const accessMenu = document.getElementById("accessMenu");
 
-  const increaseFont = document.getElementById('increaseFont');
-  const decreaseFont = document.getElementById('decreaseFont');
-  const resetFont = document.getElementById('resetFont');
-  const toggleContrast = document.getElementById('toggleContrast');
-  const toggleDaltonismo = document.getElementById('toggleDaltonismo');
-  const toggleLeitura = document.getElementById('toggleLeitura');
-  const toggleAnimacoes = document.getElementById('toggleAnimacoes');
+if (accessBtn && accessMenu) {
+    accessBtn.addEventListener("click", () => {
+        accessMenu.style.display = accessMenu.style.display === "block" ? "none" : "block";
+    });
+}
 
-  // Aumentar Fonte
-  increaseFont.addEventListener('click', () => {
-    currentFontSize += 10;
-    document.body.style.fontSize = `${currentFontSize}%`;
-  });
+function toggleContrast() {
+    document.body.classList.toggle("high-contrast");
+}
 
-  // Diminuir Fonte
-  decreaseFont.addEventListener('click', () => {
-    currentFontSize = Math.max(80, currentFontSize - 10);
-    document.body.style.fontSize = `${currentFontSize}%`;
-  });
+function toggleFont() {
+    document.body.classList.toggle("large-font");
+}
 
-  // Resetar Fonte
-  resetFont.addEventListener('click', () => {
-    currentFontSize = 100;
-    document.body.style.fontSize = '100%';
-  });
+function toggleDaltonismo() {
+    document.body.classList.toggle("daltonismo");
+}
 
-  // Alto Contraste
-  toggleContrast.addEventListener('click', () => {
-    document.body.classList.toggle('high-contrast');
-  });
+function toggleAnim() {
+    const style = document.createElement("style");
+    style.innerHTML = "* { animation: none !important; transition: none !important; }";
+    document.head.appendChild(style);
+}
 
-  // Modo Daltônico (simulação de protanopia)
-  toggleDaltonismo.addEventListener('click', () => {
-    document.body.classList.toggle('daltonismo');
-  });
+function toggleRead() {
+    const text = document.body.innerText;
+    const utterance = new SpeechSynthesisUtterance(text);
+    speechSynthesis.speak(utterance);
+}
+const contrastBtn = document.getElementById("contrastBtn");
+const fontBtn = document.getElementById("fontBtn");
+const daltonismoBtn = document.getElementById("daltonismoBtn");
+const animBtn = document.getElementById("animBtn");
+const readBtn = document.getElementById("readBtn");
 
-  // Leitura de Texto com Voz
-  toggleLeitura.addEventListener('click', () => {
-    leituraAtiva = !leituraAtiva;
-    toggleLeitura.innerText = leituraAtiva ? 'Desativar Leitura de Texto' : 'Ativar Leitura de Texto';
-    if (leituraAtiva) {
-      document.addEventListener('click', lerTexto);
-    } else {
-      document.removeEventListener('click', lerTexto);
-      synth.cancel();
-    }
-  });
+if (daltonismoBtn) {
+    daltonismoBtn.addEventListener("click", toggleDaltonismo);
+}
 
-  function lerTexto(e) {
-    const texto = e.target.innerText || e.target.alt || '';
-    if (texto.trim() !== '') {
-      synth.cancel();
-      const fala = new SpeechSynthesisUtterance(texto);
-      fala.lang = 'pt-BR';
-      synth.speak(fala);
-    }
-  }
+if (animBtn) {
+    animBtn.addEventListener("click", toggleAnim);
+}
 
-  // Pausar Animações
-  toggleAnimacoes.addEventListener('click', () => {
-    document.body.classList.toggle('no-animacoes');
-  });
-});
+if (readBtn) {
+    readBtn.addEventListener("click", toggleRead);
+}
+if (contrastBtn) {
+    contrastBtn.addEventListener("click", toggleContrast);
+}
+if (fontBtn) {
+    fontBtn.addEventListener("click", toggleFont);
+}
 });

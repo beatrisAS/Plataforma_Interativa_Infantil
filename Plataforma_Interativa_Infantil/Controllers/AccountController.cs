@@ -87,7 +87,7 @@ namespace backend.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-        [HttpGet]
+        [HttpPost]
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
@@ -100,7 +100,7 @@ namespace backend.Controllers
             {
                 "pai" => RedirectToAction("Index", "Pai"),
                 "professor" => RedirectToAction("Index", "Professor"),
-                // --- CORREÇÃO AQUI ---
+                
                 "crianca" => RedirectToAction("Index", "Crianca"),
                 _ => RedirectToAction("Index", "Home"),
             };

@@ -1,84 +1,266 @@
- @{
+@{
     ViewData["Title"] = "Bem-vindo!";
-    ViewData["HideLogoutButton"] = true;
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-lg-8">
-            <div class="card shadow-lg card-login-register">
-                <div class="card-header p-0">
-                    <ul class="nav nav-tabs nav-fill" id="loginRegisterTab" role="tablist">
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link active" id="login-tab" data-bs-toggle="tab" data-bs-target="#login-pane" type="button" role="tab" aria-controls="login-pane" aria-selected="true">Login</button>
-                        </li>
-                        <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="register-tab" data-bs-toggle="tab" data-bs-target="#register-pane" type="button" role="tab" aria-controls="register-pane" aria-selected="false">Registrar</button>
-                        </li>
-                    </ul>
-                </div>
-                <div class="card-body p-4">
-                    <div class="tab-content" id="loginRegisterTabContent">
+<style>
+    :root {
+        --cor-fundo: #f8f9fa;
+        --cor-texto: #343a40;
+        --cor-texto-claro: #ffffff;
+        
+        --vibrante-amarelo: #FFD700;
+        --vibrante-verde: #3CB371;
+        --vibrante-azul: #1E90FF;
+        --vibrante-laranja: #FFA500;
+        --vibrante-roxo: #9370DB; 
+        --vibrante-rosa: #FF69B4;
+        --vibrante-vermelho-perigo: #FF6347;
 
-                        <div class="tab-pane fade show active" id="login-pane" role="tabpanel" aria-labelledby="login-tab" tabindex="0">
-                            <h4 class="text-center mb-4">Login</h4>
-                            @if (TempData["Error"] != null)
-                            {
-                                <div class="alert alert-danger">@TempData["Error"]</div>
-                            }
-                            <form method="post" action="/Account/Login">
-                                <div class="mb-3">
-                                    <label class="form-label">Email</label>
-                                    <input name="Email" type="email" class="form-control" placeholder="seu@email.com" required />
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Senha</label>
-                                    <input name="Senha" type="password" class="form-control" placeholder="••••••" required />
-                                </div>
-                                <div class="d-grid">
-                                    <button type="submit" class="btn btn-primary">Entrar</button>
-                                </div>
-                            </form>
-                        </div>
+        --cor-sucesso: var(--vibrante-verde);
+        --cor-perigo: var(--vibrante-vermelho-perigo);
+        --cor-primaria-login: var(--vibrante-roxo);
 
-                        <div class="tab-pane fade" id="register-pane" role="tabpanel" aria-labelledby="register-tab" tabindex="0">
-                            <h4 class="text-center mb-4">Registrar</h4>
-                             @if (TempData["ErrorRegister"] != null) {
-                                <div class="alert alert-danger">@TempData["ErrorRegister"]</div>
-                            }
-                            @if (TempData["SuccessRegister"] != null) {
-                                <div class="alert alert-success">@TempData["SuccessRegister"]</div>
-                            }
-                            <form method="post" action="/Account/Register">
-                                <div class="mb-3">
-                                    <label class="form-label">Nome Completo</label>
-                                    <input name="Nome" type="text" class="form-control" placeholder="Seu Nome" required />
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Email</label>
-                                    <input name="Email" type="email" class="form-control" placeholder="seu@email.com" required />
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Senha</label>
-                                    <input name="Senha" type="password" class="form-control" placeholder="Crie uma senha forte" required />
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Eu sou</label>
-                                    <select name="Perfil" class="form-select">
-                                        <option value="pai">Pai/Responsável</option>
-                                        <option value="professor">Professor</option>
-                                        <option value="crianca">Criança</option>
-                                    </select>
-                                </div>
-                                <div class="d-grid">
-                                    <button type="submit" class="btn btn-success">Criar Conta</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        --cor-branco: #ffffff;
+        --cor-cinza-claro: #e9ecef;
+        --cor-cinza-escuro: #6c757d;
+    }
+
+    /* ======== GERAL ======== */
+    body {
+        font-family: "Poppins", sans-serif;
+        color: var(--cor-texto);
+        background: var(--cor-fundo);
+        background-attachment: fixed;
+        margin: 0;
+        padding: 0;
+        min-height: 100vh;
+    }
+
+    .pagina-login {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        min-height: 100vh;
+        padding: 30px 15px;
+    }
+
+    /* ======== CABEÇALHO ======== */
+    .cabecalho {
+        text-align: center;
+        margin-bottom: 30px;
+        color: var(--cor-texto-claro);
+        text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+    }
+
+    .cabecalho .titulo {
+        font-size: 2.8rem;
+        font-weight: 700;
+       color: #3b4cca;
+    }
+
+
+    .cabecalho .subtitulo {
+        font-size: 1.2rem;
+        color: #555;
+        margin-top: 10px;
+        font-weight: 500;
+    }
+
+     /* ======== CAIXA PRINCIPAL ======== */
+    .caixa-formulario {
+        background: #fff;
+        border-radius: 20px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 600px;
+        padding: 30px;
+        text-align: center;
+        transition: transform 0.3s;
+    }
+
+    .caixa-formulario:hover {
+        transform: translateY(-3px);
+    }
+
+    /* ======== ABAS ======== */
+    .abas {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 20px;
+    }
+
+    .aba {
+        flex: 1;
+        padding: 10px 0;
+        cursor: pointer;
+        font-weight: 600;
+        color: #555;
+        background: #e6ecff;
+        border: none;
+        border-radius: 20px 20px 0 0;
+        transition: 0.3s;
+    }
+
+    .aba:hover {
+        background: #d2dcff;
+    }
+
+    .aba.ativa {
+        background: #3b4cca;
+        color: #fff;
+    }
+
+    /* ======== FORMULÁRIOS ======== */
+    .formulario {
+        display: none;
+        text-align: left;
+        padding-top: 10px;
+    }
+
+    .formulario.ativo {
+        display: block;
+        animation: aparecer 0.4s ease;
+    }
+
+    h2 {
+        font-weight: 700;
+         color: #3b4cca;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+
+    label {
+        font-weight: 600;
+        display: block;
+        margin-bottom: 5px;
+        color: var(--cor-texto);
+    }
+
+    input, select {
+        width: 100%;
+        padding: 10px;
+        border-radius: 10px;
+        border: 1px solid var(--cor-cinza-escuro);
+        margin-bottom: 15px;
+        transition: border 0.2s;
+    }
+
+    input:focus, select:focus {
+        outline: none;
+        border-color: var(--vibrante-roxo);
+        box-shadow: 0 0 6px rgba(147, 112, 219, 0.5);
+    }
+
+    .botao {
+        width: 100%;
+        border: none;
+        border-radius: 25px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.3s ease;
+        padding: 10px 0;
+        font-size: 1rem;
+        color: var(--cor-texto-claro);
+    }
+
+     .botao-primario {
+        background: #3b4cca;
+        color: white;
+    }
+
+    .botao-primario:hover {
+        background: #3b4ccacc;
+    }
+
+    .botao-secundario {
+        background: #3CB371;
+        color: white;
+    }
+
+    .botao-secundario:hover {
+        background: #3CB371cc;
+    }
+
+    footer {
+        margin-top: 40px;
+         color: #777;
+        text-align: center;
+        font-size: 0.9rem;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+    }
+</style>
+
+<div class="pagina-login">
+    <header class="cabecalho">
+        <h1 class="titulo">PlataformaEdu</h1>
+        <p class="subtitulo">Aprender pode ser divertido! Explore atividades gamificadas e descubra o prazer do conhecimento.</p>
+    </header>
+
+    <div class="caixa-formulario">
+        <div class="abas">
+            <button class="aba ativa" id="btnLogin" aria-controls="formLogin">Login</button>
+            <button class="aba" id="btnRegistrar" aria-controls="formRegistrar">Registrar</button>
+        </div>
+
+        <!-- Formulário Login -->
+        <div id="formLogin" class="formulario ativo" aria-labelledby="btnLogin">
+            <h2>Login</h2>
+            <form method="post" action="/Account/Login">
+                <label for="email">📧 Email</label>
+                <input type="email" id="email" name="Email" placeholder="seu@email.com" required>
+
+                <label for="senha">🔒 Senha</label>
+                <input type="password" id="senha" name="Senha" placeholder="••••••" required>
+
+                <button type="submit" class="botao botao-primario">Entrar</button>
+            </form>
+        </div>
+
+        <!-- Formulário Registro -->
+        <div id="formRegistrar" class="formulario" aria-labelledby="btnRegistrar">
+            <h2>Registrar</h2>
+            <form method="post" action="/Account/Register">
+                <label for="nome">👤 Nome Completo</label>
+                <input type="text" id="nome" name="Nome" placeholder="Seu nome completo" required>
+
+                <label for="emailRegister">📧 Email</label>
+                <input type="email" id="emailRegister" name="Email" placeholder="seu@email.com" required>
+
+                <label for="senhaRegister">🔑 Senha</label>
+                <input type="password" id="senhaRegister" name="Senha" placeholder="Crie uma senha forte" required>
+
+                <label for="perfil">🧩 Eu sou</label>
+                <select id="perfil" name="Perfil">
+                    <option value="pai">Pai/Responsável</option>
+                    <option value="professor">Professor</option>
+                    <option value="crianca">Criança</option>
+                </select>
+
+                <button type="submit" class="botao botao-secundario">Criar Conta</button>
+            </form>
         </div>
     </div>
 </div>
+
+<script>
+    const btnLogin = document.getElementById("btnLogin");
+    const btnRegistrar = document.getElementById("btnRegistrar");
+    const formLogin = document.getElementById("formLogin");
+    const formRegistrar = document.getElementById("formRegistrar");
+
+    btnLogin.addEventListener("click", () => {
+        formLogin.classList.add("ativo");
+        formRegistrar.classList.remove("ativo");
+        btnLogin.classList.add("ativa");
+        btnRegistrar.classList.remove("ativa");
+    });
+
+    btnRegistrar.addEventListener("click", () => {
+        formRegistrar.classList.add("ativo");
+        formLogin.classList.remove("ativo");
+        btnRegistrar.classList.add("ativa");
+        btnLogin.classList.remove("ativa");
+    });
+</script>

@@ -7,7 +7,7 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using backend.ViewModels;
 using System.Collections.Generic;
-using backend.Models; // Certifique-se de que o Model Atividade está acessível
+using backend.Models; 
 
 namespace backend.Controllers
 {
@@ -54,7 +54,7 @@ namespace backend.Controllers
                     Id = crianca.Id,
                     Nome = crianca.Nome,
                     Estrelas = crianca.Estrelas,
-                    DataNascimento = crianca.DataNascimento, // Preenche a data de nascimento
+                    DataNascimento = crianca.DataNascimento, 
                     Respostas = respostas,
                     AtividadesUnicas = atividadesUnicas
                 });

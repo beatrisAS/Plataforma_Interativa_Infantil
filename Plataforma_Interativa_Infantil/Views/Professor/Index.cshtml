@@ -3,6 +3,78 @@
     ViewData["Title"] = "Dashboard do Professor";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+<style>
+
+.btn-acao-principal {
+    background-color: var(--vibrante-roxo); 
+    color: var(--cor-texto-claro);
+    font-weight: 700;
+    font-size: 0.9rem;
+    padding: 0.6rem 1.2rem;
+    border-radius: 12px;
+    border: none;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.btn-acao-principal:hover {
+    transform: translateY(-2px);
+    background-color: #8257d9; 
+    color: var(--cor-texto-claro);
+}
+
+.btn-acao-principal i {
+    margin-right: 0.5rem;
+}
+<style>
+    :root {
+        --cor-fundo: #f8f9fa;
+        --cor-texto: #343a40;
+        --cor-texto-claro: #ffffff;
+        
+        --vibrante-amarelo: #FFD700;
+        --vibrante-verde: #3CB371;
+        --vibrante-azul: #1E90FF;
+        --vibrante-laranja: #FFA500;
+        --vibrante-roxo: #9370DB; 
+        --vibrante-rosa: #FF69B4;
+        --vibrante-vermelho-perigo: #FF6347;
+
+        --cor-sucesso: var(--vibrante-verde);
+        --cor-perigo: var(--vibrante-vermelho-perigo);
+        --cor-primaria-login: var(--vibrante-roxo);
+
+        --cor-branco: #ffffff;
+        --cor-cinza-claro: #e9ecef;
+        --cor-cinza-escuro: #6c757d;
+    }
+
+    /* ======== GERAL ======== */
+    body {
+        font-family: "Poppins", sans-serif;
+        color: var(--cor-texto);
+        background: var(--cor-fundo);
+        background-attachment: fixed;
+        margin: 0;
+        padding: 0;
+        min-height: 100vh;
+    }
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    footer {
+        margin-top: 40px;
+         color: #777;
+        text-align: center;
+        font-size: 0.9rem;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+    }
+
+</style>
+
 
 <div class="container mt-4">
 
@@ -16,7 +88,7 @@
 
     <div class="row">
         <div class="col-lg-4">
-            <div class="card card-perfil-lateral shadow-sm mb-4">
+            <div class="card card-perfil-lateral mb-4">
                 <div class="card-body d-flex align-items-center">
                     <div class="avatar-perfil">@(!string.IsNullOrEmpty(User.Identity.Name) ? User.Identity.Name.Substring(0, 1) : "P")</div>
                     <div class="ms-3">
@@ -27,10 +99,10 @@
             </div>
 
             <div class="row mb-4">
-                <div class="col-6 mb-3"><div class="card info-card text-center h-100"><div class="card-body p-2"><h6 class="card-title small">Alunos</h6><p class="h4">@Model.TotalAlunos</p></div></div></div>
-                <div class="col-6 mb-3"><div class="card info-card text-center h-100"><div class="card-body p-2"><h6 class="card-title small">Atividades</h6><p class="h4">@Model.TotalAtividades</p></div></div></div>
-                <div class="col-6"><div class="card info-card text-center h-100"><div class="card-body p-2"><h6 class="card-title small">Média Geral</h6><p class="h4">@Model.MediaGeral%</p></div></div></div>
-                <div class="col-6"><div class="card info-card text-center h-100"><div class="card-body p-2"><h6 class="card-title small">Respostas</h6><p class="h4">@Model.RespostasRecebidas</p></div></div></div>
+                <div class="col-6 mb-3"><div class="card info-card h-100"><div class="card-body p-2"><h6 class="card-title small">Alunos</h6><p class="h4">@Model.TotalAlunos</p></div></div></div>
+                <div class="col-6 mb-3"><div class="card info-card h-100"><div class="card-body p-2"><h6 class="card-title small">Atividades</h6><p class="h4">@Model.TotalAtividades</p></div></div></div>
+                <div class="col-6"><div class="card info-card h-100"><div class="card-body p-2"><h6 class="card-title small">Média Geral</h6><p class="h4">@Model.MediaGeral%</p></div></div></div>
+                <div class="col-6"><div class="card info-card h-100"><div class="card-body p-2"><h6 class="card-title small">Respostas</h6><p class="h4">@Model.RespostasRecebidas</p></div></div></div>
             </div>
             
             <h5 class="mb-3">Progresso dos Alunos</h5>
@@ -58,7 +130,7 @@
                                                 if (string.IsNullOrEmpty(historicoContent)) { historicoContent = "Não há histórico de tentativas."; }
                                                 
                                                 <div class="col">
-                                                    <div class="card card-atividade-progresso h-100 shadow-sm" data-bs-toggle="popover" data-bs-trigger="hover focus" title="Histórico de Tentativas" data-bs-html="true" data-bs-content="@historicoContent">
+                                                    <div class="card card-atividade-progresso h-100" data-bs-toggle="popover" data-bs-trigger="hover focus" title="Histórico de Tentativas" data-bs-html="true" data-bs-content="@historicoContent">
                                                         <div class="card-body text-start d-flex flex-column">
                                                             <div class="d-flex align-items-center mb-2">
                                                                 <div class="icone-atividade-progresso @(atividade.Categoria.ToLower()) me-2">
@@ -83,7 +155,7 @@
                                                             {
                                                                 <div class="progress-info-aluno mt-auto">
                                                                     <div class="d-flex justify-content-between small text-muted"><span>Último resultado</span><span class="fw-bold">@respostaMaisRecente.Desempenho%</span></div>
-                                                                    <div class="progress" style="height: 8px;"><div class="progress-bar" role="progressbar" style="width: @respostaMaisRecente.Desempenho%;"></div></div>
+                                                                    <div class="progress"><div class="progress-bar" role="progressbar" style="width: @respostaMaisRecente.Desempenho%;"></div></div>
                                                                 </div>
                                                             }
                                                         </div>
@@ -103,7 +175,7 @@
         </div>
 
         <div class="col-lg-8 mt-4 mt-lg-0">
-            <div class="card shadow-sm mb-4">
+            <div class="card mb-4">
                 <div class="card-body">
                     <h5 class="card-title mb-3">Desempenho por Matéria</h5>
                     <canvas id="graficoDesempenho"></canvas>
@@ -112,23 +184,23 @@
             
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <h5 class="mb-0">Atividades Publicadas</h5>
-                <a href="/Professor/CriarAtividade" class="btn btn-primary btn-sm">
-    <i class="bi bi-plus-circle-fill"></i> Criar Nova
-</a>
+                <a href="/Professor/CriarAtividade" class="btn btn-acao-principal">
+                <i class="bi bi-plus-circle-fill"></i> Criar Nova Atividade
+            </a>
             </div>
 
-            <div class="card shadow-sm">
-                <div class="card-body" style="max-height: 350px; overflow-y: auto;">
+            <div class="card">
+                <div class="card-body" style="max-height: 400px; overflow-y: auto;">
                      @if (Model.AtividadesPublicadas.Any())
                     {
                         <div class="row row-cols-1 row-cols-md-2 g-3">
                            @foreach (var atividade in Model.AtividadesPublicadas)
                            {
                                <div class="col">
-                                   <div class="card card-atividade-progresso h-100 shadow-sm">
+                                   <div class="card card-atividade-progresso h-100">
                                        <div class="card-body text-start d-flex align-items-center">
                                            <div class="icone-atividade-progresso @(atividade.Categoria.ToLower()) me-3">
-                                               @switch (atividade.Categoria.ToLower())
+                                                @switch (atividade.Categoria.ToLower())
                                                 {
                                                     case "matemática": <i class="bi bi-calculator-fill"></i>; break;
                                                     case "português": <i class="bi bi-book-half"></i>; break;
@@ -160,11 +232,11 @@
 @section Scripts {
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    // SCRIPT DO POPOVER (RESTAURADO)
+    
     var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
     var popoverList = popoverTriggerList.map(function (p) { return new bootstrap.Popover(p); });
 
-    // SCRIPT DO GRÁFICO (RESTAURADO)
+  
     document.addEventListener('DOMContentLoaded', function() {
         var chartElement = document.getElementById('graficoDesempenho');
         if (chartElement) {
@@ -182,7 +254,7 @@
                             label: 'Desempenho Médio (%)',
                             data: averages,
                             backgroundColor: 'rgba(147, 112, 219, 0.8)',
-                            borderRadius: 5
+                            borderRadius: 8
                         }]
                     },
                     options: {

@@ -32,7 +32,7 @@ namespace backend.Services
                 FaixaEtaria = "3-5 anos"
             };
 
-            // Pega 5 cores aleatórias para as 5 perguntas
+           
             var coresUsadas = cores.Keys.OrderBy(c => _random.Next()).Take(5).ToList();
 
             for (int i = 0; i < 5; i++)
@@ -42,25 +42,25 @@ namespace backend.Services
                 {
                     Id = i + 1,
                     Ordem = i + 1,
-                    // A view da atividade pode usar o código hexadecimal para mostrar a cor
+                  
                     Pergunta = $"Qual o nome desta cor? ({cores[corCorreta]})", 
                     Tipo = "multipla"
                 };
 
-                // Adiciona a alternativa correta
+                
                 var alternativas = new List<Alternativa>
                 {
                     new() { Id = 1, Texto = corCorreta, Correta = true }
                 };
 
-                // Pega 3 cores aleatórias e diferentes da correta para as alternativas erradas
+              
                 var coresIncorretas = cores.Keys.Where(c => c != corCorreta).OrderBy(c => _random.Next()).Take(3);
                 foreach (var cor in coresIncorretas)
                 {
                     alternativas.Add(new Alternativa { Id = alternativas.Count + 1, Texto = cor, Correta = false });
                 }
                 
-                // Embaralha as alternativas
+              
                 questao.Alternativas = alternativas.OrderBy(a => _random.Next()).ToList();
                 atividade.Questoes.Add(questao);
             }

@@ -29,7 +29,7 @@ namespace backend.Controllers
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public async Task<IActionResult> Index()
         {
-            // TODO: Substituir ID fixo pela lógica de usuário logado a partir do Claim
+           
             var criancaId = 1; 
             var crianca = await _db.Criancas.FindAsync(criancaId);
 
@@ -45,13 +45,13 @@ namespace backend.Controllers
             todasAtividades.AddRange(atividadesDinamicas);
             todasAtividades.AddRange(atividadesFixas);
 
-            // Remove as atividades duplicadas
+     
             var atividadesUnicas = todasAtividades.GroupBy(a => a.Id).Select(g => g.First()).ToList();
 
-            // --- ALTERAÇÃO AQUI: Limita a lista para no máximo 7 atividades ---
+           
             var atividadesFinais = atividadesUnicas.Take(7).ToList();
 
-            // Cria a lista de categorias a partir da lista final de atividades
+            
             var categoriasReais = atividadesFinais
                                       .Select(a => a.Categoria)
                                       .Distinct()
@@ -64,7 +64,7 @@ namespace backend.Controllers
             var viewModel = new CriancaDashboardViewModel
             {
                 Crianca = crianca,
-                // Usa a nova lista final com no máximo 7 atividades
+               
                 Atividades = atividadesFinais,
                 CategoriasUnicas = categoriasReais,
                 Conquistas = conquistas

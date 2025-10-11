@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Collections.Generic;
+using backend.Models; 
 
 namespace backend.Models
 {
@@ -15,17 +16,19 @@ namespace backend.Models
         [Column("categoria")]
         public string Categoria { get; set; } = string.Empty;
 
-        // --- CORREÇÃO ---
-        // As propriedades foram marcadas como nullable (string?) para permitir
-        // que o banco de dados retorne valores nulos sem causar um erro de conversão.
         [Column("descricao")]
         public string? Descricao { get; set; }
 
         [Column("faixa_etaria")]
         public string? FaixaEtaria { get; set; }
         
-        // Esta coleção é usada pelas atividades dinâmicas e pelas criadas por professores.
         public ICollection<Questao> Questoes { get; set; } = new List<Questao>();
+
+        [Column("id_professor")] 
+        public int? ProfessorId { get; set; }
+
+      
+        [ForeignKey("ProfessorId")]
+        public Usuario? Professor { get; set; }
     }
 }
-

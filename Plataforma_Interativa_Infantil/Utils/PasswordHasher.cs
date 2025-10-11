@@ -3,7 +3,7 @@ using System.Security.Cryptography;
 
 namespace backend.Utils;
 public static class PasswordHasher {
-    // PBKDF2 simples
+  
     public static string Hash(string password) {
         var salt = new byte[16];
         using(var rng = RandomNumberGenerator.Create()) rng.GetBytes(salt);
@@ -11,7 +11,7 @@ public static class PasswordHasher {
         var pbkdf2 = new Rfc2898DeriveBytes(password, salt, 100_000, HashAlgorithmName.SHA256);
         var hash = pbkdf2.GetBytes(32);
 
-        var result = new byte[49]; // 1 versão + 16 salt + 32 hash
+        var result = new byte[49]; 
         result[0] = 0x01;
         Buffer.BlockCopy(salt, 0, result, 1, 16);
         Buffer.BlockCopy(hash, 0, result, 17, 32);
