@@ -220,7 +220,6 @@ body {
 .feedback-footer.incorrect { background-color: var(--cor-perigo); }
 .fade-out { opacity: 0; transition: opacity 0.3s; }
 
-/* --- TELA FINAL DE RESULTADOS --- */
 .final-screen { 
     position: absolute; 
     top: 0; left: 0; 
