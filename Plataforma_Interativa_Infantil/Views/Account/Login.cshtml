@@ -1,0 +1,170 @@
+@{
+    ViewData["Title"] = "Login";
+    Layout = "~/Views/Shared/_LayoutPublico.cshtml";
+}
+
+<style>
+    
+    .login-container { display: flex; align-items: center; justify-content: center; padding: 50px 20px; }
+    .login-card { background: #fff; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.07); width: 100%; max-width: 450px; padding: 30px; text-align: center; overflow: hidden; }
+    .login-card .icon { width: 60px; height: 60px; border-radius: 12px; background: #7b61ff; color: #fff; font-size: 2rem; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 10px; }
+    .login-card h5 { font-weight: 600; color: #343a40; }
+    .login-card p { color: #6c757d; font-size: 0.95rem; margin-bottom: 20px; }
+    .tabs { display: flex; background: #f0f2ff; border-radius: 10px; padding: 5px; margin-bottom: 25px; }
+    .tab-link { flex: 1; padding: 8px 10px; border: none; background: transparent; border-radius: 8px; font-weight: 500; color: #6c757d; cursor: pointer; transition: all 0.3s; }
+    .tab-link.active { background: #fff; color: #7b61ff; font-weight: 600; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+    .form-group { text-align: left; margin-bottom: 15px; }
+    .form-group label { font-weight: 500; font-size: 0.9rem; color: #343a40; margin-bottom: 5px; }
+    .form-group input, .form-group select { width: 100%; padding: 10px 12px; border: 1px solid #ced4da; border-radius: 8px; }
+    .btn-submit { background: #7b61ff; color: #fff; width: 100%; border: none; padding: 12px; font-weight: 600; border-radius: 8px; margin-top: 10px; }
+    .btn-submit:hover { background: #6a53e0; }
+    
+
+    .campo-crianca {
+        display: none;
+    }
+
+    .navbar-public .navbar-brand {
+    font-weight: 700;
+    font-size: 1.5rem;
+    color: #7b61ff;
+    display: flex
+;
+    align-items: center;
+}
+</style>
+
+<div class="login-container">
+    <div class="login-card">
+    <h5 class="d-flex align-items-center justify-content-center">
+            <i class="bi bi-mortarboard-fill me-2"></i> 
+            <span>CogniVerse</span>
+        </h5>
+        <p>Entre ou crie sua conta para começar</p>
+
+        <div class="tabs">
+            <button class="tab-link active" data-tab="login-tab">Login</button>
+            <button class="tab-link" data-tab="cadastro-tab">Cadastro</button>
+        </div>
+
+        <div id="login-tab" class="tab-content active">
+            @if (TempData["Error"] != null)
+            {
+                <div class="alert alert-danger">@TempData["Error"]</div>
+            }
+            <form action="@Url.Action("Login", "Account")" method="post">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="Email" placeholder="seu@email.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="senha">Senha</label>
+                    <input type="password" id="senha" name="Senha" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="btn-submit">Entrar</button>
+            </form>
+        </div>
+
+        <div id="cadastro-tab" class="tab-content">
+            @if (TempData["ErrorRegister"] != null)
+            {
+                 <div class="alert alert-danger">@TempData["ErrorRegister"]</div>
+            }
+           <form action="@Url.Action("Register", "Account")" method="post" id="formCadastro">
+                <div class="form-group">
+                    <label for="nome">Nome</label>
+                    <input type="text" id="nome" name="Nome" placeholder="Seu nome completo" required>
+                </div>
+                <div class="form-group">
+                    <label for="emailRegister">Email</label>
+                    <input type="email" id="emailRegister" name="Email" placeholder="seu@email.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="senhaRegister">Senha</label>
+                    <input type="password" id="senhaRegister" name="Senha" placeholder="Crie uma senha forte" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="perfil">Tipo de Perfil</label>
+                    <select id="perfil" name="Perfil" class="form-select" required>
+                        <option value="">Selecione o tipo de perfil</option>
+                        <option value="pai">Pai/Responsável</option>
+                        <option value="professor">Professor</option>
+                        <option value="crianca">Criança (Aluno)</option> </select>
+                </div>
+
+                <div class="form-group campo-crianca">
+                    <label for="dataNascimento">Data de Nascimento</label>
+                    <input type="date" id="dataNascimento" name="DataNascimento" class="form-control" />
+                </div>
+                <div class="form-group campo-crianca">
+                    <label for="genero">Gênero</label>
+                    <select id="genero" name="Genero" class="form-select">
+                        <option value="">Selecione...</option>
+                        <option value="M">Masculino</option>
+                        <option value="F">Feminino</option>
+                        <option value="Outro">Outro</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn-submit">Cadastrar</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+           
+            const loginTabButton = document.querySelector('.tab-link[data-tab="login-tab"]');
+            const cadastroTabButton = document.querySelector('.tab-link[data-tab="cadastro-tab"]');
+            const loginContent = document.getElementById('login-tab');
+            const cadastroContent = document.getElementById('cadastro-tab');
+
+            function showLogin() {
+                loginTabButton.classList.add('active');
+                loginContent.classList.add('active');
+                cadastroTabButton.classList.remove('active');
+                cadastroContent.classList.remove('active');
+            }
+
+            function showCadastro() {
+                cadastroTabButton.classList.add('active');
+                cadastroContent.classList.add('active');
+                loginTabButton.classList.remove('active');
+                loginContent.classList.remove('active');
+            }
+
+            loginTabButton.addEventListener('click', showLogin);
+            cadastroTabButton.addEventListener('click', showCadastro);
+
+            var hasError = @(TempData["ErrorRegister"] != null ? "true" : "false");
+            if (hasError) {
+                showCadastro();
+            }
+            
+          
+            const perfilSelect = document.getElementById('perfil');
+            const camposCrianca = document.querySelectorAll('.campo-crianca'); 
+            const inputData = document.getElementById('dataNascimento');
+            const inputGenero = document.getElementById('genero');
+
+            perfilSelect.addEventListener('change', function() {
+                if (this.value === 'crianca') {
+                  
+                    camposCrianca.forEach(campo => campo.style.display = 'block');
+                    inputData.setAttribute('required', 'required');
+                    inputGenero.setAttribute('required', 'required');
+                } else {
+                   
+                    camposCrianca.forEach(campo => campo.style.display = 'none');
+                    inputData.removeAttribute('required');
+                    inputGenero.removeAttribute('required');
+                }
+            });
+
+        });
+    </script>
+}

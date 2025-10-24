@@ -1,157 +1,334 @@
-@model List<backend.ViewModels.CriancaProgressoViewModel>
+@using backend.ViewModels
+@using backend.Models
+
+@model backend.ViewModels.PaiDashboardViewModel
 @{
     ViewData["Title"] = "Dashboard do Responsável";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+
+<!-- CSS (sem alterações) -->
 <style>
-    /* ======== GERAL ======== */
+    :root {
+        --cor-fundo-pai: #F9FAFF;
+        --cor-fundo-card: #FFFFFF;
+        --cor-borda: #EAEFFF;
+        --cor-texto-primario: #334155;
+        --cor-texto-secundario: #64748B;
+        --cor-principal: #7B61FF; /* Roxo principal */
+        --cor-principal-claro: #F0F2FF;
+        --cor-sucesso: #10B981;
+        --cor-sucesso-fundo: #ECFDF5;
+        --cor-perigo: #EF4444;
+        --cor-perigo-fundo: #FEF2F2;
+        --cor-aviso: #F59E0B;
+        --cor-aviso-fundo: #FFFBEB;
+    }
+
     body {
+        background-color: var(--cor-fundo-pai);
         font-family: "Poppins", sans-serif;
-        color: var(--cor-texto);
-        background: var(--cor-fundo);
-        background-attachment: fixed;
-        margin: 0;
-        padding: 0;
-        min-height: 100vh;
-    }
-    .container {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 20px;
+        color: var(--cor-texto-primario);
     }
 
-    footer {
-        margin-top: 40px;
-         color: #777;
-        text-align: center;
+    .dashboard-header-pai {
+        margin-bottom: 24px;
+    }
+     .dashboard-header-pai h4 {
+        font-weight: 600;
+        margin-bottom: 4px;
+    }
+    .dashboard-header-pai p {
+        color: var(--cor-texto-secundario);
+        font-size: 0.95rem;
+    }
+
+    .card-progresso {
+        background-color: var(--cor-fundo-card);
+        border: 1px solid var(--cor-borda);
+        border-radius: 12px;
+        padding: 24px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+        margin-bottom: 24px;
+    }
+    .card-progresso .card-header-custom {
+        display: flex;
+        align-items: center;
+        margin-bottom: 20px;
+        padding-bottom: 16px;
+        border-bottom: 1px solid var(--cor-borda);
+    }
+    .card-progresso .icone-header {
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 12px;
+        font-size: 1.1rem;
+    }
+     .card-progresso h5 {
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin-bottom: 0;
+    }
+
+    .icone-realizadas { background-color: var(--cor-sucesso-fundo); color: var(--cor-sucesso); }
+    .icone-pendentes { background-color: var(--cor-aviso-fundo); color: var(--cor-aviso); }
+
+    .atividade-realizada-item {
+        background-color: #F9FAFF;
+        border: 1px solid var(--cor-borda);
+        border-radius: 8px;
+        padding: 16px;
+        margin-bottom: 12px;
+        position: relative;
+    }
+     .atividade-realizada-item h6 {
+        font-weight: 600;
+        margin-bottom: 4px;
+    }
+    .atividade-realizada-item .detalhes {
+        font-size: 0.85rem;
+        color: var(--cor-texto-secundario);
+        display: flex;
+        gap: 16px;
+        margin-bottom: 8px;
+    }
+    .atividade-realizada-item .nota-badge {
+        font-size: 0.8rem;
+        padding: 4px 8px;
+        border-radius: 6px;
+        font-weight: 600;
+        margin-left: 8px;
+    }
+    .bg-nota-alta { background-color: var(--cor-sucesso-fundo); color: var(--cor-sucesso); }
+    .bg-nota-media { background-color: var(--cor-aviso-fundo); color: #A16207; }
+    .bg-nota-baixa { background-color: var(--cor-perigo-fundo); color: var(--cor-perigo); }
+
+    .check-realizada {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        color: var(--cor-sucesso);
+        font-size: 1.3rem;
+    }
+
+    .atividade-pendente-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid var(--cor-borda);
+        padding: 12px 0;
+    }
+    .atividade-pendente-item:last-child { border-bottom: none; }
+     .atividade-pendente-item span { font-weight: 500; color: var(--cor-texto-secundario); }
+    .icone-pendente-badge {
+        width: 24px; height: 24px; border-radius: 50%;
+        background-color: var(--cor-aviso-fundo); color: var(--cor-aviso);
+        display: inline-flex; align-items: center; justify-content: center;
         font-size: 0.9rem;
-        text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
     }
 
+    .chart-container-pai {
+         padding: 24px; background-color: var(--cor-fundo-card);
+         border-radius: 12px; border: 1px solid var(--cor-borda);
+         box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+    }
+     .chart-container-pai h5 { font-size: 1.1rem; font-weight: 600; margin-bottom: 20px; }
+
+     .alert-sem-filhos {
+        background-color: var(--cor-principal-claro); border-color: var(--cor-principal);
+        color: var(--cor-principal);
+    }
+    .alert-sem-filhos .alert-link { color: var(--cor-principal); font-weight: 600; }
+     .btn-vincular-primeiro { background-color: var(--cor-principal); color: white; }
+    .btn-vincular-primeiro:hover { background-color: #6a53e0; color: white; }
 </style>
 
-@functions {
-    int CalcularIdade(DateTime dataNascimento)
-    {
-        var hoje = DateTime.Today;
-        var idade = hoje.Year - dataNascimento.Year;
-        if (dataNascimento.Date > hoje.AddYears(-idade)) idade--;
-        return idade;
-    }
-}
-
 <div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1>Progresso dos Filhos</h1>
-    </div>
 
-    @if (Model != null && Model.Any())
+    <!-- Mensagem de Sucesso (Toast) -->
+    @if (TempData["SuccessMessage"] != null)
     {
-        foreach (var crianca in Model)
+        <div class="toast-container position-fixed top-0 end-0 p-3">
+            <div class="toast show align-items-center text-bg-dark border-0" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="d-flex">
+                    <div class="toast-body"><i class="bi bi-check-circle-fill me-2"></i>@TempData["SuccessMessage"]</div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+            </div>
+        </div>
+    }
+
+    <!-- Se NÃO houver crianças vinculadas -->
+    @if (!Model.TemCriancasVinculadas)
+    {
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-6 text-center">
+                 <div class="alert alert-sem-filhos" role="alert">
+                    <h4 class="alert-heading">Nenhuma Criança Vinculada</h4>
+                    <p>Você ainda não vinculou nenhuma criança à sua conta. Para acompanhar o progresso, utilize o código de vínculo fornecido pela criança.</p>
+                    <hr>
+                    <a href="@Url.Action("VincularCrianca", "Pai")" class="btn btn-vincular-primeiro">
+                        <i class="bi bi-link-45deg"></i> Vincular Primeira Criança
+                    </a>
+                </div>
+            </div>
+        </div>
+    }
+    else // Se HÁ criança vinculada
+    {
+        // Verifica se CriancaDetalhe não é nulo antes de acessar
+        if(Model.CriancaDetalhe == null)
         {
-            <div class="row mb-5 align-items-start">
-                <div class="col-lg-4">
-                    <div class="card card-perfil-lateral shadow-sm">
-                        <div class="card-body d-flex align-items-center">
-                            <div class="avatar-perfil">
-                                @(!string.IsNullOrEmpty(crianca.Nome) ? crianca.Nome.Substring(0, 1) : "?")
-                            </div>
-                            <div class="ms-3">
-                                <h5 class="mb-0">@crianca.Nome</h5>
-                                <small class="text-muted">Idade: @CalcularIdade(crianca.DataNascimento) anos</small>
-                            </div>
+             <div class="alert alert-warning">Erro ao carregar os detalhes da criança.</div>
+        }
+        else
+        {
+            var crianca = Model.CriancaDetalhe; // Acesso simplificado
+
+            <!-- Cabeçalho -->
+            <div class="dashboard-header-pai">
+                <h4>Progresso de @crianca.Nome</h4>
+                <p>Acompanhe o desempenho e evolução do aprendizado.</p>
+            </div>
+
+            <div class="row">
+                <!-- Coluna Esquerda: Atividades Realizadas e Pendentes -->
+                <div class="col-lg-6">
+                    <!-- Card Atividades Realizadas -->
+                    <div class="card-progresso">
+                        <div class="card-header-custom">
+                            <div class="icone-header icone-realizadas"><i class="bi bi-check2-circle"></i></div>
+                            <h5>Atividades Realizadas</h5>
+                        </div>
+                        <div class="card-body p-0">
+                            <!-- ============================================== -->
+                            <!--   CORREÇÃO 1: Usar .Count > 0 em vez de .Any()  -->
+                            <!-- ============================================== -->
+                            @if (crianca.AtividadesRealizadas != null && crianca.AtividadesRealizadas.Count > 0)
+                            {
+                                @foreach (var atividade in crianca.AtividadesRealizadas)
+                                {
+                                    string notaClasse;
+                                    if(atividade.Nota >= 80) { notaClasse = "bg-nota-alta"; }
+                                    else if (atividade.Nota >= 60) { notaClasse = "bg-nota-media"; }
+                                    else { notaClasse = "bg-nota-baixa"; }
+
+                                    <div class="atividade-realizada-item" data-bs-toggle="tooltip" data-bs-placement="top" title="Tentativas: @atividade.Tentativas">
+                                        <h6>@atividade.Titulo <span class="badge @notaClasse nota-badge">@atividade.Nota%</span></h6>
+                                        <div class="detalhes">
+                                            <span>@atividade.Categoria</span>
+                                            <span>@atividade.Acertos / @atividade.TotalQuestoes acertos</span>
+                                            <span>Nota: @atividade.Nota%</span>
+                                        </div>
+                                        <div class="check-realizada"><i class="bi bi-check-circle-fill"></i></div>
+                                    </div>
+                                }
+                            }
+                            else { <p class="text-muted">Nenhuma atividade realizada ainda.</p> }
+                        </div>
+                    </div>
+
+                    <!-- Card Atividades Pendentes -->
+                    <div class="card-progresso">
+                        <div class="card-header-custom">
+                             <div class="icone-header icone-pendentes"><i class="bi bi-exclamation-circle"></i></div>
+                            <h5>Atividades Pendentes</h5>
+                        </div>
+                        <div class="card-body p-0">
+                            <!-- ============================================== -->
+                            <!--   CORREÇÃO 2: Usar .Count > 0 em vez de .Any()  -->
+                            <!-- ============================================== -->
+                            @if (crianca.AtividadesPendentes != null && crianca.AtividadesPendentes.Count > 0)
+                            {
+                                @foreach (var atividade in crianca.AtividadesPendentes)
+                                {
+                                    <div class="atividade-pendente-item">
+                                        <span>@atividade.Titulo (@atividade.Categoria)</span>
+                                        <span class="icone-pendente-badge"><i class="bi bi-hourglass-split"></i></span>
+                                    </div>
+                                }
+                            }
+                            else { <p class="text-muted">Todas as atividades foram iniciadas!</p> }
                         </div>
                     </div>
                 </div>
 
-                <div class="col-lg-8">
-                    @if (crianca.AtividadesUnicas.Any())
-                    {
-                        <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-3">
-                            @foreach (var atividade in crianca.AtividadesUnicas)
-                            {
-                                var respostaMaisRecente = crianca.Respostas
-                                    .Where(r => r.AtividadeId == atividade.Id)
-                                    .OrderByDescending(r => r.DataRealizacao)
-                                    .FirstOrDefault();
+                <!-- Coluna Direita: Gráfico -->
+                <div class="col-lg-6">
+                    <div class="chart-container-pai">
+                        <h5>Média das Atividades</h5>
+                         <!-- ============================================== -->
+                         <!--   CORREÇÃO 3: Usar .Count > 0 em vez de .Any()  -->
+                         <!-- ============================================== -->
+                         @if (crianca.MediaPorMateria != null && crianca.MediaPorMateria.Count > 0)
+                         {
+                            <canvas id="graficoMediaMaterias"></canvas>
+                         }
+                         else { <p class="text-muted">Sem dados suficientes para exibir o gráfico.</p> }
+                    </div>
 
-                                var historicoContent = string.Join("", crianca.Respostas
-                                    .Where(r => r.AtividadeId == atividade.Id)
-                                    .OrderByDescending(r => r.DataRealizacao)
-                                    .Select(h => $"<div class='d-flex justify-content-between small border-bottom py-1'><span>{h.DataRealizacao:dd/MM/yy}</span> <strong>{h.Desempenho}%</strong></div>")
-                                );
-                                if (string.IsNullOrEmpty(historicoContent)) {
-                                    historicoContent = "Não há histórico de tentativas.";
-                                }
-
-                                var categoriaClass = atividade.Categoria.ToLower();
-                                <div class="col">
-                                    <div class="card card-atividade-grid text-center h-100 shadow-sm @categoriaClass"
-                                         data-bs-toggle="popover" 
-                                         data-bs-trigger="hover focus" 
-                                         data-bs-title="Histórico de Tentativas" 
-                                         data-bs-html="true"
-                                         data-bs-content="@historicoContent">
-                                        
-                                        <div class="card-body d-flex flex-column">
-                                            <div class="icone-materia mb-3">
-                                                 @switch (categoriaClass)
-                                                {
-                                                    case "matemática": <i class="bi bi-calculator-fill"></i>; break;
-                                                    case "português": <i class="bi bi-book-half"></i>; break;
-                                                    case "ciências": <i class="bi bi-lightbulb-fill"></i>; break;
-                                                    case "artes": <i class="bi bi-palette-fill"></i>; break;
-                                                    case "história": <i class="bi bi-bank"></i>; break;
-                                                    case "geografia": <i class="bi bi-map-fill"></i>; break;
-                                                    case "idiomas": <i class="bi bi-translate"></i>; break;
-                                                    default: <i class="bi bi-star-fill"></i>; break;
-                                                }
-                                            </div>
-                                            
-                                            <div class="flex-grow-1">
-                                                <h6 class="card-title d-inline mb-0 me-2">@atividade.Titulo</h6>
-                                                <span class="badge categoria-tag">@atividade.Categoria</span>
-                                            </div>
-
-                                            @if(respostaMaisRecente != null)
-                                            {
-                                                <div class="progress-info mt-3">
-                                                    <div class="d-flex justify-content-between small text-muted">
-                                                        <span>Último resultado</span>
-                                                        <span class="fw-bold">@respostaMaisRecente.Desempenho%</span>
-                                                    </div>
-                                                    <div class="progress" style="height: 8px;">
-                                                        <div class="progress-bar" role="progressbar" style="width: @respostaMaisRecente.Desempenho%;" ></div>
-                                                    </div>
-                                                </div>
-                                            }
-                                        </div>
-                                    </div>
-                                </div>
-                            }
-                        </div>
-                    }
-                    else
-                    {
-                        <p class="text-muted mt-2">Nenhuma atividade concluída para @crianca.Nome ainda.</p>
-                    }
+                     <!-- Botão Vincular Outra Criança -->
+                     <div class="text-center mt-4">
+                         <a href="@Url.Action("VincularCrianca", "Pai")" class="btn btn-outline-primary">
+                             <i class="bi bi-link-45deg"></i> Vincular Outra Criança
+                         </a>
+                     </div>
                 </div>
             </div>
-            <hr class="my-5">
-        }
-    }
-    else 
-    {
-        <div class="alert alert-info">Nenhuma criança foi encontrada para este responsável.</div>
+        } // Fim do if(Model.CriancaDetalhe != null)
     }
 </div>
 
+
 @section Scripts {
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
- 
-    var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
-    var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
-        return new bootstrap.Popover(popoverTriggerEl)
-    })
+    document.addEventListener('DOMContentLoaded', function() {
+
+        // Inicializadores (Tooltip, Popover, Toast - sem alterações)
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) { return new bootstrap.Tooltip(tooltipTriggerEl); });
+        var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
+        var popoverList = popoverTriggerList.map(function (p) { return new bootstrap.Popover(p); });
+        var toastElList = [].slice.call(document.querySelectorAll('.toast'));
+        var toastList = toastElList.map(function (toastEl) { var toast = new bootstrap.Toast(toastEl, { delay: 5000 }); toast.show(); return toast; });
+
+        // Gráfico do Pai
+        const chartElement = document.getElementById('graficoMediaMaterias');
+        if (chartElement) {
+            // ==============================================
+            //   CORREÇÃO 4: Adicionar verificação de null   
+            // ==============================================
+            const chartDataJson = @Html.Raw(Json.Serialize(Model.CriancaDetalhe?.MediaPorMateria ?? new List<ChartDataViewModel>()));
+            let chartData = [];
+            // Verifica se o JSON não é nulo antes de tentar parsear (embora Serialize já deva cuidar disso)
+            if(chartDataJson){
+                chartData = chartDataJson; // Se já é um objeto JS, usa direto
+            }
+
+            if (chartData && chartData.length > 0) {
+                const labels = chartData.map(item => item.label);
+                const dataValues = chartData.map(item => item.value);
+                const ctx = chartElement.getContext('2d');
+                new Chart(ctx, { /* ... Configuração do Chart.js ... */
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [{ label: 'Nota Média (%)', data: dataValues, backgroundColor: 'rgba(123, 97, 255, 0.8)', borderColor: 'rgba(123, 97, 255, 1)', borderWidth: 1, borderRadius: 5 }]
+                    },
+                    options: {
+                        responsive: true, maintainAspectRatio: true,
+                        scales: { y: { beginAtZero: true, max: 100, ticks: { color: '#94A3B8' } }, x: { ticks: { color: '#94A3B8' } } },
+                        plugins: { legend: { display: true, position: 'bottom', labels: { color: '#64748B' } } }
+                    }
+                });
+            } else { chartElement.parentElement.innerHTML = "<p class='text-muted text-center'>Sem dados suficientes para exibir o gráfico.</p>"; }
+        }
+    });
 </script>
 }
+

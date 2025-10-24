@@ -1,4 +1,5 @@
 using backend.Models;
+using backend.ViewModels; 
 using System.Collections.Generic;
 using System.Linq;
 
@@ -6,30 +7,85 @@ namespace backend.Services
 {
     public class AchievementService
     {
-      
-        public List<string> CheckAchievements(Crianca crianca, List<RespostaAtividade> respostas, List<Atividade> atividadesDaSessao)
+        
+        private List<ConquistaViewModel> GetTodasAsConquistas()
         {
-            var conquistas = new List<string>();
+            return new List<ConquistaViewModel>
+            {
+                new ConquistaViewModel 
+                {
+                    Nome = "Primeiros Passos no Saber",
+                    Descricao = "Completou sua primeira atividade.",
+                    Icone = "bi-check-lg", 
+                    Desbloqueada = false  
+                },
+                new ConquistaViewModel 
+                {
+                    Nome = "Explorador do Conhecimento",
+                    Descricao = "Completou 5 atividades.",
+                    Icone = "bi-bookmark-check",
+                    Desbloqueada = false
+                },
+                new ConquistaViewModel 
+                {
+                    Nome = "Colecionador de Estrelas",
+                    Descricao = "Alcançou 10 estrelas.",
+                    Icone = "bi-star-fill",
+                    Desbloqueada = false
+                },
+                new ConquistaViewModel 
+                {
+                    Nome = "Mente Matemática",
+                    Descricao = "Completou uma atividade de Matemática.",
+                    Icone = "bi-calculator",
+                    Desbloqueada = false
+                },
+                new ConquistaViewModel 
+                {
+                    Nome = "Viajante do Tempo",
+                    Descricao = "Completou uma atividade de História.",
+                    Icone = "bi-bank",
+                    Desbloqueada = false
+                },
+                new ConquistaViewModel 
+                {
+                    Nome = "Pequeno Cientista",
+                    Descricao = "Completou uma atividade de Ciências.",
+                    Icone = "bi-lightbulb",
+                    Desbloqueada = false
+                }
+               
+            };
+        }
+        
+        
+        public List<ConquistaViewModel> CheckAchievements(Crianca crianca, List<RespostaAtividade> respostas, List<Atividade> atividadesDaSessao)
+        {
+ 
+            var todasAsConquistas = GetTodasAsConquistas();
 
-          
+
             if (respostas.Count >= 1)
             {
-                conquistas.Add("Primeiros Passos no Saber");
+                var conquista = todasAsConquistas.FirstOrDefault(c => c.Nome == "Primeiros Passos no Saber");
+                if (conquista != null) conquista.Desbloqueada = true;
             }
 
-           
+          
             if (respostas.Count >= 5)
             {
-                conquistas.Add("Explorador do Conhecimento");
+                var conquista = todasAsConquistas.FirstOrDefault(c => c.Nome == "Explorador do Conhecimento");
+                if (conquista != null) conquista.Desbloqueada = true;
             }
 
-            
+          
             if (crianca.Estrelas >= 10)
             {
-                conquistas.Add("Colecionador de Estrelas");
+                var conquista = todasAsConquistas.FirstOrDefault(c => c.Nome == "Colecionador de Estrelas");
+                if (conquista != null) conquista.Desbloqueada = true;
             }
 
-           
+         
             var categoriasCompletas = respostas
                 .Join(atividadesDaSessao, 
                       resposta => resposta.AtividadeId,
@@ -40,18 +96,22 @@ namespace backend.Services
 
             if (categoriasCompletas.Contains("Matemática"))
             {
-                conquistas.Add("Mente Matemática");
+                var conquista = todasAsConquistas.FirstOrDefault(c => c.Nome == "Mente Matemática");
+                if (conquista != null) conquista.Desbloqueada = true;
             }
             if (categoriasCompletas.Contains("História"))
             {
-                conquistas.Add("Viajante do Tempo");
+                var conquista = todasAsConquistas.FirstOrDefault(c => c.Nome == "Viajante do Tempo");
+                if (conquista != null) conquista.Desbloqueada = true;
             }
             if (categoriasCompletas.Contains("Ciências"))
             {
-                conquistas.Add("Pequeno Cientista");
+                var conquista = todasAsConquistas.FirstOrDefault(c => c.Nome == "Pequeno Cientista");
+                if (conquista != null) conquista.Desbloqueada = true;
             }
 
-            return conquistas;
+         
+            return todasAsConquistas;
         }
     }
 }

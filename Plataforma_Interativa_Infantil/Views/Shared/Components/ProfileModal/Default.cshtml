@@ -1,0 +1,79 @@
+@model backend.ViewModels.ProfileEditViewModel
+
+@* 1. MODAL PRINCIPAL (Configurações do Perfil) *@
+<div class="modal fade" id="profileModal" tabindex="-1" aria-labelledby="profileModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-profile">
+        <div class="modal-content">
+            @* --- CORREÇÃO: Usando Url.Action --- *@
+            <form action="@Url.Action("Edit", "Usuario")" method="post">
+                @Html.AntiForgeryToken()
+                
+                @* --- CORREÇÃO DE HTML INICIA AQUI --- *@
+                <div class="modal-header">
+                    <div class="modal-header-icon"><i class="bi bi-gear-fill"></i></div>
+                    <h5 class="modal-title" id="profileModalLabel">Configurações do Perfil</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                @* O <modal-body> com o texto foi movido para fora do <modal-header> *@
+                <div class="modal-body text-center" style="padding-bottom: 0;">
+                    <p>Edite suas informações ou exclua sua conta</p>
+                </div>
+                @* --- CORREÇÃO DE HTML TERMINA AQUI --- *@
+
+                <div class="modal-body" style="text-align: left;">
+                    <div class="mb-3">
+                        <label asp-for="Nome" class="form-label">Nome</label>
+                        <input type="text" asp-for="Nome" class="form-control focado" />
+                        <span asp-validation-for="Nome" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="Email" class="form-label">Email</label>
+                        <input type="email" asp-for="Email" class="form-control" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="NovaSenha" class="form-label">Nova Senha (opcional)</label>
+                        <input type="password" asp-for="NovaSenha" class="form-control" placeholder="••••••••" />
+                        <div class="form-text">Deixe em branco para manter a senha atual</div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-target="#confirmDeleteModal" data-bs-toggle="modal" data-bs-dismiss="modal">
+                        <i class="bi bi-trash"></i> Excluir Conta
+                    </button>
+                    <div>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@* 2. MODAL DE CONFIRMAÇÃO (Excluir Conta) *@
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            @* --- CORREÇÃO: Usando Url.Action --- *@
+            <form action="@Url.Action("Delete", "Usuario")" method="post">
+                @Html.AntiForgeryToken()
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmDeleteLabel">Tem certeza?</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Esta ação não pode ser desfeita. Isso irá excluir permanentemente sua conta e remover todos os seus dados.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-target="#profileModal" data-bs-toggle="modal" data-bs-dismiss="modal">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="btn btn-danger">Sim, excluir conta</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

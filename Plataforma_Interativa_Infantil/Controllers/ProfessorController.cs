@@ -12,6 +12,7 @@ using System.Security.Claims;
 namespace backend.Controllers
 {
     [Authorize(Roles = "professor")]
+    [ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)] // Adicionado para evitar cache
     public class ProfessorController : Controller
     {
         private readonly AppDbContext _context;
@@ -23,33 +24,53 @@ namespace backend.Controllers
 
         public async Task<IActionResult> Index()
         {
-            // ✅ CORRECTION: Get the ID as a string first
             var professorIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (!int.TryParse(professorIdString, out int professorId))
             {
                 return Unauthorized("ID do professor inválido.");
             }
 
-            // Now use the integer ID for filtering
-            var todosAlunos = await _context.Criancas.ToListAsync();
-            var todasAtividades = await _context.Atividades
-                .Where(a => a.ProfessorId == professorId) // Use the int ID
+            // --- INÍCIO DA CORREÇÃO ---
+
+            // 1. Busca os IDs dos alunos vinculados (como antes)
+            var idsAlunosVinculados = await _context.ProfessorAlunos
+                .Where(pa => pa.ProfessorId == professorId)
+                .Select(pa => pa.CriancaId)
+                .ToListAsync();
+
+            // 2. Busca os perfis dos alunos (como antes)
+            var alunosDoProfessor = await _context.Criancas
+                .Where(c => idsAlunosVinculados.Contains(c.Id))
+                .ToListAsync();
+
+            // 3. Busca as atividades CRIADAS por este professor (para as estatísticas e lista "Atividades Publicadas")
+            var atividadesDoProfessor = await _context.Atividades
+                .Where(a => a.ProfessorId == professorId)
                 .OrderBy(a => a.Titulo)
                 .ToListAsync();
-            // ... (rest of the method is fine)
+            var idsAtividadesDoProfessor = atividadesDoProfessor.Select(a => a.Id).ToList();
 
-            var idsAtividadesDoProfessor = todasAtividades.Select(a => a.Id).ToList();
-
-            var todasRespostas = await _context.RespostasAtividades
+            // 4. Busca as respostas APENAS das atividades do professor (PARA AS ESTATÍSTICAS)
+            var respostasDasAtividadesDoProfessor = await _context.RespostasAtividades
                 .Where(r => idsAtividadesDoProfessor.Contains(r.AtividadeId))
-                .Include(r => r.Atividade)
+                .Include(r => r.Atividade) 
                 .ToListAsync();
             
-            var progressoDosAlunos = todosAlunos.Select(aluno =>
+            // 5. Busca TODAS as respostas dos alunos vinculados (PARA O PROGRESSO INDIVIDUAL)
+            var respostasDeTodosOsAlunos = await _context.RespostasAtividades
+                .Where(r => idsAlunosVinculados.Contains(r.CriancaId)) // <-- A MUDANÇA ESTÁ AQUI
+                .Include(r => r.Atividade)
+                .ToListAsync();
+
+            // 6. Monta o progresso dos alunos usando a lista de TODAS as respostas deles
+            var progressoDosAlunos = alunosDoProfessor.Select(aluno =>
             {
-                var respostasDoAluno = todasRespostas.Where(r => r.CriancaId == aluno.Id).ToList();
+                // Usa a lista 'respostasDeTodosOsAlunos' para encontrar o progresso
+                var respostasDoAluno = respostasDeTodosOsAlunos.Where(r => r.CriancaId == aluno.Id).ToList();
+                
                 var atividadesUnicasDoAluno = respostasDoAluno
-                    .Select(r => r.Atividade)
+                    .Select(r => r.Atividade) 
+                    .Where(a => a != null)     
                     .GroupBy(a => a.Id)
                     .Select(g => g.First())
                     .ToList();
@@ -60,32 +81,94 @@ namespace backend.Controllers
                     Nome = aluno.Nome,
                     Estrelas = aluno.Estrelas,
                     DataNascimento = aluno.DataNascimento,
-                    Respostas = respostasDoAluno,
+                    Respostas = respostasDoAluno, // Passa as respostas corretas
                     AtividadesUnicas = atividadesUnicasDoAluno
                 };
             }).ToList();
             
-            var totalRespostas = todasRespostas.Count;
-            double mediaGeral = totalRespostas > 0 ? todasRespostas.Average(r => r.Desempenho) : 0;
+            // 7. Calcula as estatísticas do professor usando APENAS as respostas das suas próprias atividades
+            var totalRespostas = respostasDasAtividadesDoProfessor.Count;
+            double mediaGeral = totalRespostas > 0 ? respostasDasAtividadesDoProfessor.Average(r => r.Desempenho) : 0;
 
             var dashboardViewModel = new ProfessorDashboardViewModel
             {
-                Alunos = progressoDosAlunos,
-                AtividadesPublicadas = todasAtividades,
-                TotalAlunos = todosAlunos.Count,
-                TotalAtividades = todasAtividades.Count,
-                RespostasRecebidas = totalRespostas,
-                MediaGeral = (int)mediaGeral
+                Alunos = progressoDosAlunos, // <-- Agora contém o progresso real
+                AtividadesPublicadas = atividadesDoProfessor,
+                TotalAlunos = alunosDoProfessor.Count,
+                TotalAtividades = atividadesDoProfessor.Count,
+                RespostasRecebidas = totalRespostas, // Estatística do professor
+                MediaGeral = (int)mediaGeral // Estatística do professor
             };
+
+            // --- FIM DA CORREÇÃO ---
 
             return View(dashboardViewModel);
         }
+        
+       
+        [HttpGet]
+        public IActionResult VincularAluno()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> VincularAluno(string codigoDeVinculo)
+        {
+            if (string.IsNullOrEmpty(codigoDeVinculo))
+            {
+                ModelState.AddModelError("", "O código de vínculo é obrigatório.");
+                return View();
+            }
+
+            var crianca = await _context.Criancas
+                .FirstOrDefaultAsync(c => c.CodigoDeVinculo == codigoDeVinculo.Trim());
+
+            if (crianca == null)
+            {
+                ModelState.AddModelError("", "Nenhum aluno encontrado com este código.");
+                return View();
+            }
+
+            var professorIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (!int.TryParse(professorIdString, out int professorId))
+            {
+                return Unauthorized("ID do professor inválido.");
+            }
+
+            var vinculoExistente = await _context.ProfessorAlunos
+                .AnyAsync(pa => pa.ProfessorId == professorId && pa.CriancaId == crianca.Id);
+
+            if (vinculoExistente)
+            {
+                ModelState.AddModelError("", "Este aluno já está vinculado à sua conta.");
+                return View();
+            }
+
+            var novoVinculo = new ProfessorAluno
+            {
+                ProfessorId = professorId,
+                CriancaId = crianca.Id
+            };
+
+            _context.ProfessorAlunos.Add(novoVinculo);
+            await _context.SaveChangesAsync();
+
+            TempData["SuccessMessage"] = $"Aluno '{crianca.Nome}' vinculado com sucesso!";
+            return RedirectToAction("Index");
+        }
+
 
         [HttpGet]
         public IActionResult CriarAtividade()
         {
             var model = new CriarAtividadeViewModel
             {
+                Titulo = string.Empty,
+                Descricao = string.Empty,
+                Categoria = string.Empty,
+                FaixaEtaria = string.Empty,
                 Questoes = new List<QuestaoViewModel> { new QuestaoViewModel() }
             };
             return View(model);
@@ -99,8 +182,7 @@ namespace backend.Controllers
             {
                 return View(model);
             }
-
-          
+            
             var professorIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (!int.TryParse(professorIdString, out int professorId))
             {
@@ -133,6 +215,7 @@ namespace backend.Controllers
             return RedirectToAction("Index");
         }
 
+
         [HttpGet]
         public async Task<IActionResult> GetDesempenhoPorMateriaData()
         {
@@ -143,9 +226,10 @@ namespace backend.Controllers
                 return Unauthorized("ID do professor inválido.");
             }
 
+            // Esta consulta está correta, pois o gráfico deve refletir as atividades do professor
             var desempenho = await _context.RespostasAtividades
                 .Include(r => r.Atividade)
-                .Where(r => r.Atividade.ProfessorId == professorId) 
+                .Where(r => r.Atividade != null && r.Atividade.ProfessorId == professorId) 
                 .GroupBy(r => r.Atividade.Categoria)
                 .Select(g => new
                 {
@@ -156,5 +240,6 @@ namespace backend.Controllers
 
             return Json(desempenho);
         }
+
     }
 }

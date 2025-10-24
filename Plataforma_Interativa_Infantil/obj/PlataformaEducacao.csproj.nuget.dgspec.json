@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "c:\\Users\\beatr\\Videos\\Plataforma_Interativa_Infantil\\Plataforma_Interativa_Infantil\\PlataformaEducacao.csproj": {}
+    "c:\\Users\\beatr\\Music\\Plataforma_Interativa_Infantil\\Plataforma_Interativa_Infantil\\PlataformaEducacao.csproj": {}
   },
   "projects": {
-    "c:\\Users\\beatr\\Videos\\Plataforma_Interativa_Infantil\\Plataforma_Interativa_Infantil\\PlataformaEducacao.csproj": {
+    "c:\\Users\\beatr\\Music\\Plataforma_Interativa_Infantil\\Plataforma_Interativa_Infantil\\PlataformaEducacao.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "c:\\Users\\beatr\\Videos\\Plataforma_Interativa_Infantil\\Plataforma_Interativa_Infantil\\PlataformaEducacao.csproj",
+        "projectUniqueName": "c:\\Users\\beatr\\Music\\Plataforma_Interativa_Infantil\\Plataforma_Interativa_Infantil\\PlataformaEducacao.csproj",
         "projectName": "PlataformaEducacao",
-        "projectPath": "c:\\Users\\beatr\\Videos\\Plataforma_Interativa_Infantil\\Plataforma_Interativa_Infantil\\PlataformaEducacao.csproj",
+        "projectPath": "c:\\Users\\beatr\\Music\\Plataforma_Interativa_Infantil\\Plataforma_Interativa_Infantil\\PlataformaEducacao.csproj",
         "packagesPath": "C:\\Users\\beatr\\.nuget\\packages\\",
-        "outputPath": "c:\\Users\\beatr\\Videos\\Plataforma_Interativa_Infantil\\Plataforma_Interativa_Infantil\\obj\\",
+        "outputPath": "c:\\Users\\beatr\\Music\\Plataforma_Interativa_Infantil\\Plataforma_Interativa_Infantil\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -91,7 +91,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.305/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.306/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

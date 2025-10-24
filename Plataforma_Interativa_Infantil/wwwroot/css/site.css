@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap'); /* Fonte do Layout */
 
 /* --- PALETA DE CORES E VARIÁVEIS GLOBAIS --- */
 :root {
@@ -10,17 +11,19 @@
     --vibrante-verde: #43b375;
     --vibrante-azul: #1E90FF;
     --vibrante-laranja: #FFA500;
-    --vibrante-roxo: #9370DB; 
+    --vibrante-roxo: #7B61FF; /* Renomeado de --cor-primaria para clareza */
     --vibrante-rosa: #FF69B4;
-    --vibrante-vermelho-perigo: #FF6347;
+    --vibrante-vermelho-perigo: #FF6347; /* Vermelho/Tomate */
 
     --cor-sucesso: var(--vibrante-verde);
     --cor-perigo: var(--vibrante-vermelho-perigo);
-    --cor-primaria: var(--vibrante-roxo); /* Roxo como cor principal */
+    --cor-primaria: var(--vibrante-roxo); /* Mantido para compatibilidade, mas prefira --vibrante-roxo */
 
     --cor-branco: #ffffff;
     --cor-cinza-claro: #e9ecef;
+    --cor-cinza-medio: #adb5bd; /* Novo cinza para textos do footer */
     --cor-cinza-escuro: #6c757d;
+    --cor-borda: #dee2e6; /* Borda mais visível para fundo branco */
 
     --raio-borda: 16px; 
     --sombra-card: 0 4px 12px rgba(0,0,0,0.08);
@@ -29,7 +32,7 @@
 /* ======== ESTILOS GLOBAIS ======== */
 body {
     background-color: var(--cor-fundo);
-    font-family: "Nunito", "Poppins", sans-serif;
+    font-family: "Poppins", "Nunito", sans-serif;
     color: var(--cor-texto);
     margin: 0;
 }
@@ -51,275 +54,1084 @@ body {
     padding: 1.25rem;
 }
 
-/* ======== COMPONENTES COMPARTILHADOS ======== */
+/* ======== HEADER / NAVBAR (Estilos para _Layout.cshtml) ======== */
+.navbar {
+    background-color: var(--cor-branco);
+    padding: 0.75rem 1rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+.navbar-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--vibrante-roxo) !important; /* Roxo */
+    font-weight: 700; /* Usando Poppins */
+    font-size: 1.5rem;
+}
+.navbar-brand i {
+    font-size: 1.8rem;
+    margin-top: -4px; /* Alinhamento visual */
+}
+/* Estilos para "Olá, Nome!" + Botões Perfil/Sair */
+.navbar-user {
+    display: flex;
+    align-items: center;
+    gap: 1rem; /* Espaço entre "Olá, Nome!" e os botões */
+    color: var(--cor-cinza-escuro);
+    font-weight: 500;
+}
+.navbar-user-actions {
+    display: flex;
+    gap: 0.75rem; /* Espaço entre os botões */
+}
+/* Estilo Base dos Botões da Navbar */
+.navbar-user-actions .btn {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+    padding: 0.4rem 0.9rem;
+    border-radius: 12px; /* Borda arredondada */
+    border: 2px solid transparent;
+    background-color: white; /* Fundo branco */
+}
+/* Botão Perfil (Borda Roxa) */
+.navbar-user-actions .btn-profile-nav {
+    border-color: #D6CFFD; /* Borda roxo claro */
+    color: var(--vibrante-roxo); /* Texto roxo */
+}
+.navbar-user-actions .btn-profile-nav:hover {
+    background-color: #F7F5FF; /* Fundo roxo bem claro */
+    border-color: var(--vibrante-roxo);
+}
+/* Botão Sair (Borda Vermelha) */
+.navbar-user-actions .btn-logout-nav {
+    border-color: #FECACA; /* Borda vermelha clara */
+    color: var(--vibrante-vermelho-perigo); /* Texto vermelho */
+}
+.navbar-user-actions .btn-logout-nav:hover {
+    background-color: #FEF2F2; /* Fundo vermelho bem claro */
+    border-color: var(--vibrante-vermelho-perigo);
+}
+/* Dropdown antigo (mantido para referência ou se for usado em outro lugar) */
+.avatar-btn {
+    width: 44px; height: 44px; border-radius: 50%;
+    background-color: var(--vibrante-roxo); color: var(--cor-texto-claro);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.5rem; font-weight: 700; border: none;
+}
+.dropdown-menu {
+    border-radius: 12px; border: none; box-shadow: var(--sombra-card);
+    padding: 0.5rem 0;
+}
+.dropdown-item {
+    display: flex; align-items: center; gap: 0.75rem;
+    padding: 0.75rem 1.25rem; font-weight: 600; color: var(--cor-texto);
+}
+.dropdown-item i {
+    font-size: 1.1rem; width: 20px; text-align: center; color: var(--cor-cinza-escuro);
+}
+.dropdown-item:hover, .dropdown-item:focus {
+    background-color: #f0f2f5; color: var(--cor-texto);
+}
+.dropdown-item[data-bs-target="#confirmLogoutModal"] { color: var(--cor-perigo); }
+.dropdown-item[data-bs-target="#confirmLogoutModal"] i { color: var(--cor-perigo); }
+.dropdown-item[data-bs-target="#confirmLogoutModal"]:hover { background-color: #fff2f0; }
+
+
+/* === 1. ESTILOS DO FOOTER (FUNDO BRANCO / TEXTO ESCURO) === */
+.main-footer {
+    background-color: var(--cor-branco); /* Fundo branco */
+    color: var(--cor-cinza-escuro); /* Texto cinza escuro padrão */
+    padding: 3rem 0 0 0;
+    margin-top: 3rem;
+    font-family: "Poppins", sans-serif;
+    border-top: 1px solid var(--cor-borda); /* Adiciona uma linha sutil no topo */
+}
+.footer-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 2rem;
+    padding-bottom: 2.5rem;
+}
+.footer-column h5 {
+    color: var(--cor-texto); /* Texto escuro para títulos */
+    font-weight: 600;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.footer-column h5 i {
+    color: var(--vibrante-roxo); /* Ícone roxo */
+}
+.footer-column p {
+    font-size: 0.9rem;
+    line-height: 1.6;
+    max-width: 300px;
+    color: var(--cor-cinza-escuro); /* Garante cor do parágrafo */
+}
+.footer-column ul {
+    list-style: none; padding: 0; margin: 0;
+}
+.footer-column ul li {
+    margin-bottom: 0.5rem;
+}
+.footer-column ul li a {
+    text-decoration: none;
+    color: var(--cor-cinza-escuro); /* Texto dos links */
+    font-weight: 500;
+    font-size: 0.95rem;
+    transition: color 0.2s ease;
+}
+.footer-column ul li a:hover {
+    color: var(--vibrante-roxo); /* Links ficam roxos no hover */
+}
+.footer-bottom {
+    background-color: #f8f9fa; /* Fundo cinza bem claro */
+    text-align: center;
+    padding: 1rem 0;
+    font-size: 0.85rem;
+    color: var(--cor-cinza-escuro); /* Texto do copyright */
+    border-top: 1px solid var(--cor-borda); /* Linha sutil */
+}
+@media (max-width: 767px) {
+    .footer-grid { grid-template-columns: 1fr; }
+}
+
+/* === 2. ESTILOS DE MODAL (GERAL E CORREÇÃO DOS BOTÕES) === */
+.modal-content {
+    border-radius: 16px !important; border: none;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+}
+.modal-header {
+    border-bottom: none; padding: 1.5rem 1.5rem 0.5rem 1.5rem;
+    position: relative; /* Para posicionar o btn-close */
+}
+.modal-header .btn-close {
+    position: absolute; top: 1rem; right: 1rem; z-index: 10;
+}
+.modal-title {
+    font-weight: 700; font-size: 1.3rem; color: var(--cor-texto);
+}
+.modal-body {
+    padding: 0.5rem 1.5rem 1.5rem 1.5rem; color: var(--cor-cinza-escuro);
+    font-size: 1rem; line-height: 1.6;
+}
+.modal-footer {
+    border-top: none; padding: 0 1.5rem 1.5rem 1.5rem; gap: 0.75rem;
+    display: flex !important; /* Força display flex */
+    justify-content: flex-end;
+}
+.modal-footer form { margin-bottom: 0; } /* Ajuste form logout */
+
+/* --- CORREÇÃO BOTÕES (VISIBILIDADE E CORES) --- */
+.modal-footer .btn {
+    font-weight: 600; border-radius: 12px; padding: 0.6rem 1.25rem;
+    min-width: 100px; border: 2px solid transparent !important;
+    color: white !important; /* Texto branco padrão para botões coloridos */
+    background-color: grey !important; /* Cor de fundo padrão se algo falhar */
+    display: inline-block !important; /* Garante visibilidade */
+    opacity: 1 !important; visibility: visible !important;
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+/* Botão Roxo (Primário) */
+.modal-footer .btn-primary {
+    background-color: var(--vibrante-roxo) !important;
+    border-color: var(--vibrante-roxo) !important;
+    color: white !important;
+}
+/* Botão Vermelho (Perigo) */
+.modal-footer .btn-danger {
+    background-color: var(--vibrante-vermelho-perigo) !important;
+    border-color: var(--vibrante-vermelho-perigo) !important;
+    color: white !important;
+}
+/* Botão Cancelar (Padrão: Borda roxa clara, texto roxo) */
+.modal-footer .btn-secondary {
+    background-color: white !important;
+    border: 2px solid #D6CFFD !important;
+    color: var(--vibrante-roxo) !important;
+}
+.modal-footer .btn-secondary:hover {
+    background-color: #F7F5FF !important;
+}
+
+/* --- Estilos Específicos (para garantir as cores exatas das imagens) --- */
+/* Modal de Perfil (#profileModal) */
+#profileModal .modal-footer { justify-content: space-between !important; }
+#profileModal .btn-secondary { /* Botão Cancelar é CINZA aqui */
+    border-color: var(--cor-cinza-claro) !important;
+    color: var(--cor-cinza-escuro) !important;
+}
+#profileModal .btn-secondary:hover { background-color: #f8f9fa !important; }
+/* Estilos Header e Body do ProfileModal */
+#profileModal .modal-header { display: block; text-align: center; padding-top: 2rem; }
+#profileModal .modal-header-icon {
+    width: 60px; height: 60px; border-radius: 50%;
+    background-color: var(--vibrante-roxo); color: white;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 2rem; margin: 0 auto 1rem auto;
+}
+#profileModal .modal-title { font-size: 1.5rem; }
+#profileModal .modal-body p { /* Subtítulo */
+    font-size: 1rem; margin-bottom: 1.5rem; text-align: center;
+    color: var(--cor-cinza-escuro);
+}
+#profileModal .form-label { font-weight: 600; font-size: 0.9rem; margin-bottom: 0.25rem; }
+#profileModal .form-control:focus {
+    border-color: var(--vibrante-roxo);
+    box-shadow: 0 0 0 0.25rem rgba(147, 112, 219, 0.25);
+}
+#profileModal .form-text { font-size: 0.85rem; }
+
+
+/*
+ * =========================================
+ * CSS WIDGET DE ACESSIBILIDADE "EDUKIDS" (VERSÃO NAVBAR)
+ * =========================================
+ */
+
+/* --- 1. ESTILOS DO PAINEL E BOTÃO --- */
+
+/* NOVO: Estilo do botão na navbar pública (Home) */
+.navbar-public .btn-acessibilidade {
+    border: 1px solid #7b61ff;
+    color: #7b61ff; /* Cor do texto roxa */
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+}
+.navbar-public .btn-acessibilidade:hover {
+    background-color: #7b61ff;
+    color: #fff;
+}
+.navbar-public .btn-acessibilidade i {
+    color: #7b61ff; /* COR DO ÍCONE ROXA (como pedido) */
+    margin-right: 4px;
+    transition: color 0.2s ease;
+}
+.navbar-public .btn-acessibilidade:hover i {
+    color: #fff; /* Ícone branco no hover */
+}
+
+/* NOVO: Estilo do botão na navbar autenticada (Layout Interno) */
+.navbar-user-actions .btn-profile-nav i.bi-stars {
+    color: #7b61ff; /* COR DO ÍCONE ROXA (como pedido) */
+    margin-right: 4px;
+    transition: color 0.2s ease;
+}
+.navbar-user-actions .btn-profile-nav:hover i.bi-stars {
+    color: #5a4fcf; /* Tom mais escuro no hover */
+}
+/* Alinha o ícone com o texto (se necessário) */
+.navbar-user-actions .btn-profile-nav {
+    display: inline-flex;
+    align-items: center;
+}
+
+/* Overlay */
+.accessibility-overlay {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    z-index: 999;
+    transition: opacity 0.3s ease;
+}
+
+/* Painel Lateral */
+.accessibility-panel {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 100%;
+    max-width: 500px;
+    height: 100%;
+    z-index: 1000;
+    background-color: #f8f7ff;
+    border-left: 1px solid #ddd;
+    box-shadow: -10px 0 30px rgba(0, 0, 0, 0.15);
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.3s ease-in-out;
+}
+
+.acc-panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 1.5rem;
+    background-image: linear-gradient(to right, #7b61ff, #ff1493);
+    color: white;
+    flex-shrink: 0;
+}
+
+.acc-header-title {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.acc-header-title i {
+    font-size: 2rem;
+    opacity: 0.8;
+}
+
+.acc-header-title h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0;
+    color: white;
+}
+
+.acc-header-title p {
+    font-size: 0.9rem;
+    margin: 0;
+    opacity: 0.9;
+}
+
+.acc-panel-close-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.25rem;
+    line-height: 1;
+    padding: 0.5rem;
+    border-radius: 8px;
+    transition: background-color 0.2s;
+}
+
+.acc-panel-close-btn:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.acc-panel-content {
+    padding: 1.5rem;
+    overflow-y: auto;
+    flex-grow: 1;
+}
+
+.acc-control-group {
+    margin-bottom: 2rem;
+}
+
+.acc-control-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.75rem;
+}
+
+.acc-control-group label {
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+.acc-badge {
+    background-color: #e9ecef;
+    color: #495057;
+    padding: 0.25em 0.5em;
+    border-radius: 4px;
+    font-weight: 600;
+}
+
+.acc-slider {
+    cursor: pointer;
+}
+
+/* Grid de Funcionalidades (Switches) */
+.acc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.acc-switch-card {
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 110px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    transition: all 0.2s ease;
+}
+
+.acc-switch-card:hover {
+    border-color: #7b61ff;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+}
+
+.acc-switch-card label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-align: center;
+    cursor: pointer;
+}
+
+.acc-switch-card i {
+    font-size: 1.5rem;
+    color: #7b61ff;
+    line-height: 1;
+}
+
+.acc-switch-card .form-check-input {
+    width: 2.5em;
+    height: 1.25em;
+    margin: 0.75rem 0 0 0;
+    cursor: pointer;
+}
+
+/* Filtros de Cor */
+.acc-filter-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+}
+
+.acc-filter-btn {
+    padding: 0.75rem;
+    border: 2px solid #ced4da;
+    border-radius: 8px;
+    background-color: #fff;
+    font-weight: 500;
+    text-align: center;
+    transition: all 0.2s ease;
+}
+
+.acc-filter-btn:hover {
+    border-color: #7b61ff;
+    background-color: #f8f7ff;
+}
+
+.acc-filter-btn.active {
+    border-color: #7b61ff;
+    background-color: #7b61ff;
+    color: white;
+    font-weight: 600;
+}
+
+/* Botão Reset */
+.acc-reset-btn {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    font-weight: 600;
+    border: 2px solid #dc3545;
+    color: #dc3545;
+    background: #fff;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+.acc-reset-btn:hover {
+    background-color: #dc3545;
+    color: white;
+}
+
+.acc-tip {
+    text-align: center;
+    font-size: 0.9rem;
+    color: #6c757d;
+    background: #e9ecef;
+    padding: 0.75rem;
+    border-radius: 8px;
+}
+.acc-tip kbd {
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 0.1em 0.3em;
+    font-weight: 600;
+    box-shadow: 1px 1px 1px rgba(0,0,0,0.1);
+}
+
+/*
+ * =========================================
+ * REGRAS DE ACESSIBILIDADE (13 FUNÇÕES)
+ * =========================================
+ */
+
+/* 1. Tamanho da Fonte */
+html {
+    font-size: var(--font-size, 16px);
+}
+
+/* 2. Espaçamento de Linha */
+body {
+    line-height: var(--line-height, 1.5);
+}
+
+/* 3. Alto Contraste */
+html.high-contrast {
+    background-color: #000 !important;
+    color: #fff !important;
+}
+html.high-contrast body,
+html.high-contrast .navbar,
+html.high-contrast .navbar-public,
+html.high-contrast .modal-content,
+html.high-contrast .card,
+html.high-contrast .dropdown-menu,
+html.high-contrast .simple-footer,
+html.high-contrast .login-card,
+html.high-contrast .tabs {
+    background-color: #111 !important;
+    color: #fff !important;
+    border: 1px solid #fff !important;
+}
+html.high-contrast h1, html.high-contrast h2, html.high-contrast h3,
+html.high-contrast h4, html.high-contrast h5, html.high-contrast p,
+html.high-contrast span, html.high-contrast label {
+    color: #fff !important;
+}
+html.high-contrast a,
+html.high-contrast .btn-link,
+html.high-contrast .btn-acessibilidade {
+    color: #ffff00 !important;
+    text-decoration: underline !important;
+}
+html.high-contrast .btn-primary,
+html.high-contrast .btn-submit {
+    background-color: #ffff00 !important;
+    color: #000 !important;
+    border: 1px solid #000 !important;
+}
+html.high-contrast input, 
+html.high-contrast select,
+html.high-contrast textarea {
+    background: #333 !important;
+    color: #fff !important;
+    border: 1px solid #fff !important;
+}
+
+/* 4. Modo Escuro */
+html.dark {
+    background-color: #1a1a2e !important;
+    color: #e0e0e0 !important;
+}
+html.dark body {
+    background-color: #1a1a2e !important;
+    color: #e0e0e0 !important;
+}
+html.dark .navbar, html.dark .navbar-public,
+html.dark .modal-content, html.dark .card,
+html.dark .dropdown-menu, html.dark .simple-footer,
+html.dark .login-card {
+    background-color: #24243e !important;
+    color: #e0e0e0 !important;
+    border-color: #333 !important;
+}
+html.dark .tabs {
+    background-color: #1a1a2e !important;
+}
+html.dark h1, html.dark h2, html.dark h3,
+html.dark h4, html.dark h5 {
+    color: #ffffff !important;
+}
+html.dark a {
+    color: #a394ff !important;
+}
+html.dark .btn-primary,
+html.dark .btn-submit {
+    background-color: #7b61ff !important;
+    color: #fff !important;
+    border-color: #7b61ff !important;
+}
+html.dark input, 
+html.dark select,
+html.dark textarea {
+    background: #333 !important;
+    color: #fff !important;
+    border: 1px solid #555 !important;
+}
+
+/* 5. Leitura de Tela (Sem CSS) */
+
+/* 6. Destacar Links */
+html.highlight-links a {
+    text-decoration: underline !important;
+    text-decoration-thickness: 2px;
+}
+html.highlight-links a:hover {
+    background-color: #ffff00 !important;
+    color: #000 !important;
+}
+
+/* 7. Cursor Grande */
+html.large-cursor, html.large-cursor body {
+    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"><path fill="rgba(255,255,255,1)" stroke="rgba(0,0,0,1)" stroke-width="2" d="M 4 4 L 14 11 L 11 14 L 18 21 L 15 24 L 8 17 L 4 20 Z" /></svg>'), auto !important;
+}
+
+/* 8. Guia de Leitura */
+.reading-guide-bar {
+    position: fixed;
+    left: 0;
+    width: 100%;
+    height: 35px;
+    background-image: linear-gradient(to right, rgba(255, 20, 147, 0.4), rgba(255, 105, 180, 0.2));
+    border-top: 1px solid rgba(255, 20, 147, 0.6);
+    border-bottom: 1px solid rgba(255, 20, 147, 0.6);
+    z-index: 1001;
+    pointer-events: none;
+}
+
+/* 9. Reduzir Animações */
+html.reduce-animations * {
+    transition-duration: 0.001s !important;
+    animation-duration: 0.001s !important;
+    animation-iteration-count: 1 !important;
+}
+
+/* 10. Fonte Dislexia */
+html.dyslexia-font body,
+html.dyslexia-font button,
+html.dyslexia-font input,
+html.dyslexia-font select,
+html.dyslexia-font textarea,
+html.dyslexia-font h1,
+html.dyslexia-font h2,
+html.dyslexia-font h3,
+html.dyslexia-font h4,
+html.dyslexia-font h5 {
+    font-family: 'Comic Sans MS', 'Poppins', sans-serif !important;
+    letter-spacing: 0.1em !important;
+    word-spacing: 0.15em !important;
+}
+
+/* 11. Filtros de Cor */
+html[data-color-filter="protanopia"] body {
+    filter: url(#filter-protanopia);
+}
+html[data-color-filter="deuteranopia"] body {
+    filter: url(#filter-deuteranopia);
+}
+html[data-color-filter="tritanopia"] body {
+    filter: url(#filter-tritanopia);
+}
+html[data-color-filter="grayscale"] body {
+    filter: url(#filter-grayscale);
+}
+
+/* 12. Cores Suaves */
+html.soft-colors body {
+    background-color: #F8F7F4 !important;
+    color: #5A5A5A !important;
+}
+html.soft-colors .navbar, html.soft-colors .navbar-public,
+html.soft-colors .modal-content, html.soft-colors .card,
+html.soft-colors .dropdown-menu, html.soft-colors .simple-footer,
+html.soft-colors .login-card {
+    background-color: #FFFFFF !important;
+    border-color: #D4D4CE !important;
+}
+html.soft-colors .tabs {
+    background-color: #F8F7F4 !important;
+}
+html.soft-colors h1, html.soft-colors h2, html.soft-colors h3,
+html.soft-colors h4, html.soft-colors h5 {
+    color: #5A5A5A !important;
+}
+html.soft-colors a {
+    color: #C5B8D9 !important;
+}
+html.soft-colors .btn-primary,
+html.soft-colors .btn-submit,
+html.soft-colors .navbar-brand {
+    background-color: #C5B8D9 !important;
+    color: #5A5A5A !important;
+    border-color: #D4D4CE !important;
+}
+html.soft-colors .btn-acessibilidade {
+    border-color: #C5B8D9 !important;
+    color: #C5B8D9 !important;
+}
+html.soft-colors .btn-acessibilidade:hover {
+    background-color: #C5B8D9 !important;
+    color: #5A5A5A !important;
+}
+html.soft-colors .bi,
+html.soft-colors .bi-mortarboard-fill {
+    color: #C5B8D9 !important;
+}
+
+/* 13. Modo Simplificado */
+html.simplified-mode * {
+    box-shadow: none !important;
+    text-shadow: none !important;
+    background-image: none !important; 
+}
+html.simplified-mode .card,
+html.simplified-mode .modal-content,
+html.simplified-mode .btn,
+html.simplified-mode input,
+html.simplified-mode select {
+    border-radius: 8px !important;
+}
+html.simplified-mode body {
+    background-color: #f8f7ff !important;
+}
+html.simplified-mode .navbar, 
+html.simplified-mode .navbar-public,
+html.simplified-mode .simple-footer {
+    background-color: #fff !important;
+}
+
+/*
+ * =========================================
+ * ESTILIZAÇÃO DO MODAL DE VÍNCULO (Das páginas)
+ * =========================================
+ */
+
+/* Esconde o sumário de validação se ele estiver válido (sem erros) */
+.validation-summary-valid[asp-validation-summary="ModelOnly"] {
+    display: none;
+}
+
+.card-link-page {
+    border-radius: 1rem !important;
+    border: 2px solid #7b61ff !important;
+    box-shadow: 0 8px 30px rgba(123, 97, 255, 0.3) !important;
+    overflow: hidden;
+}
+.card-link-page .card-header {
+    background-color: #f8f7ff;
+    border-bottom: 1px solid #e0e0e0;
+    padding: 1.25rem 1.5rem;
+}
+.card-link-page .card-header h3 {
+    color: #343a40;
+    font-weight: 600;
+    margin: 0;
+}
+.card-link-page .card-header i {
+    color: #7b61ff;
+    margin-right: 10px;
+}
+.card-link-page .card-body {
+    padding: 1.5rem;
+}
+#codigoDeVinculo, #CodigoVinculo {
+    font-size: 1.75rem;
+    font-weight: 700;
+    text-align: center;
+    letter-spacing: 0.3em;
+    color: #343a40;
+    border-radius: 8px;
+    border-width: 2px;
+    max-width: 300px;
+    margin: 0 auto;
+}
+#codigoDeVinculo:focus, #CodigoVinculo:focus {
+    border-color: #7b61ff;
+    box-shadow: 0 0 0 0.25rem rgba(123, 97, 255, 0.25);
+}
+.btn-vincular {
+    background-color: #7b61ff;
+    border-color: #7b61ff;
+    font-weight: 600;
+    padding: 0.75rem 1.25rem;
+    font-size: 1.1rem;
+}
+.btn-vincular:hover {
+    background-color: #6a53e0;
+    border-color: #6a53e0;
+}
+
+
+.toast {
+    border-radius: 12px !important; border: none !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08) !important;
+    background-color: white !important; padding: 0.5rem 1rem;
+}
+.toast-body {
+    display: flex; align-items: center; gap: 0.75rem;
+    color: #334155 !important; font-weight: 600; font-size: 1rem;
+}
+.toast-body i { font-size: 1.25rem; color: #222; }
+
+
+/* === COMPONENTES COMPARTILHADOS === */
 .avatar-perfil { 
     width: 60px; height: 60px; border-radius: 50%; 
-    background-color: var(--cor-primaria); color: white; 
+    background-color: var(--vibrante-roxo); color: white; 
     display: flex; align-items: center; justify-content: center; 
     font-size: 1.8rem; font-weight: bold; 
 }
 
-/* ======== DASHBOARD DA CRIANÇA ======== */
-.card-atividade-grid { 
-    cursor: pointer;
-    text-align: center;
+/* === DASHBOARD DA CRIANÇA === */
+/* (Baseado no seu CSS dashboard.css e na imagem) */
+.dashboard-container { padding: 2rem 0; }
+.card-profile {
+    padding: 2rem 1.5rem; background-color: var(--cor-branco);
+    border: none; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.05);
 }
+.card-profile .avatar-perfil { /* Tamanho ajustado da imagem */
+    width: 80px; height: 80px; font-size: 2.5rem; font-weight: 700; margin: 0 auto;
+}
+.card-profile h5 { font-weight: 700; color: var(--cor-texto); margin-top: 1rem; margin-bottom: 0.25rem; }
+.card-profile .text-muted { color: var(--cor-texto-secundario) !important; font-weight: 500; }
+.codigo-vinculo-box {
+    background-color: #F8F9FA; border: 1px solid var(--cor-borda);
+    border-radius: 12px; padding: 1rem; margin-top: 1.5rem;
+}
+.codigo-vinculo-box .text-primary { color: var(--vibrante-roxo) !important; font-weight: 700 !important; font-size: 0.8rem; letter-spacing: 0.5px; }
+.codigo-vinculo-box .h5 { color: var(--cor-texto); font-weight: 700; letter-spacing: 1px; }
+.codigo-vinculo-box .text-muted { font-size: 0.85rem; }
 
-.icone-materia { 
-    font-size: 2.5rem; width: 80px; height: 80px;
-    border-radius: var(--raio-borda); display: flex; 
-    align-items: center; justify-content: center; 
-    margin: 0 auto 1rem auto; color: var(--cor-texto-claro);
+.card .card-header { /* Estilo geral para cabeçalho de card (Conquistas) */
+    background-color: transparent; border-bottom: 1px solid var(--cor-borda);
+    font-weight: 700; font-size: 1.1rem; color: var(--cor-texto);
+    padding: 1.25rem 1.5rem;
 }
+.card .card-header i { color: var(--vibrante-roxo); margin-right: 0.5rem; }
+.conquistas-tooltip { font-size: 0.85rem; color: var(--cor-texto-secundario); text-align: center; margin-bottom: 1rem; }
+.conquista-item .icone-conquista {
+    width: 60px; height: 60px; border-radius: 50%; display: flex;
+    align-items: center; justify-content: center; margin: 0 auto;
+    font-size: 1.75rem; transition: all 0.2s ease;
+}
+.conquista-item .icone-conquista.locked { background-color: #F1F5F9; color: #94A3B8; }
+.conquista-item .icone-conquista.unlocked { background-color: #FFFBEB; color: #F59E0B; border: 2px solid #F59E0B; }
+.conquista-item:hover .icone-conquista.unlocked { transform: scale(1.1); box-shadow: 0 0 15px rgba(245, 158, 11, 0.3); }
+.nome-conquista { display: block; font-size: 0.75rem; margin-top: 0.25rem; font-weight: 600; color: var(--cor-texto); }
+.nome-conquista.locked { color: #94A3B8; }
 
-.categoria-tag {
-    font-size: 0.75rem;
-    font-weight: 700;
-    padding: 0.25em 0.6em;
-    border-radius: 8px;
-    color: var(--cor-texto-claro);
-    background-color: rgba(0,0,0,0.15);
+.card-atividades {
+    background-color: var(--cor-branco); border: none; border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05); padding: 1rem;
 }
+.card-atividades h5 { font-weight: 700; color: var(--cor-texto); }
+.card-atividades .text-muted { color: var(--cor-texto-secundario) !important; font-size: 0.95rem; }
+.card-materia {
+    display: flex; align-items: center; justify-content: center; padding: 1.5rem;
+    border-radius: 16px; border: 2px solid var(--cor-borda); text-decoration: none;
+    font-weight: 700; font-size: 1.1rem; transition: all 0.2s ease; position: relative;
+}
+.card-materia:hover { transform: translateY(-4px); box-shadow: 0 8px 20px rgba(0,0,0,0.07); }
+.card-materia .card-materia-icon { margin-right: 0.75rem; font-size: 1.4rem; }
+.activity-completed-badge {
+    position: absolute; top: 12px; right: 12px; width: 24px; height: 24px;
+    border-radius: 50%; background-color: var(--cor-sucesso); color: white;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.9rem; font-weight: bold;
+}
+/* Cores das Matérias do Dashboard Criança */
+.card-materia.color-matemática { background-color: #F0F2FF; border-color: #D6CFFD; color: #7B61FF; }
+.card-materia.color-matemática:hover { border-color: #7B61FF; }
+.card-materia.color-idiomas { background-color: #F7F5FF; border-color: #E6E0FF; color: #A78BFA; }
+.card-materia.color-idiomas:hover { border-color: #A78BFA; }
+.card-materia.color-geografia { background-color: #ECFDF5; border-color: #A7F3D0; color: #10B981; }
+.card-materia.color-geografia:hover { border-color: #10B981; }
+.card-materia.color-história { background-color: #FFFBEB; border-color: #FDE68A; color: #F59E0B; }
+.card-materia.color-história:hover { border-color: #F59E0B; }
+.card-materia.color-literatura { background-color: #FEF2F2; border-color: #FECACA; color: #EF4444; }
+.card-materia.color-literatura:hover { border-color: #EF4444; }
+.card-materia.color-artes { background-color: #FFFBEB; border-color: #FDE68A; color: #D97706; }
+.card-materia.color-artes:hover { border-color: #D97706; }
+.card-materia.color-ciências { background-color: #ECFEFF; border-color: #A5F3FC; color: #06B6D4; }
+.card-materia.color-ciências:hover { border-color: #06B6D4; }
 
-.btn-iniciar {
-    color: var(--cor-texto-claro);
-    font-weight: bold;
-    border-radius: 12px;
-    border: none;
-    width: 100%;
-    padding: 0.75rem;
-    margin-top: 1rem;
-    transition: opacity 0.2s ease;
-}
-.btn-iniciar:hover {
-    color: var(--cor-texto-claro);
-    opacity: 0.9;
-}
-
-/* ======== DASHBOARD DO PROFESSOR E RESPONSÁVEL (ESTILO UNIFICADO) ======== */
-.info-card {
-    text-align: center;
-}
-.info-card .h4 {
-    font-weight: 800;
-    color: var(--cor-primaria);
-    margin-bottom: 0.25rem;
-}
-.info-card .card-title {
-    font-weight: 600;
-    font-size: 0.9rem;
-    color: var(--cor-cinza-escuro);
-}
-
+/* === DASHBOARD DO PROFESSOR E RESPONSÁVEL === */
+.info-card { text-align: center; }
+.info-card .h4 { font-weight: 800; color: var(--vibrante-roxo); margin-bottom: 0.25rem; }
+.info-card .card-title { font-weight: 600; font-size: 0.9rem; color: var(--cor-cinza-escuro); }
 .accordion-item {
-    border-radius: var(--raio-borda) !important;
-    margin-bottom: 0.75rem;
-    overflow: hidden;
+    border-radius: var(--raio-borda) !important; margin-bottom: 0.75rem;
+    overflow: hidden; border: none; box-shadow: var(--sombra-card);
 }
-.accordion-button {
-    font-weight: 700;
-    color: var(--cor-texto);
-}
-.accordion-button:focus {
-    box-shadow: 0 0 0 0.25rem rgba(147, 112, 219, 0.25);
-}
-.accordion-button:not(.collapsed) {
-    background-color: var(--cor-primaria);
-    color: var(--cor-texto-claro);
-}
-.accordion-button:not(.collapsed)::after {
-    filter: brightness(0) invert(1);
-}
-
-.card-atividade-progresso {
-    cursor: pointer;
-}
+.accordion-button { font-weight: 700; color: var(--cor-texto); }
+.accordion-button:focus { box-shadow: 0 0 0 0.25rem rgba(147, 112, 219, 0.25); }
+.accordion-button:not(.collapsed) { background-color: var(--vibrante-roxo); color: var(--cor-texto-claro); }
+.accordion-button:not(.collapsed)::after { filter: brightness(0) invert(1); }
+.card-atividade-progresso { cursor: pointer; }
 .icone-atividade-progresso {
-    font-size: 1.8rem; 
-    width: 48px; height: 48px;
-    border-radius: 12px;
+    font-size: 1.8rem; width: 48px; height: 48px; border-radius: 12px;
     display: flex; align-items: center; justify-content: center;
     color: var(--cor-texto-claro);
 }
-
 .categoria-tag-progresso {
-    background-color: var(--cor-cinza-claro);
-    color: var(--cor-cinza-escuro);
-    font-size: 0.75rem;
-    font-weight: 700;
-    padding: 0.25em 0.6em;
-    border-radius: 8px;
+    background-color: var(--cor-cinza-claro); color: var(--cor-cinza-escuro);
+    font-size: 0.75rem; font-weight: 700; padding: 0.25em 0.6em; border-radius: 8px;
 }
+.progress { height: 10px; border-radius: 50px; background-color: var(--cor-cinza-claro); }
+.progress-bar { background-color: var(--vibrante-verde); border-radius: 50px; }
+.progress-info-aluno .progress-bar { background-color: var(--vibrante-azul); }
 
-.progress {
-    height: 10px;
-    border-radius: 50px;
-    background-color: var(--cor-cinza-claro);
-}
-.progress-bar {
-    background-color: var(--vibrante-verde);
-    border-radius: 50px;
-}
-.progress-info-aluno .progress-bar {
-    background-color: var(--vibrante-azul); /* Cor específica para o progresso na visão do professor */
-}
+/* === CORES POR CATEGORIA (ÍCONES PROF/PAI) === */
+.icone-atividade-progresso.matemática { background-color: var(--vibrante-azul); }
+.icone-atividade-progresso.literatura { background-color: var(--vibrante-roxo); }
+.icone-atividade-progresso.português { background-color: var(--vibrante-roxo); }
+.icone-atividade-progresso.ciências { background-color: var(--vibrante-laranja); }
+.icone-atividade-progresso.artes { background-color: var(--vibrante-rosa); }
+.icone-atividade-progresso.história { background-color: #C08A53; }
+.icone-atividade-progresso.geografia { background-color: var(--vibrante-verde); }
+.icone-atividade-progresso.idiomas { background-color: #00C49A; }
 
-/* ======== CORES POR CATEGORIA (APLICADO A TODOS OS DASHBOARDS) ======== */
-.matemática .icone-materia, .matemática .btn-iniciar, .icone-atividade-progresso.matemática { background-color: var(--vibrante-azul); }
-.literatura .icone-materia, .literatura .btn-iniciar, .icone-atividade-progresso.literatura { background-color: var(--vibrante-roxo); }
-.português .icone-materia, .português .btn-iniciar, .icone-atividade-progresso.português { background-color: var(--vibrante-roxo); }
-.ciências .icone-materia, .ciências .btn-iniciar, .icone-atividade-progresso.ciências { background-color: var(--vibrante-laranja); }
-.artes .icone-materia, .artes .btn-iniciar, .icone-atividade-progresso.artes { background-color: var(--vibrante-rosa); }
-.história .icone-materia, .história .btn-iniciar, .icone-atividade-progresso.história { background-color: #C08A53; }
-.geografia .icone-materia, .geografia .btn-iniciar, .icone-atividade-progresso.geografia { background-color: var(--vibrante-verde); }
-.idiomas .icone-materia, .idiomas .btn-iniciar, .icone-atividade-progresso.idiomas { background-color: #00C49A; }
-
-/* ======== MENU DE ACESSIBILIDADE ======== */
+/* === MENU DE ACESSIBILIDADE === */
 .accessibility-btn {
-    position: fixed;
-    top: 25px;
-    right: 15px;
-    z-index: 1000;
+    position: fixed; top: 25px; right: 15px; z-index: 1000;
     background: var(--vibrante-azul); color: white; border: none;
     border-radius: 50%; width: 50px; height: 50px;
     font-size: 1.5rem; cursor: pointer; box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
 }
 .accessibility-menu {
-    position: fixed; top: 75px; right: 15px;
-    background: white; border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-    padding: 10px; display: none; flex-direction: column;
-    gap: 5px; z-index: 1000;
+    position: fixed; top: 75px; right: 15px; background: white; border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2); padding: 10px; display: none;
+    flex-direction: column; gap: 5px; z-index: 1000;
 }
 .accessibility-menu.ativo { display: flex; }
 .accessibility-menu button {
-    border: none; background: #0077cc; color: white;
-    padding: 0.5rem 1rem; border-radius: 10px;
-    cursor: pointer; transition: 0.3s; font-weight: 600;
+    border: none; background: #0077cc; color: white; padding: 0.5rem 1rem;
+    border-radius: 10px; cursor: pointer; transition: 0.3s; font-weight: 600;
 }
 .accessibility-menu button:hover { background: #005fa3; }
 
-/* ======== MODOS DE ACESSIBILIDADE ======== */
-body.alto-contraste {
-    background: #000 !important;
-    color: #fff !important;
+/* === MODOS DE ACESSIBILIDADE === */
+body.alto-contraste { background: #000 !important; color: #fff !important; }
+body.alto-contraste .card, body.alto-contraste .caixa-formulario,
+body.alto-contraste .navbar, body.alto-contraste .modal-content,
+body.alto-contraste .accordion-item {
+    background: #111 !important; border: 2px solid #fff !important;
 }
-body.alto-contraste .card,
-body.alto-contraste .caixa-formulario {
-    background: #111 !important;
-    border: 2px solid #fff !important;
+body.alto-contraste input, body.alto-contraste select {
+    background: #000 !important; color: #fff !important; border: 1px solid #fff !important;
 }
-body.alto-contraste input,
-body.alto-contraste select {
-    background: #000 !important;
-    color: #fff !important;
-    border: 1px solid #fff !important;
-}
+body.alto-contraste .main-footer { background: #111 !important; color: #ccc !important; border-top-color: #fff !important;}
+body.alto-contraste .footer-bottom { background: #000 !important; border-top-color: #fff !important;}
+body.alto-contraste .footer-column h5 { color: #fff !important;}
+body.alto-contraste .footer-column ul li a { color: #ccc !important;}
+body.alto-contraste .footer-column ul li a:hover { color: #fff !important;}
+body.alto-contraste .modal-footer .btn-secondary { background: #333 !important; color: #fff !important; border-color: #fff !important;}
+
 body.fonte-grande { font-size: 1.25rem; }
+/* Ajustes modo daltonismo se necessário */
 body.modo-daltonismo .botao-primario { background-color: #5a4fcf; }
 body.modo-daltonismo .botao-secundario { background-color: #d99200; }
 
-/* ======== PÁGINA DE ATIVIDADE (QUIZ) ======== */
-.atividade-wrapper { 
-    background-color: var(--cor-fundo); 
-    min-height: calc(100vh - 140px); 
-    padding: 20px; display: flex; 
-    align-items: center; justify-content: center; 
+/* === PÁGINA DE ATIVIDADE (QUIZ) === */
+.quiz-body {
+    background-color: var(--cor-fundo); font-family: "Poppins", sans-serif;
+    color: var(--cor-texto); display: flex; flex-direction: column; min-height: 100vh;
 }
-.atividade-container { 
-    background-color: var(--cor-branco); 
-    border-radius: 24px; padding: 30px; 
-    width: 100%; max-width: 900px; 
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
-    position: relative; overflow: hidden; min-height: 500px; 
+.quiz-header {
+    background-color: white; padding: 1rem 1.5rem; display: flex;
+    align-items: center; justify-content: space-between;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
 }
-.atividade-header { display: flex; align-items: center; gap: 20px; margin-bottom: 40px; }
-.progress-container { flex-grow: 1; }
-.progress-text { font-weight: bold; margin-bottom: 5px; color: var(--cor-cinza-escuro); }
+.quiz-title { font-weight: 600; font-size: 1.1rem; }
+.btn-sair { text-decoration: none; color: var(--cor-texto-secundario); font-weight: 600; font-size: 0.9rem; }
+.btn-sair i { margin-right: 0.25rem; }
+.btn-sair:hover { color: var(--cor-texto); }
+.quiz-main-content {
+    flex-grow: 1; display: flex; align-items: center; justify-content: center; padding: 2rem;
+}
+#quiz-active-screen, #final-screen { width: 100%; max-width: 700px; }
+.progress-container { margin-bottom: 1.5rem; }
+.progress-info {
+    display: flex; justify-content: space-between; font-weight: 600;
+    font-size: 0.9rem; color: var(--cor-texto-secundario); margin-bottom: 0.5rem;
+}
+.progress { height: 12px; border-radius: 12px; background-color: var(--cor-borda); }
+.progress-bar {
+    background-color: var(--vibrante-roxo); border-radius: 12px; transition: width 0.3s ease;
+}
+.quiz-card {
+    background-color: white; border-radius: 20px; padding: 2.5rem;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.07);
+}
+.pergunta-texto {
+    text-align: center; font-size: 1.5rem; font-weight: 700;
+    color: var(--vibrante-roxo); margin-bottom: 2rem;
+}
+.alternativas-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+.alternativa-card {
+    border: 2px solid var(--cor-borda); border-radius: 16px; padding: 1.25rem;
+    text-align: center; font-size: 1.2rem; font-weight: 600; cursor: pointer;
+    transition: all 0.2s ease;
+}
+.alternativa-card:hover:not(.disabled) {
+    border-color: var(--vibrante-roxo); background-color: #F0F2FF; color: var(--vibrante-roxo);
+}
+.alternativa-card.disabled { cursor: not-allowed; opacity: 0.7; }
+.alternativa-card.correct {
+    border-color: var(--cor-sucesso) !important; background-color: #ECFDF5 !important;
+    color: var(--cor-sucesso) !important;
+}
+.alternativa-card.incorrect {
+    border-color: var(--cor-perigo) !important; background-color: #FEF2F2 !important;
+    color: var(--cor-perigo) !important;
+}
+.feedback-box {
+    border-radius: 12px; padding: 1rem; margin-bottom: 1.5rem; font-weight: 600;
+    text-align: center; font-size: 1.1rem;
+}
+.feedback-box.correct { background-color: #ECFDF5; color: var(--cor-sucesso); }
+.feedback-box.incorrect { background-color: #FEF2F2; color: var(--cor-perigo); }
+.btn-proxima {
+    width: 100%; padding: 0.8rem; font-size: 1rem; font-weight: 700;
+    border: none; border-radius: 12px; background-color: var(--vibrante-roxo);
+    color: white; margin-top: 2rem;
+}
+.btn-proxima:hover { opacity: 0.9; }
 
-.btn-sair { 
-    background: var(--cor-perigo); color: var(--cor-branco); 
-    border: none; border-radius: 50px; padding: 8px 16px; font-weight: bold; 
+.resultado-card {
+    background-color: white; border-radius: 20px; padding: 2rem;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.07); text-align: center;
 }
-.btn-sair:hover { background: #E5533D; }
-
-.pergunta-titulo { font-weight: 800; color: var(--cor-texto); }
-.alternativas-container { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
-.alternativa-card { 
-    background-color: var(--cor-branco); border: 3px solid #d1d8e0; 
-    border-radius: 16px; padding: 20px; font-size: 1.3rem; 
-    font-weight: 700; cursor: pointer; transition: all 0.2s ease; 
-    box-shadow: 0 4px 10px rgba(0,0,0,0.05); 
+.trophy-icon {
+    font-size: 4rem; width: 80px; height: 80px; border-radius: 50%;
+    background-color: #FFFBEB; color: #F59E0B; display: flex;
+    align-items: center; justify-content: center; margin: 0 auto 1rem auto;
 }
-.alternativa-card:hover:not(.disabled) { 
-    transform: translateY(-5px); border-color: var(--vibrante-azul); 
-    box-shadow: 0 8px 20px rgba(30, 144, 255, 0.2); 
+.parabens-texto { font-weight: 700; color: var(--cor-texto); margin-bottom: 0.25rem; }
+.resultado-card .text-muted { font-size: 1rem; color: var(--cor-texto-secundario) !important; margin-bottom: 1.5rem; }
+.feedback-final {
+    background-color: #F0F2FF; color: var(--vibrante-roxo); border-radius: 12px;
+    padding: 0.75rem; font-weight: 600; margin-bottom: 1.5rem;
 }
-.alternativa-card.correct { border-color: var(--cor-sucesso) !important; box-shadow: 0 0 15px var(--cor-sucesso); }
-.alternativa-card.incorrect { border-color: var(--cor-perigo) !important; box-shadow: 0 0 15px var(--cor-perigo); }
-.alternativa-card.disabled { cursor: not-allowed; opacity: 0.6; }
-
-.feedback-footer { 
-    position: absolute; bottom: 0; left: 0; 
-    width: 100%; padding: 20px; text-align: center; 
-    color: white; font-weight: bold; 
-    transform: translateY(100%); transition: transform 0.4s ease-out; 
-    visibility: hidden; z-index: 5; 
+.stats-grid { display: grid; gap: 0.75rem; margin-bottom: 2rem; }
+.stat-item {
+    background-color: var(--cor-fundo); border: 1px solid var(--cor-borda);
+    border-radius: 12px; padding: 0.75rem 1rem; text-align: left;
+    display: flex; align-items: center; justify-content: space-between; font-weight: 600;
 }
-.feedback-footer.visible { transform: translateY(0); visibility: visible; }
-.feedback-footer.correct { background-color: var(--cor-sucesso); }
-.feedback-footer.incorrect { background-color: var(--cor-perigo); }
-
-/* --- TELA FINAL DE RESULTADOS --- */
-.final-screen { 
-    position: absolute; top: 0; left: 0; 
-    width: 100%; height: 100%; display: flex; 
-    align-items: center; justify-content: center; 
-    padding: 20px; z-index: 10; 
+.stat-item i { font-size: 1.2rem; margin-right: 0.75rem; }
+.stat-item:nth-child(1) i { color: var(--vibrante-roxo); } /* Questões Corretas */
+.stat-item:nth-child(2) i { color: var(--cor-sucesso); } /* Nota */
+.stat-item:nth-child(3) i { color: var(--cor-cinza-escuro); } /* Tempo */
+.stat-item span { font-weight: 700; font-size: 1.1rem; }
+.btn-dashboard {
+    width: 100%; padding: 0.8rem; font-size: 1rem; font-weight: 700;
+    border: none; border-radius: 12px; background-color: var(--vibrante-roxo);
+    color: white; text-decoration: none; display: inline-block;
 }
-.card-resultado { 
-    background: var(--cor-branco); color: var(--cor-texto); 
-    padding: 25px; border-radius: 24px; text-align: center; 
-    max-width: 550px; width: 100%; 
-    box-shadow: 0 10px 40px rgba(0,0,0,0.1); 
-}
-.resultado-header { position: relative; margin-bottom: 0.5rem; }
-.trofeu-icone { font-size: 4rem; color: var(--vibrante-amarelo); opacity: 0.9; }
-.star-deco { font-size: 1.2rem; color: var(--vibrante-amarelo); position: absolute; top: 10px; opacity: 0.9; }
-.star-left { left: 30%; animation: sparkle 2s infinite ease-in-out; }
-.star-right { right: 30%; animation: sparkle 2s infinite ease-in-out 1s; }
-
-@keyframes sparkle { 
-    0%, 100% { transform: scale(1); opacity: 0.7; } 
-    50% { transform: scale(1.3); opacity: 1; } 
+.btn-dashboard:hover { color: white; opacity: 0.9; }
+.hidden { display: none !important; }
+@media (max-width: 767px) { /* Responsividade Quiz */
+    .quiz-card { padding: 1.5rem; }
+    .alternativas-grid { grid-template-columns: 1fr; gap: 1rem; }
+    .pergunta-texto { font-size: 1.25rem; }
 }
 
-.stats-container { display: flex; gap: 15px; margin: 20px 0; justify-content: center; flex-wrap: wrap; }
-.stat-card { background-color: rgba(60, 179, 113, 0.85); color: var(--cor-texto-claro); border-radius: 16px; padding: 10px; width: 130px; text-align: center; }
-.stat-card i { font-size: 1.5rem; }
-.stat-valor { display: block; font-size: 1.6rem; font-weight: 800; margin: 5px 0; }
-.stat-label { font-size: 0.8rem; opacity: 0.9; }
+/* === TELA FINAL DE RESULTADOS (Animação Confetti - JS) === */
+/* Não precisa de CSS específico aqui */
 
-.btn-voltar-dash { 
-    background-color: var(--cor-sucesso); color: var(--cor-texto-claro); 
-    font-weight: bold; font-size: 1rem; padding: 10px 25px; 
-    border-radius: 50px; border: none; 
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1); 
-    transition: transform 0.2s ease; 
-}
-.btn-voltar-dash:hover { transform: scale(1.05); }
-
-
-/* --- POPOVERS --- */
+/* === POPOVERS === */
 .popover { max-width: 300px; border-radius: 12px; border: none; box-shadow: var(--sombra-card); }
 .popover-header { font-weight: bold; }
 .popover-body { min-width: 200px; }
 
-/* --- TELA DE CRIAR ATIVIDADE --- */
-.criar-atividade-wrapper { 
-    background-color: #f0f2f5; padding: 30px; 
-    border-radius: 15px; max-width: 900px; margin: auto; 
-}
+/* === TELA DE CRIAR ATIVIDADE === */
+.criar-atividade-wrapper { background-color: #f0f2f5; padding: 30px; border-radius: 15px; max-width: 900px; margin: auto; }
 .btn-voltar { background: none; border: none; font-weight: bold; color: var(--cor-cinza-escuro); }
 .btn-salvar { background-color: var(--cor-sucesso); color: white; border-radius: 12px; font-weight: bold; padding: 0.5rem 1.5rem; }
 .form-card { border-radius: var(--raio-borda); }
@@ -334,11 +1146,42 @@ body.modo-daltonismo .botao-secundario { background-color: #d99200; }
 .alternativa-card-form.correct { border-color: var(--cor-sucesso) !important; }
 .alternativa-card-form .form-check-input { cursor: pointer; }
 
-/* --- FOOTER --- */
-footer {
-    margin-top: 40px;
-    color: #777;
-    text-align: center;
-    font-size: 0.9rem;
-    padding-bottom: 20px;
+/* === MEDIA QUERIES GERAIS === */
+ @media (max-width: 992px) {
+        .aluno-desempenho-grid { grid-template-columns: 1fr; }
+        .alternativas-container { grid-template-columns: 1fr; } /* Adicionado aqui para unificar */
+    }
+
+    /*
+ * CSS para o link "Pular para o Conteúdo"
+ */
+.skip-to-content-link {
+    position: absolute;
+    left: -9999px; /* Joga o link para fora da tela */
+    top: auto;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    z-index: -999;
+    padding: 0.5rem 1rem;
+    
+    /* Estilização quando focado (combine com as cores do seu site) */
+    background-color: #5a4fcf; /* Cor de destaque do seu site */
+    color: #ffffff;
+    text-decoration: none;
+    font-weight: 600;
+    border-radius: 0 0 0.25rem 0.25rem;
+}
+
+/*
+ * Traz o link de volta para a tela quando ele recebe foco (via tecla Tab)
+ */
+.skip-to-content-link:focus,
+.skip-to-content-link:active {
+    left: 0.5rem;
+    top: 0;
+    width: auto;
+    height: auto;
+    overflow: visible;
+    z-index: 1101; /* Deve ficar acima de tudo, inclusive do header e dos toasts (que estão em 1100) */
 }

@@ -1,266 +1,168 @@
 @{
-    ViewData["Title"] = "Bem-vindo!";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Bem-vindo ao CogniVerse";
+    Layout = "~/Views/Shared/_LayoutPublico.cshtml";
 }
 
 <style>
     :root {
-        --cor-fundo: #f8f9fa;
-        --cor-texto: #343a40;
-        --cor-texto-claro: #ffffff;
-        
-        --vibrante-amarelo: #FFD700;
-        --vibrante-verde: #3CB371;
-        --vibrante-azul: #1E90FF;
-        --vibrante-laranja: #FFA500;
-        --vibrante-roxo: #9370DB; 
-        --vibrante-rosa: #FF69B4;
-        --vibrante-vermelho-perigo: #FF6347;
-
-        --cor-sucesso: var(--vibrante-verde);
-        --cor-perigo: var(--vibrante-vermelho-perigo);
-        --cor-primaria-login: var(--vibrante-roxo);
-
-        --cor-branco: #ffffff;
-        --cor-cinza-claro: #e9ecef;
-        --cor-cinza-escuro: #6c757d;
+        --cor-principal: #7b61ff;
+        /* Roxo dos botões */
+        --cor-texto-escuro: #343a40;
+        --cor-texto-claro: #6c757d;
     }
 
-    /* ======== GERAL ======== */
-    body {
-        font-family: "Poppins", sans-serif;
-        color: var(--cor-texto);
-        background: var(--cor-fundo);
-        background-attachment: fixed;
-        margin: 0;
-        padding: 0;
-        min-height: 100vh;
-    }
-
-    .pagina-login {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: flex-start;
-        min-height: 100vh;
-        padding: 30px 15px;
-    }
-
-    /* ======== CABEÇALHO ======== */
-    .cabecalho {
+    /* Seção do Banner Principal */
+    .hero-section {
+        background-color: #f0f2ff;
+        padding: 80px 0;
         text-align: center;
-        margin-bottom: 30px;
-        color: var(--cor-texto-claro);
-        text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
     }
-
-    .cabecalho .titulo {
-        font-size: 2.8rem;
+    .hero-section h1 {
+        font-size: 3.5rem;
         font-weight: 700;
-       color: #3b4cca;
-    }
-
-
-    .cabecalho .subtitulo {
-        font-size: 1.2rem;
-        color: #555;
-        margin-top: 10px;
-        font-weight: 500;
-    }
-
-     /* ======== CAIXA PRINCIPAL ======== */
-    .caixa-formulario {
-        background: #fff;
-        border-radius: 20px;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        width: 100%;
-        max-width: 600px;
-        padding: 30px;
-        text-align: center;
-        transition: transform 0.3s;
-    }
-
-    .caixa-formulario:hover {
-        transform: translateY(-3px);
-    }
-
-    /* ======== ABAS ======== */
-    .abas {
-        display: flex;
-        justify-content: center;
+        color: var(--cor-principal);
         margin-bottom: 20px;
     }
-
-    .aba {
-        flex: 1;
-        padding: 10px 0;
-        cursor: pointer;
+    .hero-section p {
+        font-size: 1.15rem;
+        color: var(--cor-texto-escuro);
+        max-width: 600px;
+        margin: 0 auto 30px auto;
+    }
+    .btn-comecar {
+        background-color: var(--cor-principal);
+        color: #fff;
+        font-size: 1.1rem;
         font-weight: 600;
-        color: #555;
-        background: #e6ecff;
-        border: none;
-        border-radius: 20px 20px 0 0;
-        transition: 0.3s;
+        padding: 12px 30px;
+        border-radius: 50px;
+        text-decoration: none;
+        transition: background-color 0.3s;
     }
-
-    .aba:hover {
-        background: #d2dcff;
-    }
-
-    .aba.ativa {
-        background: #3b4cca;
+    .btn-comecar:hover {
+        background-color: #6a53e0;
         color: #fff;
     }
 
-    /* ======== FORMULÁRIOS ======== */
-    .formulario {
-        display: none;
-        text-align: left;
-        padding-top: 10px;
-    }
-
-    .formulario.ativo {
-        display: block;
-        animation: aparecer 0.4s ease;
-    }
-
-    h2 {
-        font-weight: 700;
-         color: #3b4cca;
-        margin-bottom: 20px;
+    /* Seção de Features */
+    .features-section {
+        padding: 60px 0;
         text-align: center;
     }
-
-    label {
-        font-weight: 600;
-        display: block;
-        margin-bottom: 5px;
-        color: var(--cor-texto);
-    }
-
-    input, select {
-        width: 100%;
-        padding: 10px;
-        border-radius: 10px;
-        border: 1px solid var(--cor-cinza-escuro);
-        margin-bottom: 15px;
-        transition: border 0.2s;
-    }
-
-    input:focus, select:focus {
-        outline: none;
-        border-color: var(--vibrante-roxo);
-        box-shadow: 0 0 6px rgba(147, 112, 219, 0.5);
-    }
-
-    .botao {
-        width: 100%;
-        border: none;
-        border-radius: 25px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: background 0.3s ease;
-        padding: 10px 0;
+    .section-subtitle {
         font-size: 1rem;
+        font-weight: 600;
+        color: var(--cor-principal);
+        margin-bottom: 30px;
+    }
+    .feature-card {
+        background: #fff;
+        border-radius: 15px;
+        padding: 30px;
+        border: 1px solid #e9ecef;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+        height: 100%;
+        
+        /* Animação */
+        transition: all 0.3s ease-in-out;
+    }
+    
+    .feature-card:hover {
+        transform: translateY(-10px); /* Levanta o card */
+        box-shadow: 0 15px 30px rgba(123, 97, 255, 0.2); /* Sombra roxa */
+    }
+
+    /* Estilo base do ícone (círculo) */
+    .feature-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 70px;
+        height: 70px;
+        border-radius: 50%;
+        margin-bottom: 20px;
+        font-size: 2.5rem; /* Tamanho do ícone */
+    }
+
+    /* Cores dos Ícones */
+    .icon-blue {
+        background-color: #e6f0ff;
+        color: #0066ff;
+    }
+    .icon-purple {
+        background-color: #f3e8ff;
+        color: #7b61ff;
+    }
+    .icon-green {
+        background-color: #e6f9f0;
+        color: #1abc9c;
+    }
+    .icon-orange {
+        background-color: #fff4e6;
+        color: #ff9900;
+    }
+
+    .feature-card h5 {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: var(--cor-texto-escuro);
+        margin-bottom: 10px;
+    }
+    .feature-card p {
+        font-size: 0.95rem;
         color: var(--cor-texto-claro);
-    }
-
-     .botao-primario {
-        background: #3b4cca;
-        color: white;
-    }
-
-    .botao-primario:hover {
-        background: #3b4ccacc;
-    }
-
-    .botao-secundario {
-        background: #3CB371;
-        color: white;
-    }
-
-    .botao-secundario:hover {
-        background: #3CB371cc;
-    }
-
-    footer {
-        margin-top: 40px;
-         color: #777;
-        text-align: center;
-        font-size: 0.9rem;
-        text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
     }
 </style>
 
-<div class="pagina-login">
-    <header class="cabecalho">
-        <h1 class="titulo">PlataformaEdu</h1>
-        <p class="subtitulo">Aprender pode ser divertido! Explore atividades gamificadas e descubra o prazer do conhecimento.</p>
-    </header>
-
-    <div class="caixa-formulario">
-        <div class="abas">
-            <button class="aba ativa" id="btnLogin" aria-controls="formLogin">Login</button>
-            <button class="aba" id="btnRegistrar" aria-controls="formRegistrar">Registrar</button>
-        </div>
-
-        <!-- Formulário Login -->
-        <div id="formLogin" class="formulario ativo" aria-labelledby="btnLogin">
-            <h2>Login</h2>
-            <form method="post" action="/Account/Login">
-                <label for="email">📧 Email</label>
-                <input type="email" id="email" name="Email" placeholder="seu@email.com" required>
-
-                <label for="senha">🔒 Senha</label>
-                <input type="password" id="senha" name="Senha" placeholder="••••••" required>
-
-                <button type="submit" class="botao botao-primario">Entrar</button>
-            </form>
-        </div>
-
-        <!-- Formulário Registro -->
-        <div id="formRegistrar" class="formulario" aria-labelledby="btnRegistrar">
-            <h2>Registrar</h2>
-            <form method="post" action="/Account/Register">
-                <label for="nome">👤 Nome Completo</label>
-                <input type="text" id="nome" name="Nome" placeholder="Seu nome completo" required>
-
-                <label for="emailRegister">📧 Email</label>
-                <input type="email" id="emailRegister" name="Email" placeholder="seu@email.com" required>
-
-                <label for="senhaRegister">🔑 Senha</label>
-                <input type="password" id="senhaRegister" name="Senha" placeholder="Crie uma senha forte" required>
-
-                <label for="perfil">🧩 Eu sou</label>
-                <select id="perfil" name="Perfil">
-                    <option value="pai">Pai/Responsável</option>
-                    <option value="professor">Professor</option>
-                    <option value="crianca">Criança</option>
-                </select>
-
-                <button type="submit" class="botao botao-secundario">Criar Conta</button>
-            </form>
-        </div>
+<div class="hero-section">
+    <div class="container">
+        <h1>Bem-vindo ao CogniVerse</h1>
+        <p>
+            Uma plataforma gamificada de aprendizado para crianças de 7 a 12 anos.
+            Aprenda de forma divertida e interativa com atividades de matemática, idiomas, geografia, história, literatura, artes e ciências!
+        </p>
+      <a href="@Url.Action("Login", "Account")" class="btn-comecar">
+    Começar Agora
+</a>
     </div>
 </div>
 
-<script>
-    const btnLogin = document.getElementById("btnLogin");
-    const btnRegistrar = document.getElementById("btnRegistrar");
-    const formLogin = document.getElementById("formLogin");
-    const formRegistrar = document.getElementById("formRegistrar");
-
-    btnLogin.addEventListener("click", () => {
-        formLogin.classList.add("ativo");
-        formRegistrar.classList.remove("ativo");
-        btnLogin.classList.add("ativa");
-        btnRegistrar.classList.remove("ativa");
-    });
-
-    btnRegistrar.addEventListener("click", () => {
-        formRegistrar.classList.add("ativo");
-        formLogin.classList.remove("ativo");
-        btnRegistrar.classList.add("ativa");
-        btnLogin.classList.remove("ativa");
-    });
-</script>
+<div class="features-section">
+    <div class="container">
+        <div class="section-subtitle">✱ Por que escolher o CogniVerse?</div>
+        
+        <div class="row g-4">
+            <div class="col-md-3 col-6">
+                <div class="feature-card">
+                    <div class="feature-icon icon-blue"><i class="bi bi-joystick"></i></div>
+                    <h5>Aprendizado Gamificado</h5>
+                    <p>Aprenda brincando com desafios e recompensas</p>
+                </div>
+            </div>
+            
+            <div class="col-md-3 col-6">
+                <div class="feature-card">
+                    <div class="feature-icon icon-purple"><i class="bi bi-book"></i></div>
+                    <h5>7 Disciplinas</h5>
+                    <p>Conteúdo variado para desenvolvimento completo</p>
+                </div>
+            </div>
+            
+            <div class="col-md-3 col-6">
+                <div class="feature-card">
+                    <div class="feature-icon icon-green"><i class="bi bi-trophy"></i></div>
+                    <h5>Conquistas</h5>
+                    <p>Desbloqueie troféus ao completar atividades</p>
+                </div>
+            </div>
+            
+            <div class="col-md-3 col-6">
+                <div class="feature-card">
+                    <div class="feature-icon icon-orange"><i class="bi bi-people"></i></div>
+                    <h5>Acompanhamento</h5>
+                    <p>Pais e professores acompanham o progresso</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

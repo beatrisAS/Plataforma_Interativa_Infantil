@@ -2,9 +2,7 @@ DROP DATABASE IF EXISTS plataforma_educacao;
 CREATE DATABASE plataforma_educacao;
 USE plataforma_educacao;
 
--- ========================
--- Tabela de Usuários
--- ========================
+
 CREATE TABLE usuarios (
   id_usuario INT AUTO_INCREMENT PRIMARY KEY,
   nome VARCHAR(100) NOT NULL,
@@ -15,9 +13,7 @@ CREATE TABLE usuarios (
   data_cadastro DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
--- ========================
--- Tabela de Crianças
--- ========================
+
 CREATE TABLE criancas (
   id_crianca INT AUTO_INCREMENT PRIMARY KEY,
   nome VARCHAR(100) NOT NULL,
@@ -25,27 +21,41 @@ CREATE TABLE criancas (
   genero ENUM('M','F','Outro'),
   id_responsavel INT,
   estrelas INT DEFAULT 0,
+  id_usuario INT NOT NULL UNIQUE,
+  codigo_vinculo VARCHAR(10) NOT NULL UNIQUE,
+  FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario),
   FOREIGN KEY (id_responsavel) REFERENCES usuarios(id_usuario)
 );
 
--- ========================
--- Tabela de Atividades
--- ========================
 CREATE TABLE atividades (
   id_atividade INT AUTO_INCREMENT PRIMARY KEY,
   titulo VARCHAR(150) NOT NULL,
   descricao TEXT,
   faixa_etaria VARCHAR(20),
   categoria VARCHAR(50) NOT NULL,
-  dificuldade ENUM('fácil','médio','difícil') DEFAULT 'fácil',
   icone VARCHAR(50) DEFAULT '📚',
   id_professor INT,
   FOREIGN KEY (id_professor) REFERENCES usuarios(id_usuario)
 );
 
--- ========================
--- Respostas e Progresso
--- ========================
+CREATE TABLE questoes (
+  id_questao INT AUTO_INCREMENT PRIMARY KEY,
+  atividade_id INT NOT NULL,
+  pergunta TEXT NOT NULL,
+  
+  explicacao TEXT, 
+  FOREIGN KEY (atividade_id) REFERENCES atividades(id_atividade)
+);
+
+CREATE TABLE alternativas (
+  id_alternativa INT AUTO_INCREMENT PRIMARY KEY,
+  questao_id INT NOT NULL,
+  texto VARCHAR(255) NOT NULL,
+  correta BOOLEAN NOT NULL DEFAULT FALSE,
+  FOREIGN KEY (questao_id) REFERENCES questoes(id_questao)
+);
+
+
 CREATE TABLE respostas_atividades (
   id_resposta INT AUTO_INCREMENT PRIMARY KEY,
   id_crianca INT NOT NULL,
@@ -56,23 +66,20 @@ CREATE TABLE respostas_atividades (
   FOREIGN KEY (id_atividade) REFERENCES atividades(id_atividade)
 );
 
--- ========================
--- Dados de Exemplo
--- ========================
-INSERT INTO usuarios (nome, email, senha, perfil, telefone) VALUES
-('João Silva','joao@email.com','senha123','pai', '(11) 99999-9999'),
-('Maria Santos','maria@email.com','prof123','professor', '(11) 88888-8888'),
-('Pedro Silva','pedro@email.com','kids123','crianca', NULL);
-
-INSERT INTO criancas (nome, data_nascimento, genero, id_responsavel, estrelas) VALUES
-('Pedro Silva','2015-03-10','M', 1, 0);
+CREATE TABLE professor_alunos (
+  id_professor INT NOT NULL,
+  id_crianca INT NOT NULL,
+  PRIMARY KEY (id_professor, id_crianca),
+  FOREIGN KEY (id_professor) REFERENCES usuarios(id_usuario),
+  FOREIGN KEY (id_crianca) REFERENCES criancas(id_crianca)
+);
 
 
 INSERT INTO atividades (titulo, categoria, id_professor) VALUES
-('Mundo da Matemática', 'Matemática', 2),
-('Viagem Literária', 'Literatura', 2),
-('Explorando a Ciência', 'Ciências', 2),
+('Mundo da Matemática', 'Matemática', NULL),
+('Viagem Literária', 'Literatura', NULL),
+('Explorando a Ciência', 'Ciências', NULL),
 ('Oficina de Artes', 'Artes', NULL), 
 ('Passaporte de Idiomas', 'Idiomas', NULL), 
-('Viajando pelo Mapa', 'Geografia', 2),
-('Máquina do Tempo', 'História', 2);
+('Viajando pelo Mapa', 'Geografia', NULL),
+('Máquina do Tempo', 'História', NULL);

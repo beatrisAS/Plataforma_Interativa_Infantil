@@ -22,4 +22,5 @@ public class Usuario {
 
     [NotMapped]  
     public string? SenhaHash { get; internal set; }
+
 }

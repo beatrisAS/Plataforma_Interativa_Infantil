@@ -1,36 +1,12 @@
+@using backend.ViewModels
 @model backend.ViewModels.CriancaDashboardViewModel
+
+@using System.Linq
 
 @{
     ViewData["Title"] = "Meu Mundo - SaberAventura";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<style>
-    /* ======== GERAL ======== */
-    body {
-        font-family: "Poppins", sans-serif;
-        color: var(--cor-texto);
-        background: var(--cor-fundo);
-        background-attachment: fixed;
-        margin: 0;
-        padding: 0;
-        min-height: 100vh;
-    }
-    .container {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 20px;
-    }
-
-    footer {
-        margin-top: 40px;
-         color: #777;
-        text-align: center;
-        font-size: 0.9rem;
-        text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
-    }
-
-</style>
-
 
 @functions {
     int CalcularIdade(DateTime dataNascimento)
@@ -40,53 +16,344 @@
         if (dataNascimento.Date > hoje.AddYears(-idade)) idade--;
         return idade;
     }
+
+    // Mapeia categorias para cores (pode ser expandido)
+    string GetColorClass(string categoria)
+    {
+        return categoria.ToLower() switch
+        {
+            "matemática" => "categoria-matematica",
+            "idiomas" => "categoria-idiomas",
+            "geografia" => "categoria-geografia",
+            "história" => "categoria-historia",
+            "literatura" => "categoria-literatura",
+            "artes" => "categoria-artes",
+            "ciências" => "categoria-ciencias",
+            _ => "categoria-default"
+        };
+    }
 }
+
+<!-- ============================================== -->
+<!--   INÍCIO DO NOVO CSS (Baseado na Imagem)       -->
+<!-- ============================================== -->
+<style>
+    :root {
+        --cor-fundo-crianca: #F9FAFF;
+        --cor-fundo-card: #FFFFFF;
+        --cor-borda: #EAEFFF;
+        --cor-texto-primario: #334155;
+        --cor-texto-secundario: #64748B;
+        --cor-principal: #7B61FF; /* Roxo */
+        --cor-principal-claro: #F0F2FF;
+        --cor-sucesso: #10B981; /* Verde */
+        
+        /* Cores das Categorias */
+        --cor-matematica-fundo: #F0F2FF;
+        --cor-matematica-texto: #7B61FF;
+        --cor-idiomas-fundo: #F0F2FF;
+        --cor-idiomas-texto: #7B61FF;
+        --cor-geografia-fundo: #ECFDF5;
+        --cor-geografia-texto: #10B981;
+        --cor-historia-fundo: #FFFBEB;
+        --cor-historia-texto: #F59E0B;
+        --cor-literatura-fundo: #FEF2F2;
+        --cor-literatura-texto: #EF4444;
+        --cor-artes-fundo: #FEF2F2;
+        --cor-artes-texto: #EF4444;
+        --cor-ciencias-fundo: #FFFBEB;
+        --cor-ciencias-texto: #F59E0B;
+    }
+
+    body {
+        background-color: var(--cor-fundo-crianca) !important;
+        font-family: "Poppins", sans-serif;
+    }
+
+    .dashboard-crianca .row {
+        gap: 24px 0; /* Espaçamento entre colunas */
+    }
+
+    /* Coluna da Esquerda (Sidebar) */
+    .sidebar-crianca {
+        background-color: var(--cor-fundo-card);
+        border-radius: 16px;
+        padding: 24px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+        height: fit-content; /* Faz o card ter a altura do seu conteúdo */
+    }
+
+    .perfil-card {
+        display: flex;
+        align-items: center;
+        margin-bottom: 24px;
+    }
+    .avatar-crianca {
+        width: 64px;
+        height: 64px;
+        border-radius: 50%;
+        background-color: var(--cor-principal);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        font-weight: 600;
+        margin-right: 16px;
+    }
+    .perfil-info h5 {
+        font-weight: 600;
+        color: var(--cor-texto-primario);
+        margin-bottom: 0;
+    }
+    .perfil-info p {
+        font-size: 0.9rem;
+        color: var(--cor-texto-secundario);
+        margin-bottom: 0;
+    }
+
+    .codigo-vinculo-card {
+        border-top: 1px solid var(--cor-borda);
+        padding-top: 24px;
+        margin-bottom: 24px;
+    }
+    .codigo-vinculo-card h6 {
+        font-weight: 600;
+        color: var(--cor-texto-secundario);
+        font-size: 0.9rem;
+        margin-bottom: 8px;
+    }
+    .codigo-vinculo-card p {
+        font-size: 0.85rem;
+        color: var(--cor-texto-secundario);
+        line-height: 1.6;
+    }
+    .codigo-vinculo-card .codigo {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--cor-principal);
+        text-align: center;
+        letter-spacing: 2px;
+    }
+
+    .conquistas-card {
+        border-top: 1px solid var(--cor-borda);
+        padding-top: 24px;
+    }
+    .conquistas-card h5 {
+        font-weight: 600;
+        color: var(--cor-texto-primario);
+        margin-bottom: 16px;
+    }
+    .conquistas-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 16px;
+    }
+    .conquista-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        cursor: pointer;
+    }
+    .conquista-item .icone {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.75rem;
+        margin-bottom: 8px;
+        transition: all 0.2s ease;
+    }
+    .conquista-item .nome {
+        font-size: 0.8rem;
+        font-weight: 500;
+        color: var(--cor-texto-secundario);
+    }
+    
+    /* Estilo CONQUISTA BLOQUEADA */
+    .conquista-item.locked .icone {
+        background-color: #F1F5F9; /* Cinza bem claro */
+        color: #94A3B8; /* Cinza */
+    }
+    .conquista-item.locked .nome {
+        color: #94A3B8;
+    }
+
+    /* Estilo CONQUISTA DESBLOQUEADA */
+    .conquista-item.unlocked .icone {
+        background-color: var(--cor-principal-claro);
+        color: var(--cor-principal);
+        border: 2px solid var(--cor-principal);
+        box-shadow: 0 0 15px rgba(123, 97, 255, 0.3);
+    }
+    .conquista-item.unlocked .nome {
+        color: var(--cor-texto-primario);
+        font-weight: 600;
+    }
+
+
+    /* Coluna da Direita (Atividades) */
+    .atividades-main h4 {
+        font-weight: 600;
+        color: var(--cor-texto-primario);
+    }
+    .atividades-main p {
+        color: var(--cor-texto-secundario);
+        margin-bottom: 24px;
+    }
+
+    .atividades-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+    }
+    
+    .card-atividade {
+        background-color: var(--cor-fundo-card);
+        border: 2px solid var(--cor-borda);
+        border-radius: 16px;
+        padding: 20px;
+        text-decoration: none;
+        color: var(--cor-texto-primario);
+        transition: all 0.2s ease;
+        position: relative;
+        overflow: hidden;
+    }
+    .card-atividade:hover {
+        border-color: var(--cor-principal);
+        transform: translateY(-5px);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+    }
+    
+    .card-atividade .icone-materia {
+        font-size: 1.5rem;
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 12px;
+    }
+    .card-atividade h6 {
+        font-weight: 600;
+        margin-bottom: 0;
+    }
+
+    /* Cores dos Ícones das Atividades */
+    .categoria-matematica .icone-materia { background-color: var(--cor-matematica-fundo); color: var(--cor-matematica-texto); }
+    .categoria-idiomas .icone-materia { background-color: var(--cor-idiomas-fundo); color: var(--cor-idiomas-texto); }
+    .categoria-geografia .icone-materia { background-color: var(--cor-geografia-fundo); color: var(--cor-geografia-texto); }
+    .categoria-historia .icone-materia { background-color: var(--cor-historia-fundo); color: var(--cor-historia-texto); }
+    .categoria-literatura .icone-materia { background-color: var(--cor-literatura-fundo); color: var(--cor-literatura-texto); }
+    .categoria-artes .icone-materia { background-color: var(--cor-artes-fundo); color: var(--cor-artes-texto); }
+    .categoria-ciencias .icone-materia { background-color: var(--cor-ciencias-fundo); color: var(--cor-ciencias-texto); }
+    .categoria-default .icone-materia { background-color: var(--cor-principal-claro); color: var(--cor-principal); }
+
+    /* Checkmark de Concluído */
+    .checkmark-concluido {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        background-color: var(--cor-sucesso);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.9rem;
+        font-weight: bold;
+    }
+    
+    /* Remove o sublinhado dos links */
+    a {
+        text-decoration: none;
+    }
+
+</style>
+<!-- ============================================== -->
+<!--   FIM DO NOVO CSS                              -->
+<!-- ============================================== -->
+
 
 <div class="container mt-4 dashboard-crianca">
     <div class="row">
+
+        <!-- ============================================== -->
+        <!--   INÍCIO DA SIDEBAR (PERFIL E CONQUISTAS)    -->
+        <!-- ============================================== -->
         <div class="col-lg-4">
-            <div class="card card-perfil-lateral shadow-sm mb-4">
-                <div class="card-body d-flex align-items-center">
-                    <div class="avatar-perfil">
+            <div class="sidebar-crianca">
+                
+                <!-- Card de Perfil -->
+                <div class="perfil-card">
+                    <div class="avatar-crianca">
                         @(!string.IsNullOrEmpty(Model.Crianca.Nome) ? Model.Crianca.Nome.Substring(0, 1) : "?")
                     </div>
-                    <div class="ms-3">
-                        <h5 class="mb-0">@Model.Crianca.Nome</h5>
-                        <small class="text-muted">Idade: @CalcularIdade(Model.Crianca.DataNascimento) anos</small>
+                    <div class="perfil-info">
+                        <h5>@Model.Crianca.Nome</h5>
+                        <p>Idade: @CalcularIdade(Model.Crianca.DataNascimento) anos</p>
                     </div>
                 </div>
-            </div>
 
-            <div class="bloco-secao">
-                <h4 class="titulo-secao">⭐ Minhas Conquistas</h4>
-                <div class="row row-cols-2 row-cols-sm-2 row-cols-lg-3 g-3">
-                    @if (Model.Conquistas != null && Model.Conquistas.Any())
-                    {
-                        @foreach (var conquista in Model.Conquistas)
+                <!-- Card do Código de Vínculo -->
+                <div class="codigo-vinculo-card">
+                    <h6>Meu Código de Vínculo</h6>
+                    <p>
+                        Informe este código ao seu pai ou professor
+                        para eles acompanharem seu progresso.
+                    </p>
+                    <div class="codigo">
+                        @Model.Crianca.CodigoDeVinculo
+                    </div>
+                </div>
+
+                <!-- Card de Conquistas -->
+                <div class="conquistas-card">
+                    <h5>⭐ Minhas Conquistas</h5>
+                    <div class="conquistas-grid">
+                        
+                        @if (Model.Conquistas != null && Model.Conquistas.Any())
                         {
-                            <div class="col d-flex">
-                                <div class="card card-conquista-clean text-center h-100 w-100">
-                                    <div class="card-body d-flex flex-column justify-content-center align-items-center">
-                                        <div class="icone-conquista">🏆</div>
-                                        <span class="nome-conquista">@conquista</span>
+                            @foreach (var conquista in Model.Conquistas)
+                            {
+                                // Define a classe CSS com base no status de desbloqueio
+                                string classeStatus = conquista.Desbloqueada ? "unlocked" : "locked";
+
+                                <div class="conquista-item @classeStatus" 
+                                     data-bs-toggle="tooltip" 
+                                     data-bs-placement="top" 
+                                     title="@conquista.Descricao">
+                                    <div class="icone">
+                                        <i class="bi @(string.IsNullOrEmpty(conquista.Icone) ? "bi-question-lg" : conquista.Icone)"></i>
                                     </div>
+                                    <span class="nome">@conquista.Nome</span>
                                 </div>
-                            </div>
+                            }
                         }
-                    }
-                    else
-                    {
-                        <div class="col-12">
-                            <p class="text-muted">Nenhuma conquista ainda. Continue jogando!</p>
-                        </div>
-                    }
+                        else
+                        {
+                            <p class="text-muted small">Nenhuma conquista definida.</p>
+                        }
+                    </div>
                 </div>
             </div>
         </div>
 
+        <!-- ============================================== -->
+        <!--   INÍCIO DAS ATIVIDADES (LADO DIREITO)         -->
+        <!-- ============================================== -->
         <div class="col-lg-8">
-            <div class="bloco-secao">
-                <h4 class="titulo-secao">🚀 Atividades Disponíveis</h4>
+            <div class="atividades-main">
+                <h4>🚀 Atividades Disponíveis</h4>
+                <p>Escolha uma matéria para começar. Cada atividade tem 5 questões.</p>
                 
                 @if (Model.Atividades == null || !Model.Atividades.Any())
                 {
@@ -94,38 +361,43 @@
                 }
                 else
                 {
-                    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-                        @foreach (var atividade in Model.Atividades)
+                    <div class="atividades-grid">
+                        
+                        @foreach (var item in Model.Atividades)
                         {
-                            var categoriaClass = atividade.Categoria.ToLower();
-                            <div class="col">
-                                <div class="card card-atividade-grid text-center h-100 shadow-sm @categoriaClass">
-                                    <div class="card-body d-flex flex-column">
-                                        <div class="icone-materia mb-3">
-                                            @switch (categoriaClass)
-                                            {
-                                                case "matemática": <i class="bi bi-calculator-fill"></i>; break;
-                                                case "português": <i class="bi bi-book-half"></i>; break;
-                                                case "ciências": <i class="bi bi-lightbulb-fill"></i>; break;
-                                                case "artes": <i class="bi bi-palette-fill"></i>; break;
-                                                case "história": <i class="bi bi-bank"></i>; break;
-                                                case "geografia": <i class="bi bi-map-fill"></i>; break;
-                                                case "idiomas": <i class="bi bi-translate"></i>; break;
-                                                default: <i class="bi bi-star-fill"></i>; break;
-                                            }
-                                        </div>
-                                        
-                                        <div class="flex-grow-1">
-                                            <h6 class="card-title d-inline mb-0 me-2">@atividade.Titulo</h6>
-                                            <span class="badge categoria-tag">@atividade.Categoria</span>
-                                        </div>
-                                        
-                                        <a href="@Url.Action("Detalhe", "AtividadeMvc", new { id = atividade.Id })" class="btn btn-iniciar mt-3">
-                                            Iniciar
-                                        </a>
+                            var atividade = item.Atividade;
+                            string categoriaClass = GetColorClass(atividade.Categoria);
+
+                            <a href="@Url.Action("Detalhe", "AtividadeMvc", new { id = atividade.Id })" 
+                               class="card-atividade @categoriaClass">
+                                
+                                <!-- Checkmark de Concluído (NOVO) -->
+                                @if (item.Concluida)
+                                {
+                                    <div class="checkmark-concluido" 
+                                         data-bs-toggle="tooltip" 
+                                         data-bs-placement="top" 
+                                         title="Matéria concluída!">
+                                        <i class="bi bi-check-lg"></i>
                                     </div>
+                                }
+                                
+                                <div class="icone-materia">
+                                    @switch (atividade.Categoria.ToLower())
+                                    {
+                                        case "matemática": <i class="bi bi-calculator"></i>; break;
+                                        case "português": <i class="bi bi-book"></i>; break;
+                                        case "ciências": <i class="bi bi-lightbulb"></i>; break;
+                                        case "artes": <i class="bi bi-palette"></i>; break;
+                                        case "história": <i class="bi bi-bank"></i>; break;
+                                        case "geografia": <i class="bi bi-map"></i>; break;
+                                        case "idiomas": <i class="bi bi-translate"></i>; break;
+                                        case "literatura": <i class="bi bi-journal-bookmark"></i>; break;
+                                        default: <i class="bi bi-star"></i>; break;
+                                    }
                                 </div>
-                            </div>
+                                <h6>@atividade.Titulo</h6>
+                            </a>
                         }
                     </div>
                 }
@@ -133,3 +405,15 @@
         </div>
     </div>
 </div>
+
+@section Scripts {
+<script>
+
+    document.addEventListener('DOMContentLoaded', function() {
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+    });
+</script>
+}

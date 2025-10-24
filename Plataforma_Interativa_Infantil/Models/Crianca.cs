@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace backend.Models;
@@ -24,4 +25,15 @@ public class Crianca
     public Usuario? Responsavel { get; set; }
 
     public int Estrelas { get; set; }
+
+    [Column("id_usuario")] 
+    public int UsuarioId { get; set; } 
+
+    [ForeignKey("UsuarioId")] 
+    public Usuario Usuario { get; set; } = null!;
+
+ 
+    [Column("codigo_vinculo")]
+    [StringLength(10)] 
+    public string CodigoDeVinculo { get; set; } = string.Empty;
 }

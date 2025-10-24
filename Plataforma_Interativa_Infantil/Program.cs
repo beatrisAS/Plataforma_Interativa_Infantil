@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseMySql(builder.Configuration.GetConnectionString("Default"), ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("Default"))));
@@ -21,16 +21,19 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
-// --- CORREÇÃO GERAL DA AUTENTICAÇÃO ---
-// Simplificado para usar apenas a autenticação por Cookies, que é o padrão para MVC.
+
+builder.Services.AddHttpContextAccessor();
+
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
-        // Se o usuário não estiver logado, ele será enviado para a página inicial.
-        options.LoginPath = "/";
-        options.ExpireTimeSpan = TimeSpan.FromHours(8); // O login expira em 8 horas
+   
+        options.LoginPath = "/Account/Login"; 
+        
+        options.LogoutPath = "/Account/Logout"; 
+        options.ExpireTimeSpan = TimeSpan.FromHours(8); 
     });
-// --- FIM DA CORREÇÃO ---
+
 
 builder.Services.AddAuthorization(options => {
     options.AddPolicy("ProfessorOnly", policy => policy.RequireRole("professor"));
@@ -52,7 +55,7 @@ app.UseStaticFiles();
 app.UseRouting();
 app.UseSession();
 
-// A ordem é importante: Autenticação primeiro, depois Autorização.
+
 app.UseAuthentication();
 app.UseAuthorization();
 
@@ -61,4 +64,3 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
-

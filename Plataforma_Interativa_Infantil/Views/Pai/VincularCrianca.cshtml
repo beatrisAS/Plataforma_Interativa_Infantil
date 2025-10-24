@@ -1,0 +1,98 @@
+@model dynamic
+@{
+    ViewData["Title"] = "Vincular Criança";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    /* Esconde o sumário de validação se ele estiver válido (sem erros) */
+    .validation-summary-valid[asp-validation-summary="ModelOnly"] {
+        display: none;
+    }
+
+    .card-link-page {
+        border-radius: 1rem !important;
+        border: 2px solid #7b61ff !important;
+        box-shadow: 0 8px 30px rgba(123, 97, 255, 0.3) !important;
+        overflow: hidden;
+    }
+    .card-link-page .card-header {
+        background-color: #f8f7ff;
+        border-bottom: 1px solid #e0e0e0;
+        padding: 1.25rem 1.5rem;
+    }
+    .card-link-page .card-header h3 {
+        color: #343a40;
+        font-weight: 600;
+        margin: 0;
+    }
+    .card-link-page .card-header i {
+        color: #7b61ff;
+        margin-right: 10px;
+    }
+    .card-link-page .card-body {
+        padding: 1.5rem;
+    }
+
+    /* Estiliza o input do código */
+    #codigoDeVinculo {
+        font-size: 1.75rem;
+        font-weight: 700;
+        text-align: center;
+        letter-spacing: 0.3em;
+        color: #343a40;
+        border-radius: 8px;
+        border-width: 2px;
+        max-width: 300px;
+        margin: 0 auto;
+    }
+    #codigoDeVinculo:focus {
+        border-color: #7b61ff;
+        box-shadow: 0 0 0 0.25rem rgba(123, 97, 255, 0.25);
+    }
+    
+    /* Estiliza o botão */
+    .btn-vincular {
+        background-color: #7b61ff;
+        border-color: #7b61ff;
+        font-weight: 600;
+        padding: 0.75rem 1.25rem;
+        font-size: 1.1rem;
+    }
+    .btn-vincular:hover {
+        background-color: #6a53e0;
+        border-color: #6a53e0;
+    }
+</style>
+
+<div class="container mt-4" style="max-width: 700px;">
+    <div class="card shadow-sm card-link-page">
+        <div class="card-header">
+            <h3><i class="bi bi-link-45deg"></i> Vincular Conta de Criança</h3>
+        </div>
+        <div class="card-body">
+            <p>
+                Peça para seu filho(a) entrar na conta dele(a) e ir até a página "Meu Perfil".
+                Lá ele(a) encontrará o <strong>Código de Vínculo</strong> de 6 dígitos.
+            </p>
+            <p>Insira esse código abaixo para vincular o perfil dele(a) à sua conta de responsável.</p>
+            
+            <form asp-action="VincularCrianca" method="post" class="text-center">
+                @Html.AntiForgeryToken()
+                
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                <div class="mb-3">
+                    <label for="codigoDeVinculo" class="form-label fs-5">Código de Vínculo</label>
+                    <input name="codigoDeVinculo" id="codigoDeVinculo" class="form-control form-control-lg" 
+                           placeholder="123456" required maxlength="6" />
+                </div>
+
+                <hr class="my-4" />
+                <button type="submit" class="btn btn-primary w-100 btn-vincular">
+                    <i class="bi bi-check-circle-fill"></i> Vincular Conta
+                </button>
+            </form>
+        </div>
+    </div>
+</div>

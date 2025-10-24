@@ -1,0 +1,198 @@
+/* Conteúdo para: wwwroot/css/dashboard.css */
+
+:root {
+    --cor-primaria: #7B61FF; /* Roxo */
+    --cor-primaria-claro: #F0F2FF;
+    --cor-texto: #334155;
+    --cor-texto-secundario: #64748B;
+    --cor-borda: #EAEFFF;
+    --cor-fundo-card: #FFFFFF;
+    --cor-fundo-pagina: #F9FAFF;
+    --cor-sucesso: #10B981; /* Verde */
+}
+
+body {
+    background-color: var(--cor-fundo-pagina) !important;
+}
+
+.dashboard-container {
+    padding: 2rem 0;
+}
+
+/* Card de Perfil e Código */
+.card-profile {
+    padding: 2rem 1.5rem;
+    background-color: var(--cor-fundo-card);
+    border: none;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+.avatar-perfil {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background-color: var(--cor-primaria);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin: 0 auto;
+}
+.card-profile h5 {
+    font-weight: 700;
+    color: var(--cor-texto);
+    margin-top: 1rem;
+    margin-bottom: 0.25rem;
+}
+.card-profile .text-muted {
+    color: var(--cor-texto-secundario) !important;
+    font-weight: 500;
+}
+/* Código de Vínculo */
+.codigo-vinculo-box {
+    background-color: #F8F9FA;
+    border: 1px solid var(--cor-borda);
+    border-radius: 12px;
+    padding: 1rem;
+    margin-top: 1.5rem;
+}
+.codigo-vinculo-box .text-primary {
+    color: var(--cor-primaria) !important;
+    font-weight: 700 !important;
+    font-size: 0.8rem;
+    letter-spacing: 0.5px;
+}
+.codigo-vinculo-box .h5 {
+    color: var(--cor-texto);
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+.codigo-vinculo-box .text-muted {
+    font-size: 0.85rem;
+}
+
+
+/* Card de Conquistas */
+.card-header {
+    background-color: transparent;
+    border-bottom: 1px solid var(--cor-borda);
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--cor-texto);
+    padding: 1.25rem 1.5rem;
+}
+.card-header i {
+    color: var(--cor-primaria);
+    margin-right: 0.5rem;
+}
+.conquistas-tooltip {
+    font-size: 0.85rem;
+    color: var(--cor-texto-secundario);
+    text-align: center;
+    margin-bottom: 1rem;
+}
+.conquista-item .icone-conquista {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+    font-size: 1.75rem;
+    transition: all 0.2s ease;
+}
+/* Conquista Bloqueada */
+.conquista-item .icone-conquista.locked {
+    background-color: #F1F5F9;
+    color: #94A3B8;
+}
+/* Conquista Desbloqueada */
+.conquista-item .icone-conquista.unlocked {
+    background-color: #FFFBEB; /* Fundo Amarelo */
+    color: #F59E0B; /* Ícone Amarelo */
+    border: 2px solid #F59E0B;
+}
+.conquista-item:hover .icone-conquista.unlocked {
+    transform: scale(1.1);
+    box-shadow: 0 0 15px rgba(245, 158, 11, 0.3);
+}
+
+
+/* Card de Atividades */
+.card-atividades {
+    background-color: var(--cor-fundo-card);
+    border: none;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    padding: 1rem;
+}
+.card-atividades h5 {
+    font-weight: 700;
+    color: var(--cor-texto);
+}
+.card-atividades .text-muted {
+    color: var(--cor-texto-secundario) !important;
+    font-size: 0.95rem;
+}
+
+.card-materia {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    border-radius: 16px;
+    border: 2px solid var(--cor-borda);
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 1.1rem;
+    transition: all 0.2s ease;
+    position: relative;
+}
+.card-materia:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.07);
+}
+.card-materia .card-materia-icon {
+    margin-right: 0.75rem;
+    font-size: 1.4rem;
+}
+.activity-completed-badge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background-color: var(--cor-sucesso);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    font-weight: bold;
+}
+
+/* Cores das Matérias (baseado na imagem) */
+.card-materia.color-matemática { background-color: #F0F2FF; border-color: #D6CFFD; color: #7B61FF; }
+.card-materia.color-matemática:hover { border-color: #7B61FF; }
+
+.card-materia.color-idiomas { background-color: #F7F5FF; border-color: #E6E0FF; color: #A78BFA; }
+.card-materia.color-idiomas:hover { border-color: #A78BFA; }
+
+.card-materia.color-geografia { background-color: #ECFDF5; border-color: #A7F3D0; color: #10B981; }
+.card-materia.color-geografia:hover { border-color: #10B981; }
+
+.card-materia.color-história { background-color: #FFFBEB; border-color: #FDE68A; color: #F59E0B; }
+.card-materia.color-história:hover { border-color: #F59E0B; }
+
+.card-materia.color-literatura { background-color: #FEF2F2; border-color: #FECACA; color: #EF4444; }
+.card-materia.color-literatura:hover { border-color: #EF4444; }
+
+.card-materia.color-artes { background-color: #FFFBEB; border-color: #FDE68A; color: #D97706; }
+.card-materia.color-artes:hover { border-color: #D97706; }
+
+.card-materia.color-ciências { background-color: #ECFEFF; border-color: #A5F3FC; color: #06B6D4; }
+.card-materia.color-ciências:hover { border-color: #06B6D4; }
